@@ -19,6 +19,14 @@ android {
     }
     // Signatur für den Play Store: wird nur benutzt, wenn die Schlüssel als GitHub-Secrets hinterlegt sind
     signingConfigs {
+        // Fester Test-Schlüssel, damit sich jede neue Test-APK über die alte installieren lässt.
+        // Nur für Test-APKs gedacht, nicht für den Play Store.
+        debug {
+            storeFile file("test-signing.p12")
+            storePassword "fossiland-test"
+            keyAlias "fossiland-test"
+            keyPassword "fossiland-test"
+        }
         release {
             if (System.getenv("FOSSILAND_KEYSTORE")) {
                 storeFile file(System.getenv("FOSSILAND_KEYSTORE"))
@@ -29,6 +37,9 @@ android {
         }
     }
     buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
         release {
             if (System.getenv("FOSSILAND_KEYSTORE")) {
                 signingConfig signingConfigs.release
