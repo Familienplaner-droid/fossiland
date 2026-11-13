@@ -12,6 +12,10 @@
     "SystemBars": {
       "insetsHandling": "native",
       "style": "DARK"
+    },
+    "LocalNotifications": {
+      "smallIcon": "ic_stat_fossil",
+      "iconColor": "#FF5A8A"
     }
   }
 }

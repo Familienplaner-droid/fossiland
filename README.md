@@ -64,8 +64,11 @@ Store-Grafiken liegen in `store/` (App-Symbol 512 × 512, Vorstellungsgrafik 102
 | `store/` | Grafiken für den Play-Store-Eintrag |
 | `.github/workflows/android.yml` | automatischer Build |
 
+## Benachrichtigungen
+
+Die App meldet sich, wenn ein Knochen im Labor fertig ist, wenn die Energie wieder voll ist und um 18 Uhr, falls eine Serie ab 2 Tagen zu reißen droht. Geplant wird erst beim Verlassen der App, beim Zurückkommen wird alles gelöscht. Zwischen 21 und 7:30 Uhr bleibt es still. Die Nachfrage erscheint nach der Anleitung, abschalten lässt es sich in der Werkstatt. Umgesetzt mit `@capacitor/local-notifications`, ganz ohne Server.
+
 ## Noch offen
 
 - Echte Werbung (AdMob) statt des 5-Sekunden-Platzhalters in `showRewardedAd`
-- Benachrichtigungen („Dein Knochen ist fertig präpariert“)
 - Spielstand in der Cloud

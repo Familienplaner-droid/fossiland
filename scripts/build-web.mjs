@@ -33,6 +33,11 @@ writeFileSync(join(www, "fonts", "fonts.css"), css);
 // Grafiken
 cpSync(join(root, "src", "assets"), join(www, "assets"), { recursive: true });
 
+// Capacitor-Laufzeit und Benachrichtigungs-Plugin als einfache Skripte (ohne Bundler)
+mkdirSync(join(www, "js"), { recursive: true });
+cpSync(join(root, "node_modules", "@capacitor", "core", "dist", "capacitor.js"), join(www, "js", "capacitor.js"));
+cpSync(join(root, "node_modules", "@capacitor", "local-notifications", "dist", "plugin.js"), join(www, "js", "local-notifications.js"));
+
 // Spiel-HTML in ein vollständiges Dokument einbetten
 let game = readFileSync(join(root, "src", "game.html"), "utf8");
 game = game.replace(/<link rel="stylesheet" href="https:\/\/fonts\.googleapis\.com[^>]*>/, '<link rel="stylesheet" href="fonts/fonts.css">');
@@ -45,6 +50,8 @@ const html = `<!doctype html>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="theme-color" content="#2a1c13">
 <style>html{-webkit-text-size-adjust:100%;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;overscroll-behavior:none}img{max-width:100%}textarea{-webkit-user-select:text;user-select:text}</style>
+<script src="js/capacitor.js"></script>
+<script src="js/local-notifications.js"></script>
 ${game.slice(0, cut)}
 </head>
 <body>
