@@ -172,8 +172,10 @@ nav button[aria-selected="true"] svg{color:var(--tape)}
 .adscreen b{font-family:var(--f-display);font-weight:400;font-size:52px;color:var(--fg);line-height:1}
 .adbar{position:absolute;left:0;bottom:0;height:6px;background:var(--amber);width:0}
 /* start screen */
-.title{position:fixed;inset:0;z-index:40;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;background:url(assets/scene_3.webp) center top/auto 62% no-repeat,var(--bg);padding:max(24px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(28px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));overflow:hidden}
-.title::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(42,28,19,0) 0%,rgba(42,28,19,.15) 30%,var(--bg) 62%),radial-gradient(ellipse at 50% 45%,rgba(255,180,90,.12),transparent 60%)}
+.title{position:fixed;inset:0;z-index:40;display:flex;flex-direction:column;align-items:center;justify-content:space-between;gap:14px;text-align:center;background:url(assets/keyart.webp) center 70%/cover no-repeat,var(--bg);padding:max(24px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(28px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));overflow:hidden}
+.title::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(42,28,19,.28) 0%,rgba(42,28,19,0) 26%,rgba(42,28,19,0) 62%,rgba(42,28,19,.82) 86%,rgba(42,28,19,.95) 100%)}
+.title .ttop,.title .tbot{display:flex;flex-direction:column;align-items:center;gap:10px}
+.title .ttop{margin-top:4vh}
 .title>*{position:relative}
 .title .hero{width:min(94vw,460px);max-width:100%;aspect-ratio:190/96;background:url(assets/sk_trex.webp) center/contain no-repeat;filter:drop-shadow(0 14px 18px rgba(0,0,0,.55));animation:float 5s ease-in-out infinite;margin-bottom:-6px}
 .title h1{font-family:var(--f-display);font-weight:400;font-size:clamp(54px,17vw,84px);line-height:.9;margin:0;color:var(--bone);letter-spacing:1px;text-shadow:0 5px 0 var(--edge),0 12px 30px rgba(0,0,0,.55)}
@@ -221,6 +223,13 @@ nav button[aria-selected="true"] svg{color:var(--tape)}
 .chestrow b{font-family:var(--f-display);font-weight:400;font-size:19px;display:block}
 .chestrow span{font-size:13px;color:var(--muted)}
 .report{width:100%;min-height:220px;max-height:45vh;resize:vertical;border:0;border-radius:12px;background:var(--edge);color:var(--fg);font:12.5px/1.45 ui-monospace,Menlo,Consolas,monospace;padding:10px 12px;box-sizing:border-box}
+.banner{position:relative;height:clamp(130px,24vw,220px);border-radius:20px;overflow:hidden;background:var(--edge) center/cover no-repeat;box-shadow:0 5px 0 var(--edge);display:flex;align-items:flex-end;padding:14px 16px}
+.banner::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,12,8,0) 40%,rgba(20,12,8,.78))}
+.banner h2{position:relative;margin:0;font-family:var(--f-display);font-weight:400;font-size:28px;color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.4)}
+.banner small{display:block;font-family:var(--f-body);font-size:13px;font-weight:700;color:var(--bone)}
+.coach{padding-left:104px!important;min-height:120px;box-sizing:border-box}
+.coach .guide{position:absolute;left:-4px;bottom:0;width:104px;height:auto;pointer-events:none;filter:drop-shadow(0 4px 6px rgba(0,0,0,.25))}
+.modal .guide-top{display:block;width:110px;height:auto;margin:-4px auto -8px;filter:drop-shadow(0 6px 10px rgba(0,0,0,.4))}
 .toast{position:fixed;left:50%;top:calc(12px + env(safe-area-inset-top,0px));transform:translate(-50%,0);background:var(--bone);color:#2a1a0e;padding:10px 18px;border-radius:999px;font-weight:700;font-size:14px;max-width:calc(100% - 32px);text-align:center;z-index:50;transition:opacity .25s,transform .25s;pointer-events:none;box-shadow:0 4px 0 var(--bone-dk)}
 .toast[data-show="0"]{opacity:0;transform:translate(-50%,-12px)}
 @keyframes fade{from{opacity:0}}
@@ -237,7 +246,7 @@ nav .in{max-width:760px}
 /* Mehrere Karten nebeneinander, wenn Platz ist */
 @media (min-width:760px){
   .mus{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));align-items:start}
-  .mus>.sec-h,.mus>.up,.mus>p{grid-column:1/-1}
+  .mus>.sec-h,.mus>.up,.mus>p,.mus>.banner{grid-column:1/-1}
   #v-lab:not([hidden]),#v-shop:not([hidden]){display:grid!important;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));align-items:start}
   #v-lab>:not(.bench),#v-shop>:not(.up){grid-column:1/-1}
 }
@@ -255,7 +264,7 @@ nav .in{max-width:760px}
   .pit{grid-area:pit;border-radius:20px;box-shadow:0 6px 0 rgba(0,0,0,.35)}
   .scene{grid-area:scene;height:clamp(84px,22vh,150px);border-radius:16px;overflow:hidden;box-shadow:0 6px 0 rgba(0,0,0,.35)}
   .eras{grid-area:eras;min-width:0}.hud{grid-area:hud}.tools{grid-area:tools}#hint{grid-area:hint}#digRow{grid-area:row}
-  .title .hero{width:max(140px,min(94vw,460px,calc((100vh - 280px)*1.98)))}
+  
   .title h1{font-size:min(84px,max(40px,13vh))}
 }
 /* Flache Querformat-Handys: alles etwas kompakter */
@@ -780,7 +789,7 @@ function updateHUD(){if(!D)return;const mx=staMax(),now=Date.now();
 function renderNavBadge(){const b=$("labBadge"),n=S.lab.length;b.hidden=!n;b.textContent=n}
 function renderLab(){
   const bp=buyPrice(),now=Date.now(),slots=labSlots(),act=S.lab.filter(x=>x.st!=null).sort((a,b)=>a.st-b.st),wait=S.lab.filter(x=>x.st==null),ads=adsLeft();
-  let h=`<h2 class="sec-h">${t("labTitle")}<small>${t("benches",{a:act.length,b:slots})}</small></h2>
+  let h=`<div class="banner" style="background-image:url(${aurl("lab.webp")})"><h2>${t("labTitle")}<small>${t("benches",{a:act.length,b:slots})}</small></h2></div>
   <p class="hint">${t("labHint")}</p>`;
   for(let i=0;i<4;i++){
     const x=act[i];
@@ -1077,7 +1086,7 @@ let AWAY=[],DAILY=false;
 function showOffline(){
   if(offline<=0&&!AWAY.length&&!DAILY)return;const ads=adsLeft(),g=offline;
   const msgs=[...AWAY.map(x=>[pic(SPR[x.part],IC.bone),x.msg]),...AWAY.flatMap(x=>(x.extra||[]).map(t=>[`<span class="coin sm"></span>`,t]))];
-  const ov=overlay(`<h2>${t("welcome")}</h2>
+  const ov=overlay(`<img class="guide-top" src="${aurl("guide_bust.webp")}" alt=""><h2>${t("welcome")}</h2>
     ${g>0?`<p class="sub">${t("awayCoins")}</p><div class="bignum"><span class="coin" style="width:36px;height:36px"></span>${g}</div>`:""}
     ${msgs.length?`<p class="sub">${t("awayLab")}</p><ul class="finds">${msgs.map(m=>`<li>${m[0]}<span>${m[1]}</span></li>`).join("")}</ul>`:""}
     ${DAILY?`<p class="sub">${t("daily")}</p>`:""}
@@ -1159,7 +1168,7 @@ function skel(c){
 }
 function renderMus(){
   const total=CREATURES.length,done=completed();
-  let h=`<div class="mus"><div class="up" style="grid-template-columns:1fr auto"><div><b>${t("collection")}</b><p>${t("collSub",{a:done,b:total,r:rate()})}</p><div class="lv">${ERAS.map((e,i)=>`<i class="${eraDone(i)?"on":""}" style="width:28px" title="${e.name}"></i>`).join("")}</div></div><div class="pill"><span class="coin"></span>${rate()}</div></div>`;
+  let h=`<div class="mus"><div class="banner" style="background-image:url(${aurl("hall.webp")})"><h2>${t("navMus")}</h2></div><div class="up" style="grid-template-columns:1fr auto"><div><b>${t("collection")}</b><p>${t("collSub",{a:done,b:total,r:rate()})}</p><div class="lv">${ERAS.map((e,i)=>`<i class="${eraDone(i)?"on":""}" style="width:28px" title="${e.name}"></i>`).join("")}</div></div><div class="pill"><span class="coin"></span>${rate()}</div></div>`;
   ERAS.forEach((e,ei)=>{
     const list=CREATURES.filter(c=>c.e===ei),dn=list.filter(isFull).length;
     h+=`<h2 class="sec-h">${e.name}<small>${eraDone(ei)?t("eraCompl"):t("eraProg",{a:dn,b:list.length,x:150*(ei+1)})}</small></h2>`;
@@ -1359,7 +1368,7 @@ function tutGo(i){
   const st=TUT[i],spot=document.createElement("div"),box=document.createElement("div");
   spot.className="coach-spot"+(st.wait?" ring":"");box.className="coach";box.setAttribute("role","dialog");box.setAttribute("aria-live","polite");
   const showNext=!st.wait||tutReplay;
-  box.innerHTML=`<b>${t(st.k+"h")}</b><p>${t(st.k,{x:st.x?t(st.x):""})}</p>
+  box.innerHTML=`<img class="guide" src="${aurl("guide_bust.webp")}" alt=""><b>${t(st.k+"h")}</b><p>${t(st.k,{x:st.x?t(st.x):""})}</p>
     <div class="crow"><div class="dots">${TUT.map((_,j)=>`<i class="${j<=i?"on":""}"></i>`).join("")}</div>
     <div><button class="skip" data-tut="skip">${t("tutSkip")}</button>${showNext?` <button class="btn primary" data-tut="next">${i===TUT.length-1&&!st.wait?t("letsGo"):t("tutNext")}</button>`:""}</div></div>`;
   document.body.append(spot,box);
@@ -1384,9 +1393,9 @@ function endTut(done){if(!tutReplay)SS().tut=done?"bis zum Ende gespielt":"über
 
 function showTitle(){
   const el=document.createElement("div");el.className="title";el.setAttribute("role","dialog");el.setAttribute("aria-label","Fossiland");
-  const draw=()=>{el.innerHTML=`<div class="hero" aria-hidden="true"></div><h1>Fossi<span>land</span></h1><p class="tagline">${t("tagline")}</p>
+  const draw=()=>{el.innerHTML=`<div class="ttop"><h1>Fossi<span>land</span></h1><p class="tagline">${t("tagline")}</p></div><div class="tbot">
     <button class="btn primary" id="playBtn">${t("play")}</button>
-    <div class="langpick">${Object.entries(LANGS).map(([k,v])=>`<button data-tl="${k}" lang="${k}" aria-pressed="${k===LANG}">${v}</button>`).join("")}</div>`};
+    <div class="langpick">${Object.entries(LANGS).map(([k,v])=>`<button data-tl="${k}" lang="${k}" aria-pressed="${k===LANG}">${v}</button>`).join("")}</div></div>`};
   draw();document.body.appendChild(el);
   el.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;e.stopPropagation();
     if(b.dataset.tl){S.lang=b.dataset.tl;applyLang(S.lang);save();draw();renderMute();renderTop();erasKey="";if(D)renderDig();return}
