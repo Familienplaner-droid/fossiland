@@ -1,0 +1,20 @@
+{
+  "name": "fossiland",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Fossiland – Fossilien ausgraben, präparieren und ein Museum aufbauen. Android-App mit Capacitor.",
+  "scripts": {
+    "build:web": "node scripts/build-web.mjs",
+    "sync": "npm run build:web && npx cap sync android",
+    "apk": "npm run sync && cd android && ./gradlew assembleDebug"
+  },
+  "dependencies": {
+    "@capacitor/android": "8.6.0",
+    "@capacitor/core": "8.6.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "8.6.0",
+    "@fontsource/atkinson-hyperlegible": "5.3.0",
+    "@fontsource/lilita-one": "5.3.0"
+  }
+}

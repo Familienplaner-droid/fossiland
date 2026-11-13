@@ -1,0 +1,17 @@
+{
+  "appId": "com.familienplaner.fossiland",
+  "appName": "Fossiland",
+  "webDir": "www",
+  "backgroundColor": "#2a1c13",
+  "android": {
+    "backgroundColor": "#2a1c13",
+    "allowMixedContent": false,
+    "captureInput": true
+  },
+  "plugins": {
+    "SystemBars": {
+      "insetsHandling": "native",
+      "style": "DARK"
+    }
+  }
+}

@@ -1,0 +1,5 @@
+package com.familienplaner.fossiland;
+
+import com.getcapacitor.BridgeActivity;
+
+public class MainActivity extends BridgeActivity {}

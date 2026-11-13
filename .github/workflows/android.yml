@@ -1,0 +1,88 @@
+name: Android-App bauen
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      VERSION_CODE: ${{ github.run_number }}
+      VERSION_NAME: 1.0.${{ github.run_number }}
+      HAS_KEY: ${{ secrets.FOSSILAND_KEYSTORE_BASE64 != '' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: gradle
+
+      - name: Abhängigkeiten installieren
+        run: npm ci
+
+      - name: Spiel in die App kopieren
+        run: |
+          npm run build:web
+          npx cap sync android
+
+      - name: Test-APK bauen (zum direkten Installieren)
+        working-directory: android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon
+          cp app/build/outputs/apk/debug/app-debug.apk "app/build/outputs/apk/debug/Fossiland-$VERSION_NAME.apk"
+
+      - name: Test-APK hochladen
+        uses: actions/upload-artifact@v4
+        with:
+          name: Fossiland-Test-APK-${{ env.VERSION_NAME }}
+          path: android/app/build/outputs/apk/debug/Fossiland-${{ env.VERSION_NAME }}.apk
+
+      - name: Signaturschlüssel vorbereiten (nur wenn hinterlegt)
+        id: keystore
+        if: ${{ env.HAS_KEY == 'true' }}
+        env:
+          KEY_B64: ${{ secrets.FOSSILAND_KEYSTORE_BASE64 }}
+        run: |
+          echo "$KEY_B64" | base64 -d > "$RUNNER_TEMP/fossiland.jks"
+          echo "path=$RUNNER_TEMP/fossiland.jks" >> "$GITHUB_OUTPUT"
+
+      - name: Play-Store-Paket bauen (AAB, signiert)
+        if: ${{ env.HAS_KEY == 'true' }}
+        working-directory: android
+        env:
+          FOSSILAND_KEYSTORE: ${{ steps.keystore.outputs.path }}
+          FOSSILAND_KEYSTORE_PASSWORD: ${{ secrets.FOSSILAND_KEYSTORE_PASSWORD }}
+          FOSSILAND_KEY_ALIAS: ${{ secrets.FOSSILAND_KEY_ALIAS }}
+          FOSSILAND_KEY_PASSWORD: ${{ secrets.FOSSILAND_KEY_PASSWORD }}
+        run: ./gradlew bundleRelease --no-daemon
+
+      - name: Play-Store-Paket hochladen
+        if: ${{ env.HAS_KEY == 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: Fossiland-PlayStore-AAB-${{ env.VERSION_NAME }}
+          path: android/app/build/outputs/bundle/release/app-release.aab
+
+      - name: Test-APK als Release veröffentlichen (Download-Link fürs Handy)
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ env.VERSION_NAME }}
+          name: Fossiland ${{ env.VERSION_NAME }}
+          prerelease: true
+          body: |
+            Test-Version zum direkten Installieren auf Android.
+            Datei **Fossiland-${{ env.VERSION_NAME }}.apk** auf dem Handy herunterladen und öffnen.
+          files: android/app/build/outputs/apk/debug/Fossiland-${{ env.VERSION_NAME }}.apk
