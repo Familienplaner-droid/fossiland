@@ -1415,7 +1415,13 @@ function show(v){setTimeout(()=>tutEvent("view:"+v),60);view=v;["dig","mus","lab
 let tt;function toast(m){const t=$("toast");t.textContent=m;t.dataset.show=1;clearTimeout(tt);tt=setTimeout(()=>t.dataset.show=0,2000)}
 
 function cellAt(ev){const r=pit.getBoundingClientRect();const x=Math.floor((ev.clientX-r.left)/(r.width/COLS)),y=Math.floor((ev.clientY-r.top)/(r.height/ROWS));return x>=0&&x<COLS&&y>=0&&y<ROWS?y*COLS+x:-1}
-pit.addEventListener("pointerdown",e=>{kc.on=false;const i=cellAt(e);if(i>=0)hit(i)});
+// Tippen = Finger auf dem Feld ablegen und ohne nennenswerte Bewegung loslassen. Wer zieht oder scrollt, löst nichts aus.
+let tap=null;const TAP_MOVE=10;
+pit.addEventListener("pointerdown",e=>{if(e.button>0)return;tap={id:e.pointerId,x:e.clientX,y:e.clientY,i:cellAt(e)}});
+pit.addEventListener("pointermove",e=>{if(tap&&e.pointerId===tap.id&&Math.hypot(e.clientX-tap.x,e.clientY-tap.y)>TAP_MOVE)tap=null});
+pit.addEventListener("pointerup",e=>{const s=tap;tap=null;if(!s||e.pointerId!==s.id)return;
+  if(Math.hypot(e.clientX-s.x,e.clientY-s.y)>TAP_MOVE)return;kc.on=false;if(s.i>=0)hit(s.i)});
+["pointercancel","pointerleave"].forEach(n=>pit.addEventListener(n,()=>{tap=null}));
 pit.addEventListener("keydown",e=>{const mv={ArrowUp:[-1,0],ArrowDown:[1,0],ArrowLeft:[0,-1],ArrowRight:[0,1]}[e.key];
   if(mv){e.preventDefault();kc.on=true;kc.r=Math.max(0,Math.min(ROWS-1,kc.r+mv[0]));kc.c=Math.max(0,Math.min(COLS-1,kc.c+mv[1]))}
   else if(e.key==="Enter"||e.key===" "){e.preventDefault();kc.on=true;hit(kc.r*COLS+kc.c)}});
