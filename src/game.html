@@ -57,8 +57,12 @@ header{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .era-s{font-size:12px;font-weight:700;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.6)}
 .trail{align-self:flex-start;background:rgba(28,18,12,.72);backdrop-filter:blur(4px);border-radius:999px;padding:4px 12px;font-size:13px;color:var(--bone)}
 .trail b{font-family:var(--f-display);font-weight:400;font-size:15px;color:#fff;margin-left:2px}
-.pit{padding:8px;background:linear-gradient(#5a3c26,#3b2618);position:relative}
-.pit canvas{display:block;width:100%;border-radius:8px;touch-action:manipulation;cursor:pointer}
+.pit{padding:20px 8px 8px 20px;background:linear-gradient(#6a4a2e,#4a301c);position:relative;box-shadow:inset 0 0 0 2px rgba(0,0,0,.25),inset 0 2px 0 rgba(255,230,190,.12)}
+.pit .gl{position:absolute;display:grid;pointer-events:none;font:700 10.5px var(--f-body);color:rgba(255,236,205,.7);letter-spacing:.04em}
+.pit .gl.top{left:20px;right:8px;top:3px;height:15px;grid-template-columns:repeat(8,1fr);text-align:center;align-items:center}
+.pit .gl.side{top:20px;bottom:8px;left:2px;width:16px;grid-template-rows:repeat(9,1fr);text-align:center;align-items:center}
+.pit .stake{position:absolute;width:9px;height:9px;border-radius:2px;background:linear-gradient(135deg,#c9a06a,#7a5430);box-shadow:0 1px 2px rgba(0,0,0,.5)}
+.pit canvas{display:block;width:100%;border-radius:4px;touch-action:manipulation;cursor:pointer}
 
 .eras{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x proximity;padding-bottom:6px;margin-bottom:-6px;scrollbar-width:none}
 .eras::-webkit-scrollbar{display:none}
@@ -256,8 +260,8 @@ nav .in{max-width:760px}
   nav{top:0;bottom:0;right:auto;width:calc(84px + env(safe-area-inset-left,0px));padding:max(10px,env(safe-area-inset-top,0px)) 6px max(10px,env(safe-area-inset-bottom,0px)) max(6px,env(safe-area-inset-left,0px));display:flex;align-items:center;box-shadow:6px 0 18px rgba(0,0,0,.35)}
   nav .in{grid-template-columns:1fr;gap:8px;width:100%}
   nav button{padding:10px 2px}
-  .wrap{max-width:1400px;width:100%;--pitw:min(calc(100vw - 98px - 300px - 44px),calc((100vh - 92px)*.889 + 16px))}
-  @supports (height:100dvh){.wrap{--pitw:min(calc(100vw - 98px - 300px - 44px),calc((100dvh - 92px)*.889 + 16px))}}
+  .wrap{max-width:1400px;width:100%;--pitw:min(calc(100vw - 98px - 300px - 44px),calc((100vh - 104px)*.889 + 28px))}
+  @supports (height:100dvh){.wrap{--pitw:min(calc(100vw - 98px - 300px - 44px),calc((100dvh - 104px)*.889 + 28px))}}
   #v-dig:not([hidden]){display:grid!important;grid-template-columns:var(--pitw) minmax(260px,520px);justify-content:center;
     grid-template-areas:"pit scene" "pit eras" "pit hud" "pit tools" "pit hint" "pit row" "pit .";grid-template-rows:auto auto auto auto auto auto 1fr;column-gap:16px;row-gap:12px;align-items:start}
   .site{display:contents}
@@ -270,7 +274,7 @@ nav .in{max-width:760px}
 /* Flache Querformat-Handys: alles etwas kompakter */
 @media (orientation:landscape) and (max-height:520px){
   .logo{font-size:22px}.pill{font-size:15px;padding:3px 10px 3px 3px}.iconbtn{width:34px;height:34px}
-  .wrap{gap:8px;--pitw:min(calc(100vw - 98px - 280px - 40px),calc((100vh - 74px)*.889 + 16px))}
+  .wrap{gap:8px;--pitw:min(calc(100vw - 98px - 280px - 40px),calc((100vh - 86px)*.889 + 28px))}
   #v-dig:not([hidden]){row-gap:8px;grid-template-columns:var(--pitw) minmax(240px,520px)}
   .tool{padding:6px 4px;gap:1px}.tool .ti{width:36px;height:36px;margin:0}.tool small{display:none}
   .era{padding:6px 4px}.era b{font-size:15px}
@@ -294,7 +298,7 @@ nav .in{max-width:760px}
       <div class="scene"><canvas id="scene"></canvas>
         <div class="scene-ov"><div><div class="era-t" id="eraT"></div><div class="era-s" id="eraS"></div></div><div class="trail" id="trail"></div></div>
       </div>
-      <div class="pit"><canvas id="pit" tabindex="0" aria-label="Grabungsfeld. Pfeiltasten bewegen, Enter gräbt."></canvas></div>
+      <div class="pit"><div class="gl top" aria-hidden="true"><span>A</span><span>B</span><span>C</span><span>D</span><span>E</span><span>F</span><span>G</span><span>H</span></div><div class="gl side" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span></div><span class="stake" style="left:6px;top:6px"></span><span class="stake" style="right:0;top:6px"></span><span class="stake" style="left:6px;bottom:0"></span><span class="stake" style="right:0;bottom:0"></span><canvas id="pit" tabindex="0" aria-label="Grabungsfeld. Pfeiltasten bewegen, Enter gräbt."></canvas></div>
     </div>
     <div class="hud">
       <div class="energy"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg><div class="bar"><i id="eBar"></i><span id="eTxt"></span></div></div>
@@ -715,9 +719,9 @@ document.addEventListener("error",e=>{const t=e.target;if(t&&t.tagName==="IMG"&&
 const ICP={brush:pic("t_brush",IC.brush),pick:pic("t_pick",IC.pick),probe:pic("t_probe",IC.probe),canteen:pic("t_canteen",IC.canteen),amber:pic("amber",IC.amber),ammo:pic("ammo",IC.ammo),tooth:pic("tooth",IC.tooth),trilo:pic("trilo",IC.trilo)};
 const SPR=["skull","vert","rib","leg","foot"];
 function preload(){
-  const first=["tiles.webp",`floor_${S.era}.webp`,`scene_${S.era}.webp`,...SPR.map(n=>n+".webp"),"amber.webp","ammo.webp","tooth.webp","trilo.webp"];
+  const first=["tiles.webp",`soil_${S.era}.webp`,`floor_${S.era}.webp`,`scene_${S.era}.webp`,...SPR.map(n=>n+".webp"),"amber.webp","ammo.webp","tooth.webp","trilo.webp"];
   Promise.all(first.map(loadImg)).then(()=>drawScene());
-  setTimeout(()=>{for(let e=0;e<6;e++){loadImg(`scene_${e}.webp`);loadImg(`floor_${e}.webp`)}},1200);
+  setTimeout(()=>{for(let e=0;e<6;e++){loadImg(`scene_${e}.webp`);loadImg(`floor_${e}.webp`);loadImg(`soil_${e}.webp`)}},1200);
 }
 
 /* ================= Zeit: Ausdauer-Vorrat & Präparationslabor ================= */
@@ -987,24 +991,43 @@ function hit(i){
 /* ---------- Zeichnen ---------- */
 function rr(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()}
 function sizePit(){const w=pit.clientWidth;if(!w)return;cs=w/COLS;pdpr=devicePixelRatio||1;pit.style.height=cs*ROWS+"px";pit.width=w*pdpr;pit.height=cs*ROWS*pdpr}
-function soil(ctx,g){
-  const[x,y]=cellXY(g),L=LAY()[g.L],pad=1,T=IMG["tiles.webp"];
-  if(T&&T.naturalWidth){const ts=T.naturalWidth/9,col=g.L*3+(g.max>g.L+1?2:g.v);
-    ctx.drawImage(T,col*ts,D.era*ts,ts,ts,x-cs*.03,y-cs*.03,cs*1.06,cs*1.06);
-    rr(ctx,x+cs*.07,y+cs*.07,cs*.86,cs*.86,cs*.16);ctx.save();ctx.clip();
-  }else{
-  ctx.fillStyle=g.hp>=g.max&&g.max>g.L+1?L[1]:L[0];
-  rr(ctx,x+pad,y+pad,cs-pad*2,cs-pad*2,cs*.2);ctx.fill();
-  ctx.save();ctx.clip();
-  ctx.fillStyle="rgba(255,255,255,.16)";ctx.fillRect(x,y,cs,cs*.16);
-  ctx.fillStyle="rgba(0,0,0,.18)";ctx.fillRect(x,y+cs*.84,cs,cs*.16);
-  g.peb.forEach(([px,py,pr,l])=>{ctx.fillStyle=l>.5?"rgba(255,255,255,.18)":L[2];ctx.beginPath();ctx.ellipse(x+px*cs,y+py*cs,pr*cs*1.3,pr*cs,0,0,7);ctx.fill()});
-  }
-  const dmg=g.max-g.hp;ctx.strokeStyle="rgba(30,15,5,.6)";ctx.lineWidth=Math.max(1.6,cs*.035);ctx.lineCap="round";ctx.lineJoin="round";
+/* Grabungsfläche: durchgehender Boden aus kachelbaren Texturen, Gruben mit ausgefransten Rändern, Schnurraster */
+const hsh=(a,b,c)=>{let h=(a*374761393+b*668265263+c*2147483647)^0x5bd1e995;h=Math.imul(h^(h>>>13),1274126177);return((h^(h>>>16))>>>0)/4294967296};
+function soilTex(ctx,g){const[x,y]=cellXY(g),T=IMG[`soil_${D.era}.webp`];const L=Math.min(2,g.L);
+  if(T&&T.naturalWidth){const N=T.naturalHeight/2,k=N/3;ctx.drawImage(T,L*N+(g.c%3)*k,(g.r%3)*k,k,k,x-.4,y-.4,cs+.8,cs+.8)}
+  else{ctx.fillStyle=LAY()[L][0];ctx.fillRect(x-.4,y-.4,cs+.8,cs+.8)}}
+// Harte Stelle: steinigerer Boden, weich ausgeblendet, damit keine Kachelkanten entstehen
+const HARD={};
+function hardPatch(L,r,c){const key=D.era+"|"+L+"|"+r%3+"|"+c%3+"|"+Math.round(cs*pdpr);if(HARD[key])return HARD[key];
+  const T=IMG[`soil_${D.era}.webp`];if(!T||!T.naturalWidth)return null;const N=T.naturalHeight/2,k=N/3,px=Math.round(cs*pdpr*1.2);
+  const cv=document.createElement("canvas");cv.width=cv.height=px;const x=cv.getContext("2d");
+  // 1,5 Zellen groß, damit der Übergang über die Zellgrenze hinaus reicht
+  x.drawImage(T,L*N+(c%3)*k*.8,N+(r%3)*k*.8,k*1.2,k*1.2,0,0,px,px);   // bleibt innerhalb der eigenen Schicht
+  x.globalCompositeOperation="source-atop";x.fillStyle="rgba(50,25,8,.16)";x.fillRect(0,0,px,px);   // etwas dunkler, damit harte Stellen erkennbar bleiben
+  x.globalCompositeOperation="destination-in";const g=x.createRadialGradient(px/2,px/2,px*.1,px/2,px/2,px*.5);g.addColorStop(0,"rgba(0,0,0,1)");g.addColorStop(.55,"rgba(0,0,0,.9)");g.addColorStop(1,"rgba(0,0,0,0)");x.fillStyle=g;x.fillRect(0,0,px,px);
+  return HARD[key]=cv}
+function rockDraw(ctx,g){const P=hardPatch(Math.min(2,g.L),g.r,g.c);if(!P)return;const[x,y]=cellXY(g);ctx.drawImage(P,x-cs*.1,y-cs*.1,cs*1.2,cs*1.2)}
+function soilMarks(ctx,g){const[x,y]=cellXY(g);
+  // Stufe zur Nachbarzelle mit anderer Schicht
+  const nb=[[0,-1],[-1,0]];nb.forEach(([dc,dr])=>{const c2=g.c+dc,r2=g.r+dr;if(c2<0||r2<0)return;const n=D.grid[r2*COLS+c2];if(n.hp<=0||n.L===g.L)return;
+    const deeper=n.L>g.L?n:g,[dx,dy]=cellXY(deeper);ctx.fillStyle="rgba(20,10,4,.28)";
+    if(dc)ctx.fillRect(x-1,y,2.5,cs);else ctx.fillRect(x,y-1,cs,2.5)});
+  const dmg=g.max-g.hp;ctx.strokeStyle="rgba(30,15,5,.55)";ctx.lineWidth=Math.max(1.4,cs*.03);ctx.lineCap="round";ctx.lineJoin="round";
   for(let i=0;i<dmg*2&&i<4;i++){const[cx,cy,a,l]=g.cr[i];ctx.beginPath();ctx.moveTo(x+cx*cs,y+cy*cs);ctx.lineTo(x+cx*cs+Math.cos(a)*l*cs,y+cy*cs+Math.sin(a)*l*cs);ctx.lineTo(x+cx*cs+Math.cos(a+.8)*l*cs*1.6,y+cy*cs+Math.sin(a+.8)*l*cs*1.6);ctx.stroke()}
-  ctx.restore();
-  if(g.probe){const fx=x+cs*.72,fy=y+cs*.18;ctx.strokeStyle="#fff";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(fx,fy);ctx.lineTo(fx,fy+cs*.42);ctx.stroke();ctx.fillStyle="#ff5a8a";ctx.beginPath();ctx.moveTo(fx,fy);ctx.lineTo(fx-cs*.26,fy+cs*.09);ctx.lineTo(fx,fy+cs*.18);ctx.fill()}
-}
+  if(g.probe){const fx=x+cs*.72,fy=y+cs*.18;ctx.strokeStyle="#fff";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(fx,fy);ctx.lineTo(fx,fy+cs*.42);ctx.stroke();ctx.fillStyle="#ff5a8a";ctx.beginPath();ctx.moveTo(fx,fy);ctx.lineTo(fx-cs*.26,fy+cs*.09);ctx.lineTo(fx,fy+cs*.18);ctx.fill()}}
+// Umriss aller Gruben als ein Pfad; gemeinsame Kanten benachbarter Gruben liegen exakt aufeinander
+function holePath(){const P=new Path2D(),dug=(r,c)=>r>=0&&c>=0&&r<ROWS&&c<COLS&&D.grid[r*COLS+c].hp<=0;
+  const ins=(vr,vc)=>cs*(.15+.06*hsh(vr,vc,7));
+  D.grid.forEach(g=>{if(g.hp>0)return;const r=g.r,c=g.c,x=c*cs,y=r*cs;
+    const T=dug(r-1,c),B=dug(r+1,c),Lf=dug(r,c-1),R=dug(r,c+1);
+    const corner=(vr,vc,sx,sy,openX,openY)=>{const d=ins(vr,vc);return[vc*cs+(openX?0:sx*d),vr*cs+(openY?0:sy*d)]};
+    const TL=corner(r,c,1,1,Lf,T),TR=corner(r,c+1,-1,1,R,T),BR=corner(r+1,c+1,-1,-1,R,B),BL=corner(r+1,c,1,-1,Lf,B);
+    const pts=[TL];
+    // geschlossene Seite: leicht nach außen gewölbt und unregelmäßig, wirkt wie ausgebrochene Erde
+    const side=(a,b,open,nx,ny,k)=>{if(!open)for(let i=1;i<6;i++){const t=i/6,j=cs*(-.1*Math.sin(Math.PI*t)+.035*(hsh(r*31+c,k,i)-.5)*2);pts.push([a[0]+(b[0]-a[0])*t+nx*j,a[1]+(b[1]-a[1])*t+ny*j])}pts.push(b)};
+    side(TL,TR,T,0,1,1);side(TR,BR,R,-1,0,2);side(BR,BL,B,0,-1,3);side(BL,TL,Lf,1,0,4);pts.pop();
+    P.moveTo(pts[0][0],pts[0][1]);for(let i=1;i<pts.length;i++)P.lineTo(pts[i][0],pts[i][1]);P.closePath()});
+  return P}
 function boneShape(ctx,o){
   const cells=o.cells,ys=cells.map(c=>c[0]),xs=cells.map(c=>c[1]);
   const bx=Math.min(...xs)*cs,by=Math.min(...ys)*cs,bw=(Math.max(...xs)-Math.min(...xs)+1)*cs,bh=(Math.max(...ys)-Math.min(...ys)+1)*cs;
@@ -1053,21 +1076,36 @@ function drawPit(now){
   ctx.setTransform(pdpr,0,0,pdpr,0,0);ctx.clearRect(0,0,W,H);
   if(shake>.3){ctx.translate((Math.random()-.5)*shake,(Math.random()-.5)*shake);shake*=.82}else shake=0;
   const fl=IMG[`floor_${D.era}.webp`];
-  if(fl&&fl.naturalWidth){ctx.drawImage(fl,-6,-6,W+12,H+12);ctx.fillStyle="rgba(10,6,3,.25)";ctx.fillRect(-6,-6,W+12,H+12)}
-  else{const bg=ctx.createLinearGradient(0,0,0,H);bg.addColorStop(0,"#2b1a10");bg.addColorStop(1,"#170e08");ctx.fillStyle=bg;ctx.fillRect(-6,-6,W+12,H+12)}
-  // Grubenschatten unter Erdkanten
-  D.grid.forEach(g=>{if(g.hp>0)return;const[x,y]=cellXY(g);
-    const up=g.r>0&&D.grid[g.i0=(g.r-1)*COLS+g.c].hp>0;if(up){const s=ctx.createLinearGradient(0,y,0,y+cs*.35);s.addColorStop(0,"rgba(0,0,0,.55)");s.addColorStop(1,"rgba(0,0,0,0)");ctx.fillStyle=s;ctx.fillRect(x,y,cs,cs*.35)}
-    const lf=g.c>0&&D.grid[g.r*COLS+g.c-1].hp>0;if(lf){const s=ctx.createLinearGradient(x,0,x+cs*.25,0);s.addColorStop(0,"rgba(0,0,0,.35)");s.addColorStop(1,"rgba(0,0,0,0)");ctx.fillStyle=s;ctx.fillRect(x,y,cs*.25,cs)}});
-  // Funde (nur freigelegte Teile sichtbar)
+  // 1. durchgehender Boden
+  D.grid.forEach(g=>soilTex(ctx,g));
+  D.grid.forEach(g=>{if(g.hp>0&&g.max>g.L+1)rockDraw(ctx,g)});
+  D.grid.forEach(g=>{if(g.hp>0)soilMarks(ctx,g)});
+  // 2. Gruben: Grubenboden, Funde, Schatten der Ränder
+  const holes=holePath();
+  ctx.save();ctx.clip(holes);
+  {const T=IMG[`soil_${D.era}.webp`];
+    if(T&&T.naturalWidth){const N=T.naturalHeight/2,k=N/3;D.grid.forEach(g=>{if(g.hp>0)return;const[x,y]=cellXY(g);ctx.drawImage(T,2*N+((g.c+1)%3)*k,((g.r+2)%3)*k,k,k,x-cs*.5,y-cs*.5,cs,cs);ctx.drawImage(T,2*N+((g.c+1)%3)*k,((g.r+2)%3)*k,k,k,x+cs*.5,y-cs*.5,cs,cs);ctx.drawImage(T,2*N+((g.c+1)%3)*k,((g.r+2)%3)*k,k,k,x-cs*.5,y+cs*.5,cs,cs);ctx.drawImage(T,2*N+((g.c+1)%3)*k,((g.r+2)%3)*k,k,k,x+cs*.5,y+cs*.5,cs,cs)})}
+    else if(fl&&fl.naturalWidth)ctx.drawImage(fl,-6,-6,W+12,H+12);
+    ctx.fillStyle="rgba(38,20,8,.5)";ctx.fillRect(-6,-6,W+12,H+12)}
   D.objs.forEach(o=>{const open=o.cells.filter(([y,x])=>D.grid[y*COLS+x].hp===0);if(!open.length)return;
-    ctx.save();ctx.beginPath();open.forEach(([y,x])=>ctx.rect(x*cs-.5,y*cs-.5,cs+1,cs+1));ctx.clip();
+    ctx.save();ctx.beginPath();open.forEach(([y,x])=>ctx.rect(x*cs-cs*.2,y*cs-cs*.2,cs*1.4,cs*1.4));ctx.clip();
     const k=o.found&&o.foundAt?Math.max(0,1-(now-o.foundAt)/1600):0;
     if(k>0){ctx.shadowColor=o.kind==="bone"?"rgba(255,244,200,.95)":"rgba(255,200,90,.95)";ctx.shadowBlur=24*k}
     o.kind==="bone"?boneShape(ctx,o):relicShape(ctx,o);ctx.shadowBlur=0;
-    if(o.kind==="bone")open.forEach(([y,x])=>{if(!D.grid[y*COLS+x].crack)return;const cx=(x+.5)*cs,cy=(y+.5)*cs;ctx.strokeStyle="#4a2c16";ctx.lineWidth=2.2;ctx.lineJoin="round";ctx.beginPath();ctx.moveTo(cx-cs*.05,cy-cs*.32);ctx.lineTo(cx+cs*.08,cy-cs*.1);ctx.lineTo(cx-cs*.06,cy+cs*.05);ctx.lineTo(cx+cs*.07,cy+cs*.3);ctx.stroke()});
+    if(o.kind==="bone")open.forEach(([y,x])=>{if(!D.grid[y*COLS+x].crack)return;const cx=(x+.5)*cs,cy=(y+.5)*cs;ctx.strokeStyle="#4a2c16";ctx.lineWidth=2.2;ctx.lineJoin="round";ctx.beginPath();ctx.moveTo(cx-cs*.05,cy-cs*.32);ctx.lineTo(cx+cs*.08,cy-cs*.1);ctx.lineTo(cx-cs*.06,cy+cs*.08);ctx.lineTo(cx+cs*.06,cy+cs*.3);ctx.stroke()});
     ctx.restore()});
-  D.grid.forEach(g=>{if(g.hp>0)soil(ctx,g)});
+  // Innenschatten: der Rand wirft Schatten in die Grube (Licht von oben links)
+  const sh=new Path2D();sh.rect(-W,-H,W*3,H*3);sh.addPath(holes);
+  ctx.shadowColor="rgba(0,0,0,.55)";ctx.shadowBlur=cs*.16;ctx.shadowOffsetX=cs*.05;ctx.shadowOffsetY=cs*.08;ctx.fillStyle="#000";ctx.fill(sh,"evenodd");
+  ctx.restore();
+  // Bruchkante: dunkle Linie innen, helle Lichtkante auf dem Boden
+  ctx.save();ctx.lineJoin="round";ctx.strokeStyle="rgba(255,240,215,.22)";ctx.lineWidth=Math.max(1.5,cs*.035);ctx.translate(-.8,-.8);ctx.stroke(holes);ctx.restore();
+  ctx.save();ctx.lineJoin="round";ctx.strokeStyle="rgba(35,18,8,.6)";ctx.lineWidth=Math.max(1,cs*.02);ctx.stroke(holes);ctx.restore();
+  // 3. Schnurraster der Ausgrabung
+  ctx.save();ctx.lineWidth=Math.max(1,cs*.018);
+  for(const pass of [0,1]){ctx.strokeStyle=pass?"rgba(246,232,200,.5)":"rgba(0,0,0,.18)";const o=pass?0:Math.max(1,cs*.03);ctx.beginPath();
+    for(let c=1;c<COLS;c++){ctx.moveTo(c*cs+o,0);ctx.lineTo(c*cs+o,H)}for(let r=1;r<ROWS;r++){ctx.moveTo(0,r*cs+o);ctx.lineTo(W,r*cs+o)}ctx.stroke()}
+  ctx.restore();
   if(kc.on){ctx.strokeStyle="#ff5a8a";ctx.lineWidth=3;rr(ctx,kc.c*cs+2,kc.r*cs+2,cs-4,cs-4,cs*.2);ctx.stroke()}
   // Partikel
   particles=particles.filter(p=>p.life>0);
