@@ -992,18 +992,19 @@ function hit(i){
 function rr(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()}
 function sizePit(){const w=pit.clientWidth;if(!w)return;cs=w/COLS;pdpr=devicePixelRatio||1;pit.style.height=cs*ROWS+"px";pit.width=w*pdpr;pit.height=cs*ROWS*pdpr}
 /* Grabungsfläche: durchgehender Boden aus kachelbaren Texturen, Gruben mit ausgefransten Rändern, Schnurraster */
+const SPAN=2;   // eine Bodentextur reicht über 2×2 Felder
 const hsh=(a,b,c)=>{let h=(a*374761393+b*668265263+c*2147483647)^0x5bd1e995;h=Math.imul(h^(h>>>13),1274126177);return((h^(h>>>16))>>>0)/4294967296};
 function soilTex(ctx,g){const[x,y]=cellXY(g),T=IMG[`soil_${D.era}.webp`];const L=Math.min(2,g.L);
-  if(T&&T.naturalWidth){const N=T.naturalHeight/2,k=N/3;ctx.drawImage(T,L*N+(g.c%3)*k,(g.r%3)*k,k,k,x-.4,y-.4,cs+.8,cs+.8)}
+  if(T&&T.naturalWidth){const N=T.naturalHeight/2,k=N/SPAN;ctx.drawImage(T,L*N+(g.c%SPAN)*k,(g.r%SPAN)*k,k,k,x-.4,y-.4,cs+.8,cs+.8)}
   else{ctx.fillStyle=LAY()[L][0];ctx.fillRect(x-.4,y-.4,cs+.8,cs+.8)}}
 // Harte Stelle: steinigerer Boden, weich ausgeblendet, damit keine Kachelkanten entstehen
 const HARD={};
-function hardPatch(L,r,c){const key=D.era+"|"+L+"|"+r%3+"|"+c%3+"|"+Math.round(cs*pdpr);if(HARD[key])return HARD[key];
-  const T=IMG[`soil_${D.era}.webp`];if(!T||!T.naturalWidth)return null;const N=T.naturalHeight/2,k=N/3,px=Math.round(cs*pdpr*1.2);
+function hardPatch(L,r,c){const key=D.era+"|"+L+"|"+r%SPAN+"|"+c%SPAN+"|"+Math.round(cs*pdpr);if(HARD[key])return HARD[key];
+  const T=IMG[`soil_${D.era}.webp`];if(!T||!T.naturalWidth)return null;const N=T.naturalHeight/2,k=N/SPAN,px=Math.round(cs*pdpr*1.2);
   const cv=document.createElement("canvas");cv.width=cv.height=px;const x=cv.getContext("2d");
   // 1,5 Zellen groß, damit der Übergang über die Zellgrenze hinaus reicht
-  x.drawImage(T,L*N+(c%3)*k*.8,N+(r%3)*k*.8,k*1.2,k*1.2,0,0,px,px);   // bleibt innerhalb der eigenen Schicht
-  x.globalCompositeOperation="source-atop";x.fillStyle="rgba(50,25,8,.16)";x.fillRect(0,0,px,px);   // etwas dunkler, damit harte Stellen erkennbar bleiben
+  x.drawImage(T,L*N+(c%SPAN)*k*.6,N+(r%SPAN)*k*.6,k*1.2,k*1.2,0,0,px,px);   // bleibt innerhalb der eigenen Schicht
+  x.globalCompositeOperation="source-atop";x.fillStyle="rgba(50,25,8,.07)";x.fillRect(0,0,px,px);   // etwas dunkler, damit harte Stellen erkennbar bleiben
   x.globalCompositeOperation="destination-in";const g=x.createRadialGradient(px/2,px/2,px*.1,px/2,px/2,px*.5);g.addColorStop(0,"rgba(0,0,0,1)");g.addColorStop(.55,"rgba(0,0,0,.9)");g.addColorStop(1,"rgba(0,0,0,0)");x.fillStyle=g;x.fillRect(0,0,px,px);
   return HARD[key]=cv}
 function rockDraw(ctx,g){const P=hardPatch(Math.min(2,g.L),g.r,g.c);if(!P)return;const[x,y]=cellXY(g);ctx.drawImage(P,x-cs*.1,y-cs*.1,cs*1.2,cs*1.2)}
@@ -1084,7 +1085,7 @@ function drawPit(now){
   const holes=holePath();
   ctx.save();ctx.clip(holes);
   {const T=IMG[`soil_${D.era}.webp`];
-    if(T&&T.naturalWidth){const N=T.naturalHeight/2,k=N/3;D.grid.forEach(g=>{if(g.hp>0)return;const[x,y]=cellXY(g);ctx.drawImage(T,2*N+((g.c+1)%3)*k,((g.r+2)%3)*k,k,k,x-cs*.5,y-cs*.5,cs,cs);ctx.drawImage(T,2*N+((g.c+1)%3)*k,((g.r+2)%3)*k,k,k,x+cs*.5,y-cs*.5,cs,cs);ctx.drawImage(T,2*N+((g.c+1)%3)*k,((g.r+2)%3)*k,k,k,x-cs*.5,y+cs*.5,cs,cs);ctx.drawImage(T,2*N+((g.c+1)%3)*k,((g.r+2)%3)*k,k,k,x+cs*.5,y+cs*.5,cs,cs)})}
+    if(T&&T.naturalWidth){const N=T.naturalHeight/2,k=N/SPAN;D.grid.forEach(g=>{if(g.hp>0)return;const[x,y]=cellXY(g);ctx.drawImage(T,2*N+((g.c+1)%SPAN)*k,((g.r+1)%SPAN)*k,k,k,x-cs*.5,y-cs*.5,cs,cs);ctx.drawImage(T,2*N+((g.c+1)%SPAN)*k,((g.r+1)%SPAN)*k,k,k,x+cs*.5,y-cs*.5,cs,cs);ctx.drawImage(T,2*N+((g.c+1)%SPAN)*k,((g.r+1)%SPAN)*k,k,k,x-cs*.5,y+cs*.5,cs,cs);ctx.drawImage(T,2*N+((g.c+1)%SPAN)*k,((g.r+1)%SPAN)*k,k,k,x+cs*.5,y+cs*.5,cs,cs)})}
     else if(fl&&fl.naturalWidth)ctx.drawImage(fl,-6,-6,W+12,H+12);
     ctx.fillStyle="rgba(38,20,8,.5)";ctx.fillRect(-6,-6,W+12,H+12)}
   D.objs.forEach(o=>{const open=o.cells.filter(([y,x])=>D.grid[y*COLS+x].hp===0);if(!open.length)return;
