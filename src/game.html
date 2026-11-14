@@ -760,9 +760,17 @@ function applyPart(x){
     if(eraDone(c.e)&&!S.eraBonus[c.e]){S.eraBonus[c.e]=1;const eb=150*(c.e+1);S.coins+=eb;extra.push(t("collDone",{e:ERAS[c.e].name,b:eb}))}
     const nu=ERAS.findIndex((e,k)=>!before[k]&&unlocked(k));if(nu>=0)statEv("Zeitalter frei: "+DATA_TX.de.eras[nu][0]);if(nu>=0)extra.push(t("newEra",{e:ERAS[nu].name}))}
   x.extra=extra;dqAdd("prepared");
-  if(!QUIET){x.big?(SFX.complete(),buzz([60,40,120])):SFX.bone();toast(x.msg);extra.forEach((t,i)=>setTimeout(()=>toast(t),2100*(i+1)));
+  if(!QUIET){x.big?(SFX.complete(),buzz([60,40,120])):SFX.bone();
+    if(x.big&&!document.querySelector(".overlay,.coach,.title"))showComplete(c,x.msg,extra);
+    else{toast(x.msg);extra.forEach((t,i)=>setTimeout(()=>toast(t),2100*(i+1)))}
     if(view==="mus")renderMus()}
 }
+function showComplete(c,msg,extra){
+  const ov=overlay(`<img class="guide-top" src="${aurl(gpose(extra.length?"cheer":"wow"))}" alt=""><h2>${msg}</h2>
+    <img src="${aurl("sk_"+c.id+".webp")}" alt="" style="display:block;width:100%;max-height:30vh;object-fit:contain;filter:drop-shadow(0 6px 8px rgba(0,0,0,.4))">
+    ${extra.map(e=>`<p class="sub" style="margin:0"><b>${e}</b></p>`).join("")}
+    <div class="row"><button class="btn" id="cmpOk">${t("tutNext")}</button><button class="btn primary" id="cmpMus">${t("navMus")}</button></div>`);
+  ov.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;e.stopPropagation();SFX.click();ov.remove();if(b.id==="cmpMus")show("mus")})}
 function serDig(){if(!D)return null;const oi=new Map(D.objs.map((o,i)=>[o,i]));
   return{era:D.era,t:D.target.id,g:D.grid.map(g=>[g.L,g.hp,g.max,g.v,g.crack?1:0,g.probe?1:0,g.obj?oi.get(g.obj):-1]),o:D.objs.map(o=>Object.assign({},o,{foundAt:0})),pr:D.probes,f:D.finds,e:D.earned,ad:[D.adDouble?1:0,D.adProbe?1:0],over:D.over?1:0}}
 function restoreDig(){const s=S.dig;if(!s||s.over||s.era!==S.era||!s.g||s.g.length!==ROWS*COLS)return false;
@@ -775,7 +783,7 @@ function restoreDig(){const s=S.dig;if(!s||s.over||s.era!==S.era||!s.g||s.g.leng
 function showEmpty(){if(!document.querySelector(".overlay"))stat("empty");
   if(document.querySelector(".overlay"))return;
   const ads=adsLeft(),p=buyPrice(),now=Date.now();
-  const ov=overlay(`<h2>${t("empty")}</h2><p class="sub">${t("emptySub",{m:perMin(regenMs()),t:`<b id="fullIn">${fmt(fullIn(now))}</b>`})}</p>
+  const ov=overlay(`<img class="guide-top" src="${aurl(gpose("think"))}" alt=""><h2>${t("empty")}</h2><p class="sub">${t("emptySub",{m:perMin(regenMs()),t:`<b id="fullIn">${fmt(fullIn(now))}</b>`})}</p>
     <div class="row">${ads>0?`<button class="btn ad" id="eAd">${t("plus15video")}</button>`:""}<button class="btn" id="eBuy" ${S.coins>=p?"":"disabled"}>${t("buy15",{p:`<span class="coin sm"></span>${p}`})}</button></div>
     ${ads>0?`<div class="adleft">${t("videosLeft",{a:ads,b:AD_LIMIT})}</div>`:""}
     <button class="btn primary" id="eWait">${t("later")}</button>`);
@@ -1298,7 +1306,7 @@ function showDQ(){
   const q=dqEnsure(),sn=streakNow(),ads=adsLeft(),allC=q.list.every(m=>m.c),cc=chestCoins();
   const icon=k=>DQ_IC[k]||({cells:ICP.brush,bones:IC.bone,relics:ICP.amber,probes:ICP.probe,intact:ICP.brush,digs:ICP.pick}[k])||IC.bone;
   const rs=rescuable(),rstep=rescueStep();
-  const ov=overlay(`<h2>${t("dqTitle")}</h2><p class="sub">${t("dqNew",{t:fmt(msToMidnight())})}</p>
+  const ov=overlay(`${q.chest?`<img class="guide-top" src="${aurl(gpose("cheer"))}" alt="">`:""}<h2>${t("dqTitle")}</h2><p class="sub">${t("dqNew",{t:fmt(msToMidnight())})}</p>
     ${rs?`<div class="chestrow" style="background:var(--tape-ink);grid-template-columns:1fr"><div><b>${t("rescueT")}</b><span>${t("rescueSub",{n:S.streak.n})}</span></div>
       <button class="btn ad" id="dqRescue" ${adsLeft()>=(rstep?1:2)?"":"disabled"}>${rstep?t("rescueBtn2"):t("rescueBtn")}</button></div>`:""}
     <ul class="dq">${q.list.map((m,i)=>{const done=m.p>=m.n;return`<li class="${m.c?"got":""}"><div class="mi">${icon(m.k)}</div>
@@ -1366,7 +1374,7 @@ async function notifEnable(on){if(!LNP)return;
   S.notif=st==="granted";save();if(!S.notif)toast(t("nDenied"));renderShopIf()}
 function renderShopIf(){if(view==="shop")renderShop()}
 function maybeAskNotif(){if(!LNP||S.notif!==undefined||!S.tutDone||document.querySelector(".overlay,.coach,.title"))return;
-  const ov=overlay(`<img class="guide-top" src="${aurl("guide_bust.webp")}" alt=""><h2>${t("nAskT")}</h2><p class="sub">${t("nAskSub")}</p><div class="row"><button class="btn" id="nno">${t("nNo")}</button><button class="btn primary" id="nyes">${t("nYes")}</button></div>`);
+  const ov=overlay(`<img class="guide-top" src="${aurl(gpose("point"))}" alt=""><h2>${t("nAskT")}</h2><p class="sub">${t("nAskSub")}</p><div class="row"><button class="btn" id="nno">${t("nNo")}</button><button class="btn primary" id="nyes">${t("nYes")}</button></div>`);
   ov.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;e.stopPropagation();ov.remove();if(b.id==="nyes")notifEnable(true);else{S.notif=false;save()}})}
 document.addEventListener("visibilitychange",()=>{if(!LNP)return;if(document.visibilityState==="hidden"){try{tickAll()}catch(e){}notifSchedule()}else notifClear()});
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&!document.querySelector(".title")&&Date.now()-(SS().last||0)>10*60000){statSession();save()}});
@@ -1431,18 +1439,20 @@ function showReport(){
 }
 
 /* ================= Startbildschirm & Anleitung ================= */
+// Posen der Paläontologin: wave (Standard), point, think, lab, wow, cheer
+const gpose=(g,full)=>g&&g!=="wave"?`guide_${g}${full?"":"_bust"}.webp`:(full?"guide.webp":"guide_bust.webp");
 const TUT=[
   {k:"t1",sel:null},
-  {k:"t2",sel:'[data-tool="probe"]',wait:"probeSel",skipIf:()=>!D||D.probes<1},
-  {k:"t3",sel:"#pit",wait:"probe",skipIf:()=>!D||D.probes<1&&tool!=="probe"},
-  {k:"t4",sel:"#pit",wait:"bone"},
-  {k:"t5",sel:"#t-lab",wait:"view:lab",x:"navLab"},
-  {k:"t6",sel:".bench"},
-  {k:"t7",sel:"#t-mus",wait:"view:mus",x:"navMus"},
-  {k:"t8",sel:"#v-mus .card"},
-  {k:"t9",sel:"#t-shop",wait:"view:shop",x:"navShop"},
-  {k:"t10",sel:"#v-shop .up"},
-  {k:"t11",sel:"#t-dig",wait:"view:dig",x:"navDig"}
+  {k:"t2",sel:'[data-tool="probe"]',wait:"probeSel",skipIf:()=>!D||D.probes<1,g:"point"},
+  {k:"t3",sel:"#pit",wait:"probe",skipIf:()=>!D||D.probes<1&&tool!=="probe",g:"think"},
+  {k:"t4",sel:"#pit",wait:"bone",g:"point"},
+  {k:"t5",sel:"#t-lab",wait:"view:lab",x:"navLab",g:"point"},
+  {k:"t6",sel:".bench",g:"lab"},
+  {k:"t7",sel:"#t-mus",wait:"view:mus",x:"navMus",g:"point"},
+  {k:"t8",sel:"#v-mus .card",g:"wow"},
+  {k:"t9",sel:"#t-shop",wait:"view:shop",x:"navShop",g:"point"},
+  {k:"t10",sel:"#v-shop .up",g:"think"},
+  {k:"t11",sel:"#t-dig",wait:"view:dig",x:"navDig",g:"cheer"}
 ];
 let tutI=-1,tutReplay=false,tutTimer=null;
 function startTut(replay){tutReplay=!!replay;if(!replay&&!SS().tut)SS().tut="begonnen";tutI=-1;tutGo(0)}
@@ -1453,7 +1463,7 @@ function tutGo(i){
   const st=TUT[i],spot=document.createElement("div"),box=document.createElement("div");
   spot.className="coach-spot"+(st.wait?" ring":"");box.className="coach";box.setAttribute("role","dialog");box.setAttribute("aria-live","polite");
   const showNext=!st.wait||tutReplay;
-  box.innerHTML=`<img class="guide" src="${aurl("guide_bust.webp")}" alt=""><b>${t(st.k+"h")}</b><p>${t(st.k,{x:st.x?t(st.x):""})}</p>
+  box.innerHTML=`<img class="guide" src="${aurl(gpose(st.g))}" alt=""><b>${t(st.k+"h")}</b><p>${t(st.k,{x:st.x?t(st.x):""})}</p>
     <div class="crow"><div class="dots">${TUT.map((_,j)=>`<i class="${j<=i?"on":""}"></i>`).join("")}</div>
     <div><button class="skip" data-tut="skip">${t("tutSkip")}</button>${showNext?` <button class="btn primary" data-tut="next">${i===TUT.length-1&&!st.wait?t("letsGo"):t("tutNext")}</button>`:""}</div></div>`;
   document.body.append(spot,box);
