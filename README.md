@@ -68,7 +68,20 @@ Store-Grafiken liegen in `store/` (App-Symbol 512 × 512, Vorstellungsgrafik 102
 
 Die App meldet sich, wenn ein Knochen im Labor fertig ist, wenn die Energie wieder voll ist und um 18 Uhr, falls eine Serie ab 2 Tagen zu reißen droht. Geplant wird erst beim Verlassen der App, beim Zurückkommen wird alles gelöscht. Zwischen 21 und 7:30 Uhr bleibt es still. Die Nachfrage erscheint nach der Anleitung, abschalten lässt es sich in der Werkstatt. Umgesetzt mit `@capacitor/local-notifications`, ganz ohne Server.
 
+## Werbung (AdMob)
+
+Die App zeigt echte Belohnungsvideos über `@capacitor-community/admob`, zurzeit mit Googles **Test-IDs**: Es erscheint eine Beispielanzeige, es fließt kein Geld. Die Anzeigen sind als kindgerecht markiert (`tagForChildDirectedTreatment`, Einstufung „General“). Im Browser und in der HTML-Datei bleibt der 5-Sekunden-Platzhalter.
+
+Für den Play Store:
+1. In AdMob eine App und eine Anzeigeneinheit „Belohnung“ anlegen.
+2. App-ID in `android/app/src/main/res/values/strings.xml` (`admob_app_id`) eintragen.
+3. In `src/game.html` `AD_UNIT` auf die eigene Anzeigen-ID und `ADS_TESTING` auf `false` setzen.
+4. Einwilligungsabfrage (UMP/DSGVO) und Familienrichtlinien von Google Play prüfen.
+
+## Testbericht
+
+In der Werkstatt unter „Testbericht senden“ tragen Tester ihren Namen ein und teilen den Bericht (z. B. per WhatsApp oder E-Mail). Die letzte Zeile (`FSL1:…`) enthält die Zahlen für die Auswertungsseite: Besuche, Spielzeit und Videos pro Tag.
+
 ## Noch offen
 
-- Echte Werbung (AdMob) statt des 5-Sekunden-Platzhalters in `showRewardedAd`
 - Spielstand in der Cloud

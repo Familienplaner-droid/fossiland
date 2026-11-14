@@ -9,6 +9,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
+        <!-- AdMob: zurzeit Googles Test-App-ID, für den Store in strings.xml die eigene eintragen -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="@string/admob_app_id" />
+
         <activity
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode|navigation|density"
             android:name=".MainActivity"

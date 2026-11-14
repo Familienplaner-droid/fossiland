@@ -37,6 +37,8 @@ cpSync(join(root, "src", "assets"), join(www, "assets"), { recursive: true });
 mkdirSync(join(www, "js"), { recursive: true });
 cpSync(join(root, "node_modules", "@capacitor", "core", "dist", "capacitor.js"), join(www, "js", "capacitor.js"));
 cpSync(join(root, "node_modules", "@capacitor", "local-notifications", "dist", "plugin.js"), join(www, "js", "local-notifications.js"));
+cpSync(join(root, "node_modules", "@capacitor-community", "admob", "dist", "plugin.js"), join(www, "js", "admob.js"));   // stellt window.capacitorStripe.AdMob bereit
+cpSync(join(root, "node_modules", "@capacitor", "share", "dist", "plugin.js"), join(www, "js", "share.js"));
 
 // Spiel-HTML in ein vollständiges Dokument einbetten
 let game = readFileSync(join(root, "src", "game.html"), "utf8");
@@ -52,6 +54,8 @@ const html = `<!doctype html>
 <style>html{-webkit-text-size-adjust:100%;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;overscroll-behavior:none}img{max-width:100%}textarea{-webkit-user-select:text;user-select:text}</style>
 <script src="js/capacitor.js"></script>
 <script src="js/local-notifications.js"></script>
+<script src="js/admob.js"></script>
+<script src="js/share.js"></script>
 ${game.slice(0, cut)}
 </head>
 <body>
