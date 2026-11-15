@@ -83,7 +83,16 @@ header{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .chip{display:flex;align-items:center;gap:6px;background:var(--edge);border-radius:999px;padding:5px 11px;font-family:var(--f-display);font-size:15px;white-space:nowrap}
 .chip svg{width:18px;height:18px;color:var(--bone)}
 
-.tools{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.tools{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+.tools>.tool{grid-column:span 2}
+.tools>.tool.sp{grid-column:span 3;flex-direction:row;justify-content:flex-start;gap:8px;padding:8px 22px 8px 10px;text-align:left}
+.tool.sp .ti{width:40px;height:40px;margin:-4px 0}
+.tool.sp span.tx{display:flex;flex-direction:column;min-width:0}
+.tool.sp b{font-size:14.5px;line-height:1.1;overflow-wrap:anywhere}.tool.sp small{text-align:left}
+.tool.sp.empty{opacity:.9;box-shadow:0 5px 0 var(--edge),inset 0 0 0 2px rgba(255,181,61,.45)}
+.tap-hand{position:fixed;z-index:37;width:46px;height:46px;pointer-events:none;margin:-6px 0 0 -12px;filter:drop-shadow(0 3px 4px rgba(0,0,0,.5));animation:taphand 1.1s ease-in-out infinite}
+@keyframes taphand{0%,100%{transform:translate(8px,10px) scale(1)}45%{transform:translate(0,0) scale(.9)}55%{transform:translate(0,0) scale(.9)}}
+@media (prefers-reduced-motion:reduce){.tap-hand{animation:none}}
 .tool{border:0;border-radius:18px;padding:10px 6px 9px;cursor:pointer;background:var(--panel);box-shadow:0 5px 0 var(--edge);display:flex;flex-direction:column;align-items:center;gap:3px;transition:transform .06s,box-shadow .06s;position:relative}
 .tool:active:not(:disabled){transform:translateY(3px);box-shadow:0 2px 0 var(--edge)}
 .tool svg{width:40px;height:40px}
@@ -615,6 +624,7 @@ const TX={
 
 for(const [l,o] of Object.entries({"de": {"play": "Spielen", "tagline": "Graben, Präparieren & Museum", "tutNext": "Weiter", "tutSkip": "Überspringen", "tutDone": "Viel Spaß beim Graben!", "tutReplay": "Anleitung ansehen", "t1h": "Willkommen in Fossiland!", "t1": "Du leitest eine Ausgrabung. Irgendwo in dieser Grube stecken die Knochen eines Urzeittiers. Ich zeige dir kurz, wie es geht.", "t2h": "Die Sonde", "t2": "Tippe auf die Sonde. Mit ihr findest du heraus, wo etwas im Boden liegt.", "t3h": "Suchen", "t3": "Tippe jetzt mitten ins Feld. Fähnchen zeigen dir, wo Knochen oder Schätze liegen.", "t4h": "Graben", "t4": "Tippe auf die Felder mit Fähnchen, bis der Knochen frei liegt. Manche Knochen liegen tiefer im Boden, dann grab einfach weiter nach unten. Der Pinsel ist sicher. Die Hacke gräbt schneller, kann Knochen aber anknacksen. Jedes Tippen kostet 1 Ausdauer.", "t5h": "Ab ins Labor", "t5": "Super, dein erster Fund! Frische Knochen stecken noch im Gestein. Tippe auf „{x}“.", "t6h": "Präparieren", "t6": "Hier wird dein Fund freigelegt. Normalerweise dauert das 1 bis 5 Stunden, auch wenn das Spiel geschlossen ist. Dein erster Knochen ist schon in einer Minute fertig.", "t7h": "Das Museum", "t7": "Fertige Knochen kommen ins Museum. Tippe auf „{x}“.", "t8h": "Skelette sammeln", "t8": "Fehlende Teile siehst du als Schatten. Ist ein Skelett komplett, zahlen Besucher Eintritt, auch während du nicht spielst. Komplette Skelette schalten neue Zeitalter frei.", "t9h": "Die Werkstatt", "t9": "Mit Münzen verbesserst du deine Ausrüstung. Tippe auf „{x}“.", "t10h": "Ausbauen", "t10": "Mehr Ausdauer, mehr Sonden, mehr Werkbänke: Hier lohnt es sich, regelmäßig vorbeizuschauen. Deine Ausdauer lädt sich übrigens von selbst wieder auf.", "t11h": "Weitergraben", "t11": "Das war's! Tippe auf „{x}“ und grab den Rest deines Tiers aus."}, "en": {"play": "Play", "tagline": "Fossil Dig, Prep & Museum", "tutNext": "Next", "tutSkip": "Skip", "tutDone": "Have fun digging!", "tutReplay": "Show tutorial", "t1h": "Welcome to Fossiland!", "t1": "You're running a dig. Somewhere in this pit lie the bones of a prehistoric animal. Let me show you how it works.", "t2h": "The probe", "t2": "Tap the probe. It shows you where something is buried.", "t3h": "Search", "t3": "Now tap the middle of the pit. Flags show where bones or treasures are.", "t4h": "Dig", "t4": "Tap the flagged squares until the bone is free. Some bones lie deeper, so just keep digging down. The brush is safe. The pickaxe is faster but can crack bones. Each tap costs 1 energy.", "t5h": "Off to the lab", "t5": "Great, your first find! Fresh bones are still stuck in rock. Tap “{x}”.", "t6h": "Preparing", "t6": "This is where your find is freed from the rock. Usually it takes 1 to 5 hours, even while the game is closed. Your first bone will be ready in one minute.", "t7h": "The museum", "t7": "Finished bones go to the museum. Tap “{x}”.", "t8h": "Collect skeletons", "t8": "Missing parts show up as shadows. Once a skeleton is complete, visitors pay entry fees, even while you're not playing. Complete skeletons unlock new eras.", "t9h": "The workshop", "t9": "Use coins to improve your gear. Tap “{x}”.", "t10h": "Upgrades", "t10": "More energy, more probes, more workbenches: it pays to check back here regularly. Your energy also refills by itself.", "t11h": "Keep digging", "t11": "That's it! Tap “{x}” and dig up the rest of your animal."}, "fr": {"play": "Jouer", "tagline": "Fouilles, préparation & musée", "tutNext": "Suivant", "tutSkip": "Passer", "tutDone": "Bonne fouille !", "tutReplay": "Revoir le tutoriel", "t1h": "Bienvenue à Fossiland !", "t1": "Tu diriges une fouille. Quelque part dans ce terrain se cachent les os d'un animal préhistorique. Je te montre comment faire.", "t2h": "La sonde", "t2": "Touche la sonde. Elle t'indique où quelque chose est enfoui.", "t3h": "Chercher", "t3": "Touche maintenant le milieu du terrain. Les drapeaux montrent où se trouvent des os ou des trésors.", "t4h": "Creuser", "t4": "Touche les cases avec un drapeau jusqu'à ce que l'os soit dégagé. Certains os sont plus profonds : continue simplement à creuser. Le pinceau est sûr. La pioche va plus vite mais peut fêler les os. Chaque coup coûte 1 d'énergie.", "t5h": "Direction le labo", "t5": "Bravo, ta première trouvaille ! Les os frais sont encore pris dans la roche. Touche « {x} ».", "t6h": "Préparer", "t6": "C'est ici que ta trouvaille est dégagée de la roche. D'habitude, cela prend de 1 à 5 heures, même quand le jeu est fermé. Ton premier os sera prêt dans une minute.", "t7h": "Le musée", "t7": "Les os prêts vont au musée. Touche « {x} ».", "t8h": "Collectionner", "t8": "Les pièces manquantes apparaissent en ombre. Quand un squelette est complet, les visiteurs paient l'entrée, même quand tu ne joues pas. Les squelettes complets débloquent de nouvelles ères.", "t9h": "L'atelier", "t9": "Utilise tes pièces pour améliorer ton matériel. Touche « {x} ».", "t10h": "Améliorations", "t10": "Plus d'énergie, plus de sondes, plus d'établis : ça vaut le coup de revenir ici souvent. Ton énergie se recharge aussi toute seule.", "t11h": "Continuer", "t11": "C'est tout ! Touche « {x} » et déterre le reste de ton animal."}, "es": {"play": "Jugar", "tagline": "Excava, prepara y exhibe", "tutNext": "Siguiente", "tutSkip": "Saltar", "tutDone": "¡Que disfrutes excavando!", "tutReplay": "Ver tutorial", "t1h": "¡Bienvenido a Fossiland!", "t1": "Diriges una excavación. En algún lugar de este terreno están los huesos de un animal prehistórico. Te enseño cómo funciona.", "t2h": "La sonda", "t2": "Toca la sonda. Te muestra dónde hay algo enterrado.", "t3h": "Buscar", "t3": "Ahora toca el centro del terreno. Las banderas indican dónde hay huesos o tesoros.", "t4h": "Excavar", "t4": "Toca las casillas con bandera hasta que el hueso quede libre. Algunos huesos están más hondos: sigue excavando hacia abajo. El pincel es seguro. El pico es más rápido, pero puede agrietar los huesos. Cada toque cuesta 1 de energía.", "t5h": "Al laboratorio", "t5": "¡Genial, tu primer hallazgo! Los huesos nuevos siguen atrapados en la roca. Toca «{x}».", "t6h": "Preparar", "t6": "Aquí se libera tu hallazgo de la roca. Normalmente tarda de 1 a 5 horas, incluso con el juego cerrado. Tu primer hueso estará listo en un minuto.", "t7h": "El museo", "t7": "Los huesos listos van al museo. Toca «{x}».", "t8h": "Colecciona esqueletos", "t8": "Las piezas que faltan se ven como sombras. Cuando un esqueleto está completo, los visitantes pagan entrada, incluso cuando no juegas. Los esqueletos completos desbloquean eras nuevas.", "t9h": "El taller", "t9": "Usa monedas para mejorar tu equipo. Toca «{x}».", "t10h": "Mejoras", "t10": "Más energía, más sondas, más mesas: merece la pena pasarse por aquí a menudo. Además, tu energía se recarga sola.", "t11h": "Sigue excavando", "t11": "¡Eso es todo! Toca «{x}» y desentierra el resto de tu animal."}}))Object.assign(TX[l],o);
 for(const [l,o] of Object.entries({"de": {"close": "Schließen", "dqTitle": "Tagesaufgaben", "dqNew": "Neue Aufgaben in {t}", "streakN": "Serie: {n} Tage", "streak1": "Serie: 1 Tag", "streak0": "Erledige alle 3 Aufgaben, um eine Serie zu starten.", "streakHint": "Schaffst du jeden Tag alle Aufgaben, wird die Truhe bis Tag 7 immer wertvoller.", "m_visits": "Schau heute {n}-mal in Fossiland vorbei", "m_visitsHint": "mit mindestens 45 Minuten Abstand", "m_cells": "Trage {n} Erdschichten ab", "m_bones": "Finde {n} Knochen", "m_relics": "Finde {n} Schätze wie Bernstein oder Ammoniten", "m_probes": "Benutze die Sonde {n}-mal", "m_intact": "Grabe {n} Knochen ohne Riss aus", "m_prepared": "Lass {n} Knochen im Labor fertig präparieren", "m_speed": "Beschleunige das Labor einmal", "m_digs": "Lege alles in einer Grube frei", "claim": "Abholen", "claimed": "Erledigt", "chest": "Tagestruhe", "chestSub": "Alle 3 Aufgaben schaffen", "chestReward": "+20 Ausdauer und {c} Münzen", "openChest": "Öffnen", "dqToast": "Aufgabe geschafft: {m}", "chestDone": "Truhe geöffnet! Morgen geht's weiter.", "chestAd": "Tagestruhe ×2"}, "en": {"close": "Close", "dqTitle": "Daily tasks", "dqNew": "New tasks in {t}", "streakN": "Streak: {n} days", "streak1": "Streak: 1 day", "streak0": "Complete all 3 tasks to start a streak.", "streakHint": "Finish every task each day and the chest gets more valuable, up to day 7.", "m_visits": "Visit Fossiland {n} times today", "m_visitsHint": "at least 45 minutes apart", "m_cells": "Remove {n} layers of earth", "m_bones": "Find {n} bones", "m_relics": "Find {n} treasures like amber or ammonites", "m_probes": "Use the probe {n} times", "m_intact": "Dig up {n} bones without cracks", "m_prepared": "Finish preparing {n} bones in the lab", "m_speed": "Speed up the lab once", "m_digs": "Recover everything in one pit", "claim": "Claim", "claimed": "Done", "chest": "Daily chest", "chestSub": "Complete all 3 tasks", "chestReward": "+20 energy and {c} coins", "openChest": "Open", "dqToast": "Task done: {m}", "chestDone": "Chest opened! See you tomorrow.", "chestAd": "Daily chest ×2"}, "fr": {"close": "Fermer", "dqTitle": "Missions du jour", "dqNew": "Nouvelles missions dans {t}", "streakN": "Série : {n} jours", "streak1": "Série : 1 jour", "streak0": "Termine les 3 missions pour lancer une série.", "streakHint": "Si tu termines toutes les missions chaque jour, le coffre devient plus précieux jusqu'au 7e jour.", "m_visits": "Viens {n} fois sur Fossiland aujourd'hui", "m_visitsHint": "à au moins 45 minutes d'intervalle", "m_cells": "Retire {n} couches de terre", "m_bones": "Trouve {n} os", "m_relics": "Trouve {n} trésors comme de l'ambre ou des ammonites", "m_probes": "Utilise la sonde {n} fois", "m_intact": "Déterre {n} os sans fêlure", "m_prepared": "Termine la préparation de {n} os au labo", "m_speed": "Accélère le labo une fois", "m_digs": "Dégage tout dans un terrain", "claim": "Récupérer", "claimed": "Fait", "chest": "Coffre du jour", "chestSub": "Termine les 3 missions", "chestReward": "+20 d'énergie et {c} pièces", "openChest": "Ouvrir", "dqToast": "Mission réussie : {m}", "chestDone": "Coffre ouvert ! À demain.", "chestAd": "Coffre du jour ×2"}, "es": {"close": "Cerrar", "dqTitle": "Misiones diarias", "dqNew": "Nuevas misiones en {t}", "streakN": "Racha: {n} días", "streak1": "Racha: 1 día", "streak0": "Completa las 3 misiones para empezar una racha.", "streakHint": "Si completas todas las misiones cada día, el cofre vale más hasta el día 7.", "m_visits": "Visita Fossiland {n} veces hoy", "m_visitsHint": "con al menos 45 minutos de diferencia", "m_cells": "Retira {n} capas de tierra", "m_bones": "Encuentra {n} huesos", "m_relics": "Encuentra {n} tesoros como ámbar o amonites", "m_probes": "Usa la sonda {n} veces", "m_intact": "Desentierra {n} huesos sin grietas", "m_prepared": "Termina de preparar {n} huesos en el laboratorio", "m_speed": "Acelera el laboratorio una vez", "m_digs": "Recupera todo en una excavación", "claim": "Recoger", "claimed": "Hecho", "chest": "Cofre diario", "chestSub": "Completa las 3 misiones", "chestReward": "+20 de energía y {c} monedas", "openChest": "Abrir", "dqToast": "Misión cumplida: {m}", "chestDone": "¡Cofre abierto! Hasta mañana.", "chestAd": "Cofre diario ×2"}}))Object.assign(TX[l],o);
+for(const [l,o] of Object.entries({"de": {"radar": "Bodenradar", "radarSub": "zeigt die Tiefe", "radarD": "Tippe auf ein Feld: Das Radar prüft die 3 × 3 Felder darum und zeigt, wie viele Schichten bis zu einem Fund noch fehlen.", "jack": "Presslufthammer", "jackSub": "3 × 3 Felder", "jackD": "Trägt in 3 × 3 Feldern auf einmal eine Schicht ab. Knochen bleiben dabei heil, und es kostet keine Energie.", "spTry": "1× ausprobieren", "spBuy": "3× kaufen", "spAd": "Spezialwerkzeug ausprobieren", "spGot": "+1 {n}", "hintRadar": "Tippe auf ein Feld. Das Radar prüft die 3 × 3 Felder darum. Die Zahl zeigt, wie viele Schichten bis zum Fund noch fehlen.", "hintJack": "Tippe auf ein Feld. Der Hammer trägt in den 3 × 3 Feldern darum eine Schicht ab."}, "en": {"radar": "Ground radar", "radarSub": "shows depth", "radarD": "Tap a square: the radar scans the 3 × 3 squares around it and shows how many layers are left above a find.", "jack": "Jackhammer", "jackSub": "3 × 3 squares", "jackD": "Removes one layer from 3 × 3 squares at once. Bones stay intact, and it costs no energy.", "spTry": "Try 1×", "spBuy": "Buy 3×", "spAd": "Try a special tool", "spGot": "+1 {n}", "hintRadar": "Tap a square. The radar scans the 3 × 3 squares around it. The number shows how many layers are left above the find.", "hintJack": "Tap a square. The hammer removes one layer from the 3 × 3 squares around it."}, "fr": {"radar": "Radar de sol", "radarSub": "montre la profondeur", "radarD": "Touche une case : le radar analyse les 3 × 3 cases autour et montre combien de couches il reste au-dessus d'une trouvaille.", "jack": "Marteau-piqueur", "jackSub": "3 × 3 cases", "jackD": "Retire une couche sur 3 × 3 cases d'un coup. Les os restent intacts et ça ne coûte pas d'énergie.", "spTry": "Essayer 1×", "spBuy": "Acheter 3×", "spAd": "Essayer un outil spécial", "spGot": "+1 {n}", "hintRadar": "Touche une case. Le radar analyse les 3 × 3 cases autour. Le chiffre indique combien de couches il reste au-dessus de la trouvaille.", "hintJack": "Touche une case. Le marteau retire une couche sur les 3 × 3 cases autour."}, "es": {"radar": "Radar de suelo", "radarSub": "muestra la profundidad", "radarD": "Toca una casilla: el radar revisa las 3 × 3 casillas de alrededor y muestra cuántas capas quedan sobre un hallazgo.", "jack": "Martillo neumático", "jackSub": "3 × 3 casillas", "jackD": "Retira una capa de 3 × 3 casillas a la vez. Los huesos no se dañan y no cuesta energía.", "spTry": "Probar 1×", "spBuy": "Comprar 3×", "spAd": "Probar una herramienta especial", "spGot": "+1 {n}", "hintRadar": "Toca una casilla. El radar revisa las 3 × 3 casillas de alrededor. El número indica cuántas capas quedan sobre el hallazgo.", "hintJack": "Toca una casilla. El martillo retira una capa de las 3 × 3 casillas de alrededor."}}))Object.assign(TX[l],o);
 for(const [l,o] of Object.entries({"de": {"tdqh": "Tagesaufgaben", "tdq": "Hier oben warten jeden Tag drei neue Aufgaben, zum Beispiel dreimal vorbeischauen oder Knochen finden. Jede bringt Münzen. Schaffst du alle drei, öffnest du die Tagestruhe mit Energie und Münzen. Spielst du mehrere Tage hintereinander, wächst deine Serie und die Truhe wird größer."}, "en": {"tdqh": "Daily tasks", "tdq": "Up here, three new tasks wait for you every day, for example visiting three times or finding bones. Each one pays coins. Finish all three to open the daily chest with energy and coins. Play several days in a row and your streak grows, making the chest bigger."}, "fr": {"tdqh": "Missions du jour", "tdq": "Ici, trois nouvelles missions t'attendent chaque jour, par exemple revenir trois fois ou trouver des os. Chacune rapporte des pièces. Termine les trois pour ouvrir le coffre du jour avec de l'énergie et des pièces. Joue plusieurs jours de suite : ta série grandit et le coffre aussi."}, "es": {"tdqh": "Misiones diarias", "tdq": "Aquí arriba te esperan cada día tres misiones nuevas, por ejemplo entrar tres veces o encontrar huesos. Cada una da monedas. Completa las tres para abrir el cofre diario con energía y monedas. Si juegas varios días seguidos, tu racha crece y el cofre también."}}))Object.assign(TX[l],o);
 for(const [l,o] of Object.entries({"de": {"restT": "Beschädigte Knochen", "restSub": "Diese Knochen stehen mit Rissen im Museum. Ein Video startet die Restaurierung auf einer Werkbank, sie dauert halb so lange wie die Präparation. Danach ist der Knochen wie neu und bringt mehr Eintritt.", "restBtn": "Restaurieren", "restAd": "Knochen restaurieren", "restTag": " · Restaurierung", "restored": "{pn} ({n}) ist restauriert", "restStart": "Restaurierung gestartet"}, "en": {"restT": "Damaged bones", "restSub": "These bones are on display with cracks. A video starts the restoration on a workbench; it takes half as long as the preparation. Afterwards the bone is as good as new and earns more admission.", "restBtn": "Restore", "restAd": "Restore bone", "restTag": " · restoration", "restored": "{pn} ({n}) is restored", "restStart": "Restoration started"}, "fr": {"restT": "Os abîmés", "restSub": "Ces os sont exposés avec des fissures. Une vidéo lance la restauration sur un établi ; elle dure deux fois moins longtemps que la préparation. Ensuite l'os est comme neuf et rapporte plus d'entrées.", "restBtn": "Restaurer", "restAd": "Restaurer l'os", "restTag": " · restauration", "restored": "{pn} ({n}) est restauré", "restStart": "Restauration lancée"}, "es": {"restT": "Huesos dañados", "restSub": "Estos huesos están expuestos con grietas. Un vídeo inicia la restauración en un banco de trabajo; tarda la mitad que la preparación. Después el hueso queda como nuevo y genera más entradas.", "restBtn": "Restaurar", "restAd": "Restaurar hueso", "restTag": " · restauración", "restored": "{pn} ({n}) está restaurado", "restStart": "Restauración iniciada"}}))Object.assign(TX[l],o);
 for(const [l,o] of Object.entries({"de": {"adLoading": "Video wird geladen …", "adNone": "Gerade ist kein Video verfügbar. Versuch es gleich noch mal.", "tName": "Name (für die Auswertung)", "tNamePh": "z. B. Lena", "share": "Bericht senden"}, "en": {"adLoading": "Loading video …", "adNone": "No video available right now. Try again in a moment.", "tName": "Name (for the evaluation)", "tNamePh": "e.g. Lena", "share": "Send report"}, "fr": {"adLoading": "Chargement de la vidéo …", "adNone": "Aucune vidéo disponible pour le moment. Réessaie dans un instant.", "tName": "Prénom (pour l'évaluation)", "tNamePh": "p. ex. Léna", "share": "Envoyer le rapport"}, "es": {"adLoading": "Cargando vídeo …", "adNone": "Ahora mismo no hay ningún vídeo. Vuelve a intentarlo en un momento.", "tName": "Nombre (para la evaluación)", "tNamePh": "p. ej. Lena", "share": "Enviar informe"}}))Object.assign(TX[l],o);
@@ -718,7 +728,7 @@ const aurl=n=>(window.EMB&&window.EMB[n])||ASSET+n;   // im Download sind die Gr
 const hasImg=n=>!!(IMG[n]&&IMG[n].naturalWidth);
 const pic=(n,fb)=>`<img class="ti" src="${aurl(n+".webp")}" alt="" data-fb="${encodeURIComponent(fb)}">`;
 document.addEventListener("error",e=>{const t=e.target;if(t&&t.tagName==="IMG"&&t.dataset&&t.dataset.fb){const s=document.createElement("span");s.innerHTML=decodeURIComponent(t.dataset.fb);t.replaceWith(s.firstElementChild||s)}},true);
-const ICP={brush:pic("t_brush",IC.brush),pick:pic("t_pick",IC.pick),probe:pic("t_probe",IC.probe),canteen:pic("t_canteen",IC.canteen),amber:pic("amber",IC.amber),ammo:pic("ammo",IC.ammo),tooth:pic("tooth",IC.tooth),trilo:pic("trilo",IC.trilo)};
+const ICP={radar:pic("t_radar",IC.probe),jack:pic("t_jack",IC.pick),brush:pic("t_brush",IC.brush),pick:pic("t_pick",IC.pick),probe:pic("t_probe",IC.probe),canteen:pic("t_canteen",IC.canteen),amber:pic("amber",IC.amber),ammo:pic("ammo",IC.ammo),tooth:pic("tooth",IC.tooth),trilo:pic("trilo",IC.trilo)};
 const SPR=["skull","vert","rib","leg","foot"];
 function preload(){
   const first=["tiles.webp",`soil_${S.era}.webp`,`floor_${S.era}.webp`,`scene_${S.era}.webp`,...SPR.map(n=>n+".webp"),"amber.webp","ammo.webp","tooth.webp","trilo.webp"];
@@ -747,6 +757,18 @@ function labSkip(u){const x=S.lab.find(k=>k.u===u);if(!x||x.st==null)return;cons
 function addToLab(id,part,cr,era){const quick=FIRST&&!S.tutLab;if(quick)S.tutLab=1;const d=quick?60000:LABMIN[era]*60000;
   S.lab.push({u:Date.now()+Math.random(),id,part,cr,era,dur:d,tot:d,st:null});tickLab(Date.now())}
 function addRest(id,part,era){const d=LABMIN[era]*60000/2;S.lab.push({u:Date.now()+Math.random(),id,part,cr:false,rest:1,era,dur:d,tot:d,st:null});stat("restored");tickLab(Date.now())}
+const spCount=k=>((S.tools||(S.tools={radar:0,jack:0}))[k]||0);
+function spGive(k,n){spCount(k);S.tools[k]+=n;save()}
+if(!S.toolGift){S.toolGift=1;spCount("radar");S.tools.radar+=1;S.tools.jack+=1}
+const spPrice=k=>Math.round(Math.max(k==="radar"?90:120,rate()*(k==="radar"?2:2.5)));
+function spOffer(k){const ads=adsLeft(),pr=spPrice(k);
+  const ov=overlay(`<img class="guide-top" src="${aurl(gpose("think"))}" alt=""><h2>${t(k)}</h2><p class="sub">${t(k+"D")}</p>
+    <div class="row"><button class="btn ad" id="spad" ${ads>0?"":"disabled"}>${t("spTry")}</button><button class="btn" id="spbuy" ${S.coins>=pr?"":"disabled"}>${t("spBuy")} · <span class="coin sm"></span>${pr}</button></div>
+    <div class="adleft">${t("videosLeft",{a:ads,b:AD_LIMIT})}</div><button class="btn" id="spno">${t("close")}</button>`);
+  ov.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;e.stopPropagation();SFX.click();
+    if(b.id==="spno"){ov.remove();return}
+    if(b.id==="spad"){ov.remove();showRewardedAd(t("spAd"),()=>{spGive(k,1);tool=k;stat("sp:"+k);renderDig();toast(t("spGot",{n:t(k)}))})}
+    if(b.id==="spbuy"&&S.coins>=pr){S.coins-=pr;SS().spent+=pr;countBuy();stat("buySp");spGive(k,3);tool=k;SFX.coin();ov.remove();renderTop();renderDig();toast(t("spGot",{n:"3× "+t(k)}))}})}
 function tickLab(now){const done=[];let guard=0;
   while(guard++<300){
     const act=S.lab.filter(x=>x.st!=null).sort((a,b)=>(a.st+a.dur)-(b.st+b.dur));
@@ -779,12 +801,12 @@ function showComplete(c,msg,extra){
     <div class="row"><button class="btn" id="cmpOk">${t("tutNext")}</button><button class="btn primary" id="cmpMus">${t("navMus")}</button></div>`);
   ov.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;e.stopPropagation();SFX.click();ov.remove();if(b.id==="cmpMus")show("mus")})}
 function serDig(){if(!D)return null;const oi=new Map(D.objs.map((o,i)=>[o,i]));
-  return{v:2,era:D.era,t:D.target.id,g:D.grid.map(g=>[g.d,g.hp,g.need.join(""),g.crack?1:0,g.probe?1:0,g.obj?oi.get(g.obj):-1,g.bd]),o:D.objs.map(o=>Object.assign({},o,{foundAt:0})),pr:D.probes,f:D.finds,e:D.earned,ad:[D.adDouble?1:0,D.adProbe?1:0],over:D.over?1:0}}
+  return{v:2,era:D.era,t:D.target.id,g:D.grid.map(g=>[g.d,g.hp,g.need.join(""),g.crack?1:0,g.probe?1:0,g.obj?oi.get(g.obj):-1,g.bd,g.rad?1:0]),o:D.objs.map(o=>Object.assign({},o,{foundAt:0})),pr:D.probes,f:D.finds,e:D.earned,ad:[D.adDouble?1:0,D.adProbe?1:0],over:D.over?1:0}}
 function restoreDig(){const s=S.dig;if(!s||s.v!==2||s.over||s.era!==S.era||!s.g||s.g.length!==ROWS*COLS)return false;   // ältere Grabungen ohne Tiefenschichten werden neu begonnen
   const target=CREATURES.find(c=>c.id===s.t);if(!target)return false;
   const objs=s.o.map(o=>Object.assign({},o)),r=mulberry(7);
   const grid=s.g.map((a,i)=>{const cr=[];for(let k=0;k<4;k++)cr.push([r(),r(),r()*6.28,.2+r()*.25]);
-    return{r:Math.floor(i/COLS),c:i%COLS,d:a[0],hp:a[1],need:String(a[2]).split("").map(Number),crack:!!a[3],probe:!!a[4],obj:a[5]>=0?objs[a[5]]:null,bd:a[6]||0,cr}});
+    return{r:Math.floor(i/COLS),c:i%COLS,d:a[0],hp:a[1],need:String(a[2]).split("").map(Number),crack:!!a[3],probe:!!a[4],obj:a[5]>=0?objs[a[5]]:null,bd:a[6]||0,rad:!!a[7],cr}});
   D={era:s.era,grid,objs,target,probes:s.pr,finds:s.f||[],over:false,earned:s.e||0,adDouble:!!s.ad[0],adProbe:!!s.ad[1]};
   tool="brush";particles=[];renderDig();return true}
 function showEmpty(){if(!document.querySelector(".overlay"))stat("empty");
@@ -969,6 +991,18 @@ function hit(i){
     for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++){const y=g.r+dr,x=g.c+dc;if(y>=0&&y<ROWS&&x>=0&&x<COLS){const q=D.grid[y*COLS+x];if(q.obj&&!cellDone(q))q.probe=true}}
     if(D.probes===0)tool="brush";renderDig();return;
   }
+  if(tool==="radar"||tool==="jack"){
+    const k=tool;if(spCount(k)<1)return;S.tools[k]--;stat("use:"+k);
+    particles.push({x:(g.c+.5)*cs,y:(g.r+.5)*cs,life:1,t:"ring",vx:0,vy:0,g:0,s:0,col:k==="radar"?"#2fd38a":"#ffb53d"});
+    const area=[];for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++){const y=g.r+dr,x=g.c+dc;if(y>=0&&y<ROWS&&x>=0&&x<COLS)area.push(D.grid[y*COLS+x])}
+    if(k==="radar"){SFX.probe();area.forEach(q=>{if(q.obj&&!cellDone(q)){q.rad=true;q.probe=true}})}
+    else{SFX.pick(g.r);buzz([20,20,20,20,40]);shake=9;
+      // eine ganze Schicht je Feld, Knochen bleiben heil
+      area.forEach(q=>{if(cellDone(q))return;burst(q,6,LAY()[Math.min(2,q.d)][0],1.1);q.d++;dqAdd("cells");
+        if(q.obj&&q.d>q.bd){q.hp=0;q.probe=false;q.rad=false;checkFound(q)}else if(q.d<3)q.hp=q.need[q.d];else q.hp=0})}
+    if(spCount(k)<1)tool="brush";save();
+    if(D.objs.every(o=>o.found)){D.over=true;dqAdd("digs");setTimeout(showResult,900)}
+    renderDig();return}
   if(cellDone(g))return;
   if(S.st<1){SFX.empty();showEmpty();return}
   if(S.st>=staMax())S.stT=Date.now();
@@ -980,8 +1014,14 @@ function hit(i){
     if(g.hp<=0){g.d++;dqAdd("cells");burst(g,8,LAY()[Math.min(2,g.d-1)][1],1);
       if(g.obj&&g.d>g.bd)exposed=true;else if(g.d<3)g.hp=g.need[g.d];else{g.hp=0;if(!g.obj)SFX.clear()}}}
   if(exposed&&tool==="pick"&&g.obj.kind==="bone"&&dmg>0&&Math.random()<crackChance()){g.crack=true;SFX.crack();buzz([30,30,30]);toast(t("crack"))}
-  if(exposed){g.hp=0;g.probe=false}
-  if(exposed&&!g.obj.found){
+  if(exposed){g.hp=0;g.probe=false;g.rad=false}
+  if(exposed)checkFound(g);
+  if(D.objs.every(o=>o.found)){D.over=true;dqAdd("digs");setTimeout(showResult,900)}
+  else if(S.st<1)setTimeout(showEmpty,400);
+  renderDig();
+}
+
+function checkFound(g){if(!g.obj||g.obj.found)return;{
     const o=g.obj;
     if(o.cells.every(([y,x],j)=>D.grid[y*COLS+x].d>o.dep[j])){
       o.found=true;o.foundAt=performance.now();
@@ -1002,11 +1042,7 @@ function hit(i){
       save();
     }
   }
-  if(D.objs.every(o=>o.found)){D.over=true;dqAdd("digs");setTimeout(showResult,900)}
-  else if(S.st<1)setTimeout(showEmpty,400);
-  renderDig();
 }
-
 /* ---------- Zeichnen ---------- */
 function rr(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()}
 function sizePit(){const w=pit.clientWidth;if(!w)return;cs=w/COLS;pdpr=devicePixelRatio||1;pit.style.height=cs*ROWS+"px";pit.width=w*pdpr;pit.height=cs*ROWS*pdpr}
@@ -1029,7 +1065,8 @@ function hardPatch(L,r,c){const key=D.era+"|"+L+"|"+r%SPAN+"|"+c%SPAN+"|"+Math.r
   return HARD[key]=cv}
 function rockDraw(ctx,g,L){const P=hardPatch(L,g.r,g.c);if(!P)return;const[x,y]=cellXY(g);ctx.drawImage(P,x-cs*.1,y-cs*.1,cs*1.2,cs*1.2)}
 // Hinweis: Ist man genau eine Schicht über einem Fund, zeichnet sich seine Form leicht im Boden ab
-function bump(ctx,g){const o=g.obj;if(!o||o.found||g.d!==g.bd||(g.d===0&&!g.probe))return;   // ganz oben nur nach der Sonde, sonst verrät der Boden die Lageconst[x,y]=cellXY(g);
+// Ganz oben zeigt sich die Wölbung nur nach der Sonde, sonst verrät der Boden die Lage
+function bump(ctx,g){const o=g.obj;if(!o||o.found||g.d!==g.bd||(g.d===0&&!g.probe))return;const[x,y]=cellXY(g);
   ctx.save();ctx.beginPath();ctx.rect(x,y,cs,cs);ctx.clip();
   ctx.globalAlpha=.24;ctx.filter="brightness(.25) blur(1.5px)";ctx.translate(cs*.03,cs*.05);o.kind==="bone"?boneShape(ctx,o):relicShape(ctx,o);
   ctx.translate(-cs*.06,-cs*.09);ctx.filter="brightness(2.2) blur(1.5px)";ctx.globalAlpha=.16;o.kind==="bone"?boneShape(ctx,o):relicShape(ctx,o);
@@ -1038,6 +1075,8 @@ function bump(ctx,g){const o=g.obj;if(!o||o.found||g.d!==g.bd||(g.d===0&&!g.prob
 function soilMarks(ctx,g){const[x,y]=cellXY(g);
   const dmg=g.d<3?g.need[g.d]-g.hp:0;ctx.strokeStyle="rgba(30,15,5,.55)";ctx.lineWidth=Math.max(1.4,cs*.03);ctx.lineCap="round";ctx.lineJoin="round";
   for(let i=0;i<dmg*2&&i<4;i++){const[cx,cy,a,l]=g.cr[i];ctx.beginPath();ctx.moveTo(x+cx*cs,y+cy*cs);ctx.lineTo(x+cx*cs+Math.cos(a)*l*cs,y+cy*cs+Math.sin(a)*l*cs);ctx.lineTo(x+cx*cs+Math.cos(a+.8)*l*cs*1.6,y+cy*cs+Math.sin(a+.8)*l*cs*1.6);ctx.stroke()}
+  if(g.rad&&g.obj&&!cellDone(g)){const n=g.bd+1-g.d,cx=x+cs*.3,cy=y+cs*.32,r=cs*.2;ctx.fillStyle="rgba(20,40,30,.85)";ctx.beginPath();ctx.arc(cx,cy,r,0,7);ctx.fill();ctx.strokeStyle="#2fd38a";ctx.lineWidth=Math.max(1.5,cs*.04);ctx.stroke();
+    ctx.fillStyle="#bff5d9";ctx.font=`700 ${Math.round(cs*.24)}px Atkinson Hyperlegible,system-ui,sans-serif`;ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(String(n),cx,cy+1)}
   if(g.probe){const fx=x+cs*.72,fy=y+cs*.18;ctx.strokeStyle="#fff";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(fx,fy);ctx.lineTo(fx,fy+cs*.42);ctx.stroke();ctx.fillStyle="#ff5a8a";ctx.beginPath();ctx.moveTo(fx,fy);ctx.lineTo(fx-cs*.26,fy+cs*.09);ctx.lineTo(fx,fy+cs*.18);ctx.fill()}}
 // Umriss aller Stellen, die mindestens bis Tiefe k abgetragen sind. Tiefere Stufen springen weiter zurück, so entstehen Terrassen.
 function holePath(k){const P=new Path2D(),dug=(r,c)=>r>=0&&c>=0&&r<ROWS&&c<COLS&&D.grid[r*COLS+c].d>=k;let any=false;
@@ -1166,9 +1205,10 @@ function renderDig(){
   const probeBtn=D.probes>0||D.over?`<button class="tool" data-tool="probe" aria-pressed="${tool==="probe"}" ${D.probes>0&&!D.over?"":"disabled"}>${ICP.probe}<b>${t("probe")}</b><small>${t("probeSub")}</small><span class="badge">${D.probes}</span></button>`
     :`<button class="tool ad-t" id="probead" ${ads>0&&!D.adProbe?"":"disabled"}>${ICP.probe}<b>${t("probeAd")}</b><small>${D.adProbe?t("used"):t("perVideo")}</small></button>`;
   $("tools").innerHTML=`<button class="tool" data-tool="brush" aria-pressed="${tool==="brush"}">${ICP.brush}<b>${t("brush")}</b><small>${t("brushSub")}</small></button>
-    <button class="tool" data-tool="pick" aria-pressed="${tool==="pick"}">${ICP.pick}<b>${t("pick")}</b><small>${t("pickSub",{p:Math.round(crackChance()*100)})}</small></button>${probeBtn}`;
+    <button class="tool" data-tool="pick" aria-pressed="${tool==="pick"}">${ICP.pick}<b>${t("pick")}</b><small>${t("pickSub",{p:Math.round(crackChance()*100)})}</small></button>${probeBtn}
+    ${["radar","jack"].map(k=>{const n=spCount(k);return`<button class="tool sp${n?"":" empty"}" ${n?`data-tool="${k}"`:`data-sp="${k}"`} aria-pressed="${tool===k}" ${D.over?"disabled":""}>${ICP[k]}<span class="tx"><b>${t(k)}</b><small>${n?t(k+"Sub"):t("spTry")}</small></span>${n?`<span class="badge">${n}</span>`:""}</button>`}).join("")}`;
   const left=bones.length-got,canRefill=ads>0&&left>0&&S.st<5;
-  $("hint").textContent=D.over?"":tool==="probe"?t("hintProbe"):t("hintDig",{s:SOILNAMES[D.era].join(", ")});
+  $("hint").textContent=D.over?"":tool==="probe"?t("hintProbe"):tool==="radar"?t("hintRadar"):tool==="jack"?t("hintJack"):t("hintDig",{s:SOILNAMES[D.era].join(", ")});
   $("digRow").innerHTML=D.over?`<button class="btn primary" id="again">${t("newDig")}</button>`
     :`${canRefill?`<button class="btn ad" id="refill">${t("plusEnergy")}</button>`:""}<button class="btn" id="quit">${t("endDig")}</button>`;
   renderEras();
@@ -1389,7 +1429,7 @@ function showDQ(){
     <p class="sub"><b>${sn>1?t("streakN",{n:sn}):sn===1?t("streak1"):t("streak0")}</b><br>${t("streakHint")}</p>
     <button class="btn" id="dqClose">${t("close")}</button>`);
   ov.classList.add("dqo");
-  const open=mult=>{q.chest=1;stat("chests");S.coins+=cc*mult;S.st+=20;const s=S.streak||{n:0,last:""};S.streak={n:s.last===yesterday()?s.n+1:s.last===today()?s.n:1,last:today()};SS().maxStreak=Math.max(SS().maxStreak||0,S.streak.n);
+  const open=mult=>{q.chest=1;stat("chests");S.coins+=cc*mult;S.st+=20;{const sk=Math.random()<.5?"radar":"jack";spGive(sk,1);setTimeout(()=>toast(t("spGot",{n:t(sk)})),1600)}const s=S.streak||{n:0,last:""};S.streak={n:s.last===yesterday()?s.n+1:s.last===today()?s.n:1,last:today()};SS().maxStreak=Math.max(SS().maxStreak||0,S.streak.n);
     save();SFX.complete();toast(t("chestDone"));renderTop();renderDqBadge();updateHUD();showDQ()};
   ov.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;e.stopPropagation();
     if(b.dataset.dq){const m=q.list[+b.dataset.dq];if(m&&m.p>=m.n&&!m.c){m.c=1;stat("dqClaimed");S.coins+=dqReward(m);save();SFX.coin();renderTop();renderDqBadge();showDQ()}}
@@ -1406,7 +1446,7 @@ function statDay(){const x=SS(),d=today();return x.days[d]||(x.days[d]={s:0,sec:
 function dayNo(){const x=SS(),a=new Date(x.start),b=new Date();a.setHours(0,0,0,0);b.setHours(0,0,0,0);return Math.round((b-a)/864e5)+1}
 function statEv(txt){const x=SS();x.ev.push([dayNo(),txt]);if(x.ev.length>80)x.ev.shift()}
 function statSession(){statDay().s++;SS().last=Date.now()}
-function adKind(label){const m=[["plusEnergy","Ausdauer"],["labAd","Labor"],["probeAd","Sonde"],["chestAd","Truhe"],["rescueAd1","Serie retten"],["rescueAd2","Serie retten"],["restAd","Restaurieren"]];
+function adKind(label){const m=[["plusEnergy","Ausdauer"],["labAd","Labor"],["probeAd","Sonde"],["chestAd","Truhe"],["rescueAd1","Serie retten"],["rescueAd2","Serie retten"],["restAd","Restaurieren"],["spAd","Spezialwerkzeug"]];
   for(const[k,n]of m)if(label===t(k))return n;return "Münzen ×2"}
 setInterval(()=>{if(document.visibilityState==="visible"&&!document.querySelector(".title")){statDay().sec++;SS().last=Date.now()}},1000);
 
@@ -1512,6 +1552,7 @@ function showReport(){
 /* ================= Startbildschirm & Anleitung ================= */
 // Posen der Paläontologin: wave (Standard), point, think, lab, wow, cheer
 const gpose=(g,full)=>g&&g!=="wave"?`guide_${g}${full?"":"_bust"}.webp`:(full?"guide.webp":"guide_bust.webp");
+const HAND_SVG=`<svg viewBox="0 0 48 48" width="46" height="46"><path d="M17 26V9.5a3.5 3.5 0 0 1 7 0V22l1-.2v-3.3a3.3 3.3 0 0 1 6.6 0v3.6l.8-.1a3.2 3.2 0 0 1 6.3.6v2.8a3 3 0 0 1 5.6 1.5v7.6c0 6.3-5 11.5-11.3 11.5h-4.4c-3.7 0-7.1-1.9-9.1-5L9.9 33.6a3.3 3.3 0 0 1 5-4.2z" fill="#fff4e2" stroke="#3a2616" stroke-width="2.4" stroke-linejoin="round"/></svg>`;
 const TUT=[
   {k:"t1",sel:null},
   {k:"t2",sel:'[data-tool="probe"]',wait:"probeSel",skipIf:()=>!D||D.probes<1,g:"point"},
@@ -1530,7 +1571,7 @@ let tutI=-1,tutReplay=false,tutTimer=null;
 function startTut(replay){tutReplay=!!replay;if(!replay&&!SS().tut)SS().tut="begonnen";tutI=-1;tutGo(0)}
 function tutGo(i){
   while(i<TUT.length&&TUT[i].skipIf&&TUT[i].skipIf())i++;
-  tutI=i;document.querySelectorAll(".coach,.coach-spot").forEach(e=>e.remove());clearInterval(tutTimer);
+  tutI=i;document.querySelectorAll(".coach,.coach-spot,.tap-hand").forEach(e=>e.remove());clearInterval(tutTimer);
   if(i>=TUT.length){endTut(true);return}
   const st=TUT[i],spot=document.createElement("div"),box=document.createElement("div");
   spot.className="coach-spot"+(st.wait?" ring":"");box.className="coach";box.setAttribute("role","dialog");box.setAttribute("aria-live","polite");
@@ -1539,15 +1580,21 @@ function tutGo(i){
     <div class="crow"><div class="dots">${TUT.map((_,j)=>`<i class="${j<=i?"on":""}"></i>`).join("")}</div>
     <div><button class="skip" data-tut="skip">${t("tutSkip")}</button>${showNext?` <button class="btn primary" data-tut="next">${i===TUT.length-1&&!st.wait?t("letsGo"):t("tutNext")}</button>`:""}</div></div>`;
   document.body.append(spot,box);
+  // Tipp-Hand: zeigt bei Schritten zum Antippen genau, wohin
+  let hand=null;if(st.wait){hand=document.createElement("div");hand.className="tap-hand";hand.innerHTML=HAND_SVG;document.body.append(hand)}
   box.addEventListener("click",e=>{const b=e.target.closest("[data-tut]");if(!b)return;e.stopPropagation();SFX.click();b.dataset.tut==="skip"?endTut(false):tutGo(tutI+1)});
   const el=st.sel&&document.querySelector(st.sel);
   if(el&&!el.closest("nav")){const r=el.getBoundingClientRect();if(r.top<70||r.bottom>innerHeight-90)el.scrollIntoView({block:"center",behavior:"smooth"})}
   const place=()=>{
-    const hide=!!document.querySelector(".overlay,.title");spot.hidden=box.hidden=hide;if(hide)return;
+    const hide=!!document.querySelector(".overlay,.title");spot.hidden=box.hidden=hide;if(hand)hand.hidden=hide;if(hide)return;
     const t=st.sel&&document.querySelector(st.sel);
     if(!t){spot.style.cssText="left:50%;top:50%;width:0;height:0";box.style.top="";box.style.bottom=`calc(${Math.round(innerHeight*.5)-80}px)`;return}
     const r=t.getBoundingClientRect(),p=6;
     spot.style.cssText=`left:${r.left-p}px;top:${r.top-p}px;width:${r.width+2*p}px;height:${r.height+2*p}px`;
+    if(hand){let hx=r.left+r.width/2,hy=r.top+r.height/2;
+      // im Grabungsfeld auf das nächste Feld des Knochens zeigen
+      if(st.sel==="#pit"&&D){const o=D.objs.find(o=>o.kind==="bone"&&!o.found);const c=o&&o.cells.find(([y,x])=>!cellDone(D.grid[y*COLS+x]));if(c){hx=r.left+(c[1]+.5)*cs;hy=r.top+(c[0]+.5)*cs}}
+      hand.style.left=hx+"px";hand.style.top=hy+"px";hand.hidden=hide}
     const bh=box.offsetHeight,below=innerHeight-r.bottom-p-12,above=r.top-p-12;
     if(r.top+r.height/2>innerHeight/2&&above>=bh){box.style.top="";box.style.bottom=(innerHeight-r.top+p+12)+"px"}
     else if(below>=bh){box.style.bottom="";box.style.top=(r.bottom+p+12)+"px"}
@@ -1556,7 +1603,7 @@ function tutGo(i){
   place();tutTimer=setInterval(place,150);
 }
 function tutEvent(ev){if(tutI<0||tutI>=TUT.length)return;if(TUT[tutI].wait===ev)tutGo(tutI+1)}
-function endTut(done){if(!tutReplay)SS().tut=done?"bis zum Ende gespielt":"übersprungen bei Schritt "+(tutI+1)+" von "+TUT.length;clearInterval(tutTimer);document.querySelectorAll(".coach,.coach-spot").forEach(e=>e.remove());tutI=-1;S.tutDone=1;save();if(done)toast(t("tutDone"));setTimeout(()=>{try{maybeAskNotif()}catch(e){}},2500)}
+function endTut(done){document.querySelectorAll(".tap-hand").forEach(e=>e.remove());if(!tutReplay)SS().tut=done?"bis zum Ende gespielt":"übersprungen bei Schritt "+(tutI+1)+" von "+TUT.length;clearInterval(tutTimer);document.querySelectorAll(".coach,.coach-spot").forEach(e=>e.remove());tutI=-1;S.tutDone=1;save();if(done)toast(t("tutDone"));setTimeout(()=>{try{maybeAskNotif()}catch(e){}},2500)}
 
 function showTitle(){
   const el=document.createElement("div");el.className="title";el.setAttribute("role","dialog");el.setAttribute("aria-label","Fossiland");
@@ -1610,6 +1657,7 @@ document.addEventListener("click",e=>{
   else if(b.id==="probead")showRewardedAd(t("probeAd"),()=>{D.probes++;D.adProbe=true;tool="probe";renderDig()});
   else if(b.id==="t-dig")show("dig");else if(b.id==="t-mus")show("mus");else if(b.id==="t-shop")show("shop");
   else if(b.dataset.tool){tool=b.dataset.tool;renderDig();if(tool==="probe")tutEvent("probeSel")}
+  else if(b.dataset.sp)spOffer(b.dataset.sp);
   else if(b.dataset.era){const v=+b.dataset.era;if(v!==S.era){S.era=v;save();drawScene();newDig()}}
   else if(b.id==="again"){S.digs++;save();newDig()}
   else if(b.id==="quit"){stat("digsQuit");D.over=true;renderDig();showResult()}
