@@ -57,12 +57,12 @@ header{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .era-s{font-size:12px;font-weight:700;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.6)}
 .trail{align-self:flex-start;background:rgba(28,18,12,.72);backdrop-filter:blur(4px);border-radius:999px;padding:4px 12px;font-size:13px;color:var(--bone)}
 .trail b{font-family:var(--f-display);font-weight:400;font-size:15px;color:#fff;margin-left:2px}
-.pit{padding:20px 8px 8px 20px;background:linear-gradient(#6a4a2e,#4a301c);position:relative;box-shadow:inset 0 0 0 2px rgba(0,0,0,.25),inset 0 2px 0 rgba(255,230,190,.12)}
-.pit .gl{position:absolute;display:grid;pointer-events:none;font:700 10.5px var(--f-body);color:rgba(255,236,205,.7);letter-spacing:.04em}
-.pit .gl.top{left:20px;right:8px;top:3px;height:15px;grid-template-columns:repeat(8,1fr);text-align:center;align-items:center}
-.pit .gl.side{top:20px;bottom:8px;left:2px;width:16px;grid-template-rows:repeat(9,1fr);text-align:center;align-items:center}
-.pit .stake{position:absolute;width:9px;height:9px;border-radius:2px;background:linear-gradient(135deg,#c9a06a,#7a5430);box-shadow:0 1px 2px rgba(0,0,0,.5)}
-.pit canvas{display:block;width:100%;border-radius:4px;touch-action:manipulation;cursor:pointer}
+/* Grabungsstelle: gemalter Rahmen (Wiese, Seil, Fähnchen), das Feld liegt genau in der Grube des Bildes.
+   Abstände in % der Breite, passend zur Innenkante des Rasters im zugeschnittenen Bild (154/979 px breit, 186/1172 px hoch bei 1126×1316). */
+.pit{padding:15.54% 13.06% 12.04% 13.68%;background:url(assets/pitframe.webp) center/100% 100% no-repeat,#5b7a2c;position:relative}
+/* Schmale Handys hochkant: ins Bild hineinzoomen (118 %), damit die Felder groß genug für Kinderfinger bleiben */
+@media (max-width:520px),(orientation:landscape) and (max-height:520px){.pit{padding:8.44% 6.41% 4.3% 7.14%;background-size:118% 118%}}
+.pit canvas{display:block;width:100%;touch-action:manipulation;cursor:pointer}
 
 .eras{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x proximity;padding-bottom:6px;margin-bottom:-6px;scrollbar-width:none}
 .eras::-webkit-scrollbar{display:none}
@@ -260,12 +260,12 @@ nav .in{max-width:760px}
   nav{top:0;bottom:0;right:auto;width:calc(84px + env(safe-area-inset-left,0px));padding:max(10px,env(safe-area-inset-top,0px)) 6px max(10px,env(safe-area-inset-bottom,0px)) max(6px,env(safe-area-inset-left,0px));display:flex;align-items:center;box-shadow:6px 0 18px rgba(0,0,0,.35)}
   nav .in{grid-template-columns:1fr;gap:8px;width:100%}
   nav button{padding:10px 2px}
-  .wrap{max-width:1400px;width:100%;--pitw:min(calc(100vw - 98px - 300px - 44px),calc((100vh - 104px)*.889 + 28px))}
-  @supports (height:100dvh){.wrap{--pitw:min(calc(100vw - 98px - 300px - 44px),calc((100dvh - 104px)*.889 + 28px))}}
+  .wrap{max-width:1400px;width:100%;--pitw:min(calc(100vw - 98px - 300px - 44px),calc((100vh - 92px)*.909))}
+  @supports (height:100dvh){.wrap{--pitw:min(calc(100vw - 98px - 300px - 44px),calc((100dvh - 92px)*.909))}}
   #v-dig:not([hidden]){display:grid!important;grid-template-columns:var(--pitw) minmax(260px,520px);justify-content:center;
     grid-template-areas:"pit scene" "pit eras" "pit hud" "pit tools" "pit hint" "pit row" "pit .";grid-template-rows:auto auto auto auto auto auto 1fr;column-gap:16px;row-gap:12px;align-items:start}
   .site{display:contents}
-  .pit{grid-area:pit;border-radius:20px;box-shadow:0 6px 0 rgba(0,0,0,.35)}
+  .pit{grid-area:pit;border-radius:20px;overflow:hidden}
   .scene{grid-area:scene;height:clamp(84px,22vh,150px);border-radius:16px;overflow:hidden;box-shadow:0 6px 0 rgba(0,0,0,.35)}
   .eras{grid-area:eras;min-width:0}.hud{grid-area:hud}.tools{grid-area:tools}#hint{grid-area:hint}#digRow{grid-area:row}
   
@@ -274,7 +274,7 @@ nav .in{max-width:760px}
 /* Flache Querformat-Handys: alles etwas kompakter */
 @media (orientation:landscape) and (max-height:520px){
   .logo{font-size:22px}.pill{font-size:15px;padding:3px 10px 3px 3px}.iconbtn{width:34px;height:34px}
-  .wrap{gap:8px;--pitw:min(calc(100vw - 98px - 280px - 40px),calc((100vh - 86px)*.889 + 28px))}
+  .wrap{gap:8px;--pitw:min(calc(100vw - 98px - 280px - 40px),calc((100vh - 72px)*.909))}
   #v-dig:not([hidden]){row-gap:8px;grid-template-columns:var(--pitw) minmax(240px,520px)}
   .tool{padding:6px 4px;gap:1px}.tool .ti{width:36px;height:36px;margin:0}.tool small{display:none}
   .era{padding:6px 4px}.era b{font-size:15px}
@@ -298,7 +298,7 @@ nav .in{max-width:760px}
       <div class="scene"><canvas id="scene"></canvas>
         <div class="scene-ov"><div><div class="era-t" id="eraT"></div><div class="era-s" id="eraS"></div></div><div class="trail" id="trail"></div></div>
       </div>
-      <div class="pit"><div class="gl top" aria-hidden="true"><span>A</span><span>B</span><span>C</span><span>D</span><span>E</span><span>F</span><span>G</span><span>H</span></div><div class="gl side" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span></div><span class="stake" style="left:6px;top:6px"></span><span class="stake" style="right:0;top:6px"></span><span class="stake" style="left:6px;bottom:0"></span><span class="stake" style="right:0;bottom:0"></span><canvas id="pit" tabindex="0" aria-label="Grabungsfeld. Pfeiltasten bewegen, Enter gräbt."></canvas></div>
+      <div class="pit"><canvas id="pit" tabindex="0" aria-label="Grabungsfeld. Pfeiltasten bewegen, Enter gräbt."></canvas></div>
     </div>
     <div class="hud">
       <div class="energy"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg><div class="bar"><i id="eBar"></i><span id="eTxt"></span></div></div>
@@ -1102,10 +1102,18 @@ function drawPit(now){
   // Bruchkante: dunkle Linie innen, helle Lichtkante auf dem Boden
   ctx.save();ctx.lineJoin="round";ctx.strokeStyle="rgba(255,240,215,.22)";ctx.lineWidth=Math.max(1.5,cs*.035);ctx.translate(-.8,-.8);ctx.stroke(holes);ctx.restore();
   ctx.save();ctx.lineJoin="round";ctx.strokeStyle="rgba(35,18,8,.6)";ctx.lineWidth=Math.max(1,cs*.02);ctx.stroke(holes);ctx.restore();
-  // 3. Schnurraster der Ausgrabung
-  ctx.save();ctx.lineWidth=Math.max(1,cs*.018);
-  for(const pass of [0,1]){ctx.strokeStyle=pass?"rgba(246,232,200,.5)":"rgba(0,0,0,.18)";const o=pass?0:Math.max(1,cs*.03);ctx.beginPath();
-    for(let c=1;c<COLS;c++){ctx.moveTo(c*cs+o,0);ctx.lineTo(c*cs+o,H)}for(let r=1;r<ROWS;r++){ctx.moveTo(0,r*cs+o);ctx.lineTo(W,r*cs+o)}ctx.stroke()}
+  // 3. Schatten der Grubenwand oben und links (passt zum gemalten Rahmen)
+  {const g1=ctx.createLinearGradient(0,0,0,cs*.45);g1.addColorStop(0,"rgba(40,18,6,.5)");g1.addColorStop(1,"rgba(40,18,6,0)");ctx.fillStyle=g1;ctx.fillRect(0,0,W,cs*.45);
+   const g2=ctx.createLinearGradient(0,0,cs*.3,0);g2.addColorStop(0,"rgba(40,18,6,.35)");g2.addColorStop(1,"rgba(40,18,6,0)");ctx.fillStyle=g2;ctx.fillRect(0,0,cs*.3,H)}
+  // 4. Seilraster der Ausgrabung mit Knoten an den Kreuzungen
+  ctx.save();const rw=Math.max(1.2,cs*.03);
+  const lines=()=>{ctx.beginPath();for(let c=0;c<=COLS;c++){const x=Math.min(W-rw/2,Math.max(rw/2,c*cs));ctx.moveTo(x,0);ctx.lineTo(x,H)}for(let r=0;r<=ROWS;r++){const y=Math.min(H-rw/2,Math.max(rw/2,r*cs));ctx.moveTo(0,y);ctx.lineTo(W,y)}};
+  ctx.translate(rw*.6,rw*1.1);ctx.strokeStyle="rgba(30,12,4,.35)";ctx.lineWidth=rw;lines();ctx.stroke();ctx.setTransform(pdpr,0,0,pdpr,0,0);
+  ctx.strokeStyle="#e9c58c";ctx.lineWidth=rw;lines();ctx.stroke();
+  ctx.strokeStyle="rgba(150,96,40,.55)";ctx.lineWidth=rw*.35;ctx.setLineDash([rw*.9,rw*.9]);lines();ctx.stroke();ctx.setLineDash([]);
+  for(let c=0;c<=COLS;c++)for(let r=0;r<=ROWS;r++){const x=Math.min(W-rw,Math.max(rw,c*cs)),y=Math.min(H-rw,Math.max(rw,r*cs));
+    ctx.fillStyle="rgba(30,12,4,.35)";ctx.beginPath();ctx.arc(x+rw*.5,y+rw*.9,rw*1.5,0,7);ctx.fill();
+    ctx.fillStyle="#f2d39c";ctx.beginPath();ctx.arc(x,y,rw*1.45,0,7);ctx.fill();ctx.strokeStyle="#b07a3c";ctx.lineWidth=rw*.4;ctx.stroke()}
   ctx.restore();
   if(kc.on){ctx.strokeStyle="#ff5a8a";ctx.lineWidth=3;rr(ctx,kc.c*cs+2,kc.r*cs+2,cs-4,cs-4,cs*.2);ctx.stroke()}
   // Partikel
