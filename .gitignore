@@ -7,3 +7,4 @@ android/capacitor-cordova-android-plugins/
 *.keystore
 *.jks
 .DS_Store
+Fossiland.html
