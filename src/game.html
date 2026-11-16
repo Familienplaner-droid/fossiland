@@ -1075,7 +1075,8 @@ function checkFound(g){if(!g.obj||g.obj.found)return;{
 }
 /* ---------- Zeichnen ---------- */
 function rr(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()}
-function sizePit(){const w=pit.clientWidth;if(!w)return;cs=w/COLS;pdpr=devicePixelRatio||1;pit.style.height=cs*ROWS+"px";pit.width=w*pdpr;pit.height=cs*ROWS*pdpr}
+function sizePit(){const w=pit.clientWidth;if(!w)return;cs=w/COLS;pdpr=Math.min(2,devicePixelRatio||1);   // mehr als doppelte Auflösung sieht man nicht, kostet aber viel Grafikleistung
+  pit.style.height=cs*ROWS+"px";pit.width=w*pdpr;pit.height=cs*ROWS*pdpr}
 /* Grabungsfläche: durchgehender Boden aus kachelbaren Texturen, Gruben mit ausgefransten Rändern, Schnurraster */
 const SPAN=2;   // eine Bodentextur reicht über 2×2 Felder
 const hsh=(a,b,c)=>{let h=(a*374761393+b*668265263+c*2147483647)^0x5bd1e995;h=Math.imul(h^(h>>>13),1274126177);return((h^(h>>>16))>>>0)/4294967296};
@@ -1164,11 +1165,27 @@ function relicShape(ctx,o){
   else{ctx.fillStyle="#8f8378";ctx.beginPath();ctx.ellipse(0,0,s*.75,s,0,0,7);ctx.fill();ctx.strokeStyle="#5f554c";ctx.lineWidth=1.5;for(let i=-3;i<=3;i++){ctx.beginPath();ctx.moveTo(-s*.7,i*s*.25);ctx.lineTo(s*.7,i*s*.25);ctx.stroke()}ctx.strokeStyle="#b4a89c";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(0,-s);ctx.lineTo(0,s);ctx.stroke()}
   ctx.restore();
 }
+/* Das Grabungsfeld wird nur neu gemalt, wenn sich etwas geändert hat (Zwischenbild in pitCache).
+   Pro Bild werden nur noch Zwischenbild, Wackeln und Partikel gezeichnet. Das entlastet schwächere Handys stark. */
+const pitCache=document.createElement("canvas");let pitKey="",pitIdle=false;
+function pitStateKey(now){let k=D.era+"|"+cs+"|"+pdpr+"|"+Object.keys(IMG).length+"|";
+  for(const g of D.grid)k+=g.d+""+g.hp+(g.probe?1:0)+(g.rad?1:0)+(g.crack?1:0);
+  for(const o of D.objs)k+=o.found?(o.foundAt&&now-o.foundAt<1700?"g"+Math.floor((now-o.foundAt)/50):"f"):"-";
+  return k}
 function drawPit(now){
   if(!D||!cs)return;
-  const ctx=pctx,W=cs*COLS,H=cs*ROWS;
-  ctx.setTransform(pdpr,0,0,pdpr,0,0);ctx.clearRect(0,0,W,H);
-  if(shake>.3){ctx.translate((Math.random()-.5)*shake,(Math.random()-.5)*shake);shake*=.82}else shake=0;
+  const W=cs*COLS,H=cs*ROWS,key=pitStateKey(now);
+  if(key===pitKey&&shake<=.3&&!particles.length&&pitIdle===(kc.on?kc.r*COLS+kc.c:-1))return;   // nichts zu tun
+  pitIdle=kc.on?kc.r*COLS+kc.c:-1;
+  if(key!==pitKey||pitCache.width!==pit.width||pitCache.height!==pit.height){pitKey=key;
+    if(pitCache.width!==pit.width||pitCache.height!==pit.height){pitCache.width=pit.width;pitCache.height=pit.height}
+    const cx=pitCache.getContext("2d");cx.setTransform(pdpr,0,0,pdpr,0,0);cx.clearRect(0,0,W,H);drawPitStatic(cx,now,W,H)}
+  const ctx=pctx;ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,pit.width,pit.height);
+  if(shake>.3){ctx.translate((Math.random()-.5)*shake*pdpr,(Math.random()-.5)*shake*pdpr);shake*=.82}else shake=0;
+  ctx.drawImage(pitCache,0,0);
+  ctx.setTransform(pdpr,0,0,pdpr,0,0);
+  drawPitLive(ctx)}
+function drawPitStatic(ctx,now,W,H){
     // 1. Oberste Schicht überall, mit harten Stellen, Rissen und Fähnchen
   D.grid.forEach(g=>soilTex(ctx,g,0));
   D.grid.forEach(g=>{if(g.d===0&&g.need[0]>1)rockDraw(ctx,g,0)});
@@ -1208,7 +1225,8 @@ function drawPit(now){
   for(let c=0;c<=COLS;c++)for(let r=0;r<=ROWS;r++){const x=Math.min(W-rw,Math.max(rw,c*cs)),y=Math.min(H-rw,Math.max(rw,r*cs));
     ctx.fillStyle="rgba(30,12,4,.35)";ctx.beginPath();ctx.arc(x+rw*.5,y+rw*.9,rw*1.5,0,7);ctx.fill();
     ctx.fillStyle="#f2d39c";ctx.beginPath();ctx.arc(x,y,rw*1.45,0,7);ctx.fill();ctx.strokeStyle="#b07a3c";ctx.lineWidth=rw*.4;ctx.stroke()}
-  ctx.restore();
+  ctx.restore()}
+function drawPitLive(ctx){
   if(kc.on){ctx.strokeStyle="#ff5a8a";ctx.lineWidth=3;rr(ctx,kc.c*cs+2,kc.r*cs+2,cs-4,cs-4,cs*.2);ctx.stroke()}
   // Partikel
   particles=particles.filter(p=>p.life>0);
