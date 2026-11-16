@@ -78,6 +78,14 @@ Für den Play Store:
 3. In `src/game.html` `AD_UNIT` auf die eigene Anzeigen-ID und `ADS_TESTING` auf `false` setzen.
 4. Einwilligungsabfrage (UMP/DSGVO) und Familienrichtlinien von Google Play prüfen.
 
+## Expeditionskarte
+
+Die 38 Arten liegen an 28 echten Fundstellen auf einer gemalten Weltkarte (`worldmap.webp`, 1774 × 887 Pixel). Man reist mit **Flugtickets**: 3 Tickets auf demselben Kontinent, 6 auf einen anderen. Tickets gibt es per Video (1 Ticket), für Münzen (1 Stunde Museumseinnahmen, mindestens 30) und geschenkt: 1 aus der Tagestruhe, 2 für jede komplett ausgegrabene Fundstelle. Jeder Besuch gibt einen Stempel im Reisepass.
+
+Neue Fundstellen: einen Eintrag in `SITES` in `src/game.html` ergänzen (Arten, Position auf der Karte, Kontinent, Land) und Name `sn_<id>` und Fakt `sf_<id>` in allen vier Sprachen.
+
+Das **Expeditionslager** in der Werkstatt ist das große Sparziel: 2.500 / 7.500 / 20.000 Münzen für mehr Energie, eine tägliche Gratis-Füllung und schnelleres Aufladen.
+
 ## Testbericht
 
 In der Werkstatt unter „Testbericht senden“ tragen Tester ihren Namen ein und teilen den Bericht (z. B. per WhatsApp oder E-Mail). Die letzte Zeile (`FSL1:…`) enthält die Zahlen für die Auswertungsseite: Besuche, Spielzeit und Videos pro Tag.
