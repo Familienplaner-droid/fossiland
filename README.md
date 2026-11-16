@@ -80,9 +80,9 @@ Für den Play Store:
 
 ## Expeditionskarte
 
-Die 38 Arten liegen an 28 echten Fundstellen auf einer gemalten Weltkarte (`worldmap.webp`, 1774 × 887 Pixel). Man reist mit **Flugtickets**: 3 Tickets auf demselben Kontinent, 6 auf einen anderen. Tickets gibt es per Video (1 Ticket), für Münzen (1 Stunde Museumseinnahmen, mindestens 30) und geschenkt: 1 aus der Tagestruhe, 2 für jede komplett ausgegrabene Fundstelle. Jeder Besuch gibt einen Stempel im Reisepass.
+Die 38 Arten liegen an 28 echten Fundstellen auf einer gemalten Schatzkarte. Die Weltkarte (`worldmap.webp`) und zwei Detailkarten für Mitteleuropa (`map_eu.webp`) und den Westen der USA (`map_us.webp`) liegen in doppelter Auflösung vor, damit sie beim Heranzoomen scharf bleiben. Auf der Weltkarte stehen die beiden Gegenden als Sammelpunkt; ein Tipp öffnet die Detailkarte. Man reist mit **Flugtickets**: 3 Tickets auf demselben Kontinent, 6 auf einen anderen. Tickets gibt es per Video (1 Ticket), für Münzen (1 Stunde Museumseinnahmen, mindestens 30) und geschenkt: 1 aus der Tagestruhe, 2 für jede komplett ausgegrabene Fundstelle. Jeder Besuch gibt einen Stempel im Reisepass.
 
-Neue Fundstellen: einen Eintrag in `SITES` in `src/game.html` ergänzen (Arten, Position auf der Karte, Kontinent, Land) und Name `sn_<id>` und Fakt `sf_<id>` in allen vier Sprachen.
+Neue Fundstellen: einen Eintrag in `SITES` in `src/game.html` ergänzen (Arten, Position auf der Weltkarte `x/y`, Kontinent, Land; in Mitteleuropa oder den USA zusätzlich `r` und die Position `rx/ry` auf der Detailkarte) und Name `sn_<id>` und Fakt `sf_<id>` in allen vier Sprachen.
 
 Das **Expeditionslager** in der Werkstatt ist das große Sparziel: 2.500 / 7.500 / 20.000 Münzen für mehr Energie, eine tägliche Gratis-Füllung und schnelleres Aufladen.
 
