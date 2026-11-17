@@ -1,6 +1,6 @@
 # Fossiland – Übergabe für einen neuen Chat
 
-Stand: 17.11.2026, App-Version **1.0.23**.
+Stand: 18.11.2026, App-Version **1.0.27**.
 
 ## Projekt in einem Satz
 
@@ -12,7 +12,7 @@ Fossiland ist ein Handyspiel nach dem Prinzip von Dino Quest, aber bewusst eigen
 | --- | --- |
 | Quellcode und Grafiken | GitHub `Familienplaner-droid/fossiland` (`src/game.html`, `src/assets/`) |
 | Android-App | Jeder Push auf `main` baut automatisch ein Release `v1.0.x` mit APK (GitHub Actions). Commits mit `[skip ci]` bauen nicht. |
-| Spiel im Browser (Artifact) | https://claude.ai/artifact/8NMWQ2AnH5ZY3X7ii6oe4e (Seite `index.html` und Ordner `assets/`, zuletzt Version 34) |
+| Spiel im Browser (Artifact) | https://claude.ai/artifact/8NMWQ2AnH5ZY3X7ii6oe4e (Seite `index.html` und Ordner `assets/`, zuletzt Version 38) |
 | Auswertung der Testberichte | https://claude.ai/artifact/5M13CEfnApfwE3DR5mXPa1. Die Datenbank-Sammlung `reports` hat eine Zeile pro Tester, Dokument-ID = Tester-ID: ZMF3 Kari, 1X9K Jano, 6YM3 Finn. |
 | Tester-Anleitung | Claude-Doc „Fossiland Testrunde“ (Container `33020658-ce3e-485b-9255-ac09bb7f8fac`), auch als PDF exportiert |
 | Offline-Datei | `python3 tools/build_download.py Fossiland.html` bettet alle Grafiken ein (etwa 16 MB) |
@@ -78,6 +78,15 @@ Fossiland ist ein Handyspiel nach dem Prinzip von Dino Quest, aber bewusst eigen
 - Erfasst werden auch Spielzeit, Videos und Ereignisse.
 - „Testbericht senden“ in der Werkstatt hängt eine Zeile `FSL1:…` an (base64). Diese wird in die Auswertungsseite übernommen.
 
+**Museum (seit 1.0.27).**
+- Knopf „Museum betreten“ im Museum öffnet einen isometrischen Grundriss (`openHall`, Code-Abschnitt „Museum (Grundriss)“). Spielstand in `S.hall` (v:2).
+- Rundgang aus 3×3 Plätzen zu je 16×16 Feldern: Eingangshalle → Perm … Eiszeit → Schatzkammer, Innenhof in der Mitte. Säle bauen, in 3 Stufen vergrößern (10 bis 16 Felder) und umbenennen.
+- Exponate: gemalte Skelette `ex_<id>.webp` aus ChatGPT, Sockel-Messpunkte in `HALLMETA` (neu erzeugen mit `python3 tools/hall/meta.py src/assets`), Größe in Feldern `HALL_SZ`. Kleine Tiere stehen auf Säulen.
+- Deko `dk_<art>.webp` (Tabelle `HDECO`, nur zum Anschauen), seltene Funde in Vitrinen (`dk_vitrine.webp`), Boden/Wand `hall_floor.webp`/`hall_wall.webp`, Besucher `vis_<art>_f/_b.webp`.
+- Preise aus `tools/sim/museum.py`: Bau 150 bis 3.000, Vergrößern ×3/×8/×20. **Noch einmal mit dem Spielentwickler durchgehen** (Kosten und Einkommen insgesamt).
+- Alle Bild-Prompts stehen im Claude-Doc „Fossiland – Prompts für die Museumshalle“ (https://claude.ai/artifact/GxfDfGheydk2qZQRQQEZgm).
+- Testbericht schreibt jetzt Werbefehler mit (Code, Meldung, online) – wichtig für Janos Problem „kein Video“ (Family Link?).
+
 ## Tester
 
 Kari, Jano und Finn. Ihre Berichte vom 14. bis 16.11. sind ausgewertet und die gefundenen Fehler behoben:
@@ -89,7 +98,8 @@ Kari, Jano und Finn. Ihre Berichte vom 14. bis 16.11. sind ausgewertet und die g
 
 ## Nächste Schritte
 
-- Testbericht zur Version 1.0.23 abwarten (Karte, Flüge, Lager).
+- Testberichte zu 1.0.27 abwarten (Museum, Werbefehler bei Jano).
+- Kosten und Einkommen im ganzen Spiel gemeinsam prüfen (der Spielentwickler sieht Ungereimtheiten).
 - Später: mehr seltene Funde (Bilder kommen vom Spielentwickler) sowie mehr Fundstellen und Arten.
 - Vorbereitung für den Play Store:
   - echte AdMob-IDs
