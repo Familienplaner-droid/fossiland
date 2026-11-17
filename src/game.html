@@ -1729,7 +1729,9 @@ function hallPaint(){const{cv,vp}=HV,dpr=Math.min(2,window.devicePixelRatio||1),
   const x=cv.getContext("2d"),G=hGeo();x.setTransform(1,0,0,1,0,0);x.clearRect(0,0,cv.width,cv.height);
   const base=[dpr*HV.s,0,0,dpr*HV.s,dpr*HV.x,dpr*HV.y];x.setTransform(...base);
   if(!HV.pat){HV.pat={fl:hPat(x,"#d8b88a","#cdab7b","rgba(120,80,40,.22)"),cl:hPat(x,"#6e5644","#68513f",null),lot:hPat(x,"#6f8a4e","#67814a",null),grass:hPat(x,"#86ad5c","#7fa555",null)};
-    try{if(HV.tex.fl){const p=x.createPattern(HV.tex.fl,"repeat");p.setTransform(new DOMMatrix().scale(4/HV.tex.fl.width));HV.pat.fl=p}   // Bodentextur: 4 × 4 Felder je Bild
+    try{if(HV.tex.fl){const c=document.createElement("canvas"),T=HV.tex.fl;c.width=T.width;c.height=T.height;const g=c.getContext("2d");   // Boden abgetönt: weniger Orange, damit die Skelette hervortreten
+        g.filter="saturate(.55) brightness(1.06)";g.drawImage(T,0,0);g.filter="none";g.fillStyle="rgba(236,224,200,.22)";g.fillRect(0,0,c.width,c.height);
+        const p=x.createPattern(c,"repeat");p.setTransform(new DOMMatrix().scale(4/HV.tex.fl.width));HV.pat.fl=p}   // Bodentextur: 4 × 4 Felder je Bild
       if(HV.tex.wall){const p=x.createPattern(HV.tex.wall,"repeat");p.setTransform(new DOMMatrix([6/HV.tex.wall.width,0,0,-HWALL/HV.tex.wall.height,0,HWALL]));HV.pat.wall=p}}catch(e){}}   // Wandtextur: 6 Felder breit, so hoch wie die Außenwand
   // 1) Böden im Raster-Koordinatensystem: Bauplätze, unfertige Fläche, Ausstellungsfläche, Gänge
   x.save();x.transform(HT/2,HTH/2,-HT/2,HTH/2,0,0);
