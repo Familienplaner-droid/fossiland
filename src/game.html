@@ -309,6 +309,7 @@ nav button[aria-selected="true"] svg{color:var(--tape)}
 .camp b{font-family:var(--f-display);font-weight:400;font-size:20px}
 .camp p{margin:0;font-size:12.5px;color:var(--muted)}
 .camp .bar{flex:none;height:18px}
+.up .bar{flex:none;height:16px;margin-top:6px}
 .camp .btn{flex:none;align-self:flex-start;font-family:var(--f-display);font-weight:400;font-size:16px;padding:9px 12px}
 .banner{position:relative;height:clamp(130px,24vw,220px);border-radius:20px;overflow:hidden;background:var(--edge) center/cover no-repeat;box-shadow:0 5px 0 var(--edge);display:flex;align-items:flex-end;padding:14px 16px}
 .banner::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,12,8,0) 40%,rgba(20,12,8,.78))}
@@ -1539,7 +1540,7 @@ function renderShop(){
   const camp=`<div class="camp"><img src="${aurl("camp"+Math.max(1,Math.min(3,cl+(cl<3?1:0)))+".webp")}" alt=""><div><b>${t("campT")} · ${t("campS"+Math.max(1,Math.min(3,cl+(cl<3?1:0))))}</b>
     <p>${cl<3?t("campD"+(cl+1))+" "+t("campSave"):t("campMax")}</p><div class="lv">${[0,1,2].map(i=>`<i class="${i<cl?"on":""}"></i>`).join("")}</div>
     ${cl<3?`<div class="bar"><i style="width:${Math.min(100,S.coins/cp*100).toFixed(1)}%"></i><span>${Math.floor(Math.min(S.coins,cp))} / ${cp}</span></div><button class="btn ${S.coins>=cp?"primary":""}" data-up="camp" ${S.coins>=cp?"":"disabled"}><span class="coin sm"></span>${cp}</button>`:""}</div></div>`;
-  $("v-shop").innerHTML=`<h2 class="sec-h">${t("navShop")}<small>${t("shopSub")}</small></h2>`+camp+ups.map(([k,ic,n,d,c,lv,mx])=>{const ok=lv<mx;return `<div class="up"><div class="ic">${ic}</div><div><b>${n}</b><p>${ok?d:t("maxed")}</p><div class="lv">${Array.from({length:mx},(_,i)=>`<i class="${i<lv?"on":""}"></i>`).join("")}</div></div>
+  $("v-shop").innerHTML=`<h2 class="sec-h">${t("navShop")}<small>${t("shopSub")}</small></h2>`+camp+ups.map(([k,ic,n,d,c,lv,mx])=>{const ok=lv<mx;return `<div class="up"><div class="ic">${ic}</div><div><b>${n}</b><p>${ok?d:t("maxed")}</p><div class="lv">${Array.from({length:mx},(_,i)=>`<i class="${i<lv?"on":""}"></i>`).join("")}</div>${ok?`<div class="bar"><i style="width:${Math.min(100,S.coins/c*100).toFixed(1)}%"></i><span>${Math.floor(Math.min(S.coins,c))} / ${c}</span></div>`:""}</div>
   <button class="btn ${ok&&S.coins>=c?"primary":""}" data-up="${k}" ${ok&&S.coins>=c?"":"disabled"}>${ok?`<span class="coin sm"></span>${c}`:"Max"}</button></div>`}).join("")+
   `<h2 class="sec-h">${t("language")}</h2><div class="langs">${Object.entries(LANGS).map(([k,v])=>`<button class="btn ${k===LANG?"primary":""}" data-lang="${k}" lang="${k}">${v}</button>`).join("")}</div>
   <div class="row" style="margin-top:8px"><button class="btn" id="tutReplay">${t("tutReplay")}</button>${LNP?`<button class="btn" id="notifT">${t(S.notif?"nOn":"nOff")}</button>`:""}<button class="btn" id="report">${t("report")}</button><button class="btn" id="reset">${t("reset")}</button></div>`;
