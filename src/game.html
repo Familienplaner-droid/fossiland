@@ -962,23 +962,28 @@ const AD_UNIT="ca-app-pub-3940256099942544/5224354917";   // Googles Test-ID fü
 const ADS_TESTING=true;
 const ADM=(()=>{try{return window.capacitorExports&&capacitorExports.Capacitor.isNativePlatform()&&window.capacitorStripe&&capacitorStripe.AdMob?capacitorStripe.AdMob:null}catch(e){return null}})();
 const ADQ={init:null,ready:false,loading:null,earned:false,done:null};
+// Letzte Werbefehler für den Testbericht: [Spieltag, Uhrzeit, Schritt, Code, Meldung, online]
+function adErr(step,e){try{const x=SS();x.adErr=x.adErr||[];const d=new Date();
+  x.adErr.push([dayNo(),d.toTimeString().slice(0,5),step,e&&e.code!=null?e.code:"",String((e&&(e.message||e.errorMessage))||e||"").slice(0,120),navigator.onLine?1:0]);
+  if(x.adErr.length>12)x.adErr.shift();save()}catch(_){}}
 function admInit(){if(!ADM)return Promise.resolve(false);if(ADQ.init)return ADQ.init;
   ADQ.init=(async()=>{try{
     await ADM.initialize({initializeForTesting:ADS_TESTING,tagForChildDirectedTreatment:true,tagForUnderAgeOfConsent:true,maxAdContentRating:"General"});
     ADM.addListener("onRewardedVideoAdReward",()=>{ADQ.earned=true});
     ADM.addListener("onRewardedVideoAdDismissed",()=>{const f=ADQ.done;ADQ.done=null;ADQ.ready=false;if(f)f(ADQ.earned);admLoad()});
-    ADM.addListener("onRewardedVideoAdFailedToShow",()=>{const f=ADQ.done;ADQ.done=null;ADQ.ready=false;if(f)f(null);admLoad()});
-    admLoad();return true}catch(e){return false}})();
+    ADM.addListener("onRewardedVideoAdFailedToLoad",e=>{ADQ.lastErr=e});
+    ADM.addListener("onRewardedVideoAdFailedToShow",e=>{adErr("zeigen",e);const f=ADQ.done;ADQ.done=null;ADQ.ready=false;if(f)f(null);admLoad()});
+    admLoad();return true}catch(e){adErr("start",e);return false}})();
   return ADQ.init}
 function admLoad(){if(!ADM||ADQ.ready)return Promise.resolve(ADQ.ready);if(ADQ.loading)return ADQ.loading;
-  ADQ.loading=ADM.prepareRewardVideoAd({adId:AD_UNIT,isTesting:ADS_TESTING}).then(()=>{ADQ.ready=true;return true},()=>false).finally(()=>{ADQ.loading=null});
+  ADQ.loading=ADM.prepareRewardVideoAd({adId:AD_UNIT,isTesting:ADS_TESTING}).then(()=>{ADQ.ready=true;return true},e=>{ADQ.failErr=ADQ.lastErr&&ADQ.lastErr.code!=null?ADQ.lastErr:e;ADQ.lastErr=null;return false}).finally(()=>{ADQ.loading=null});
   return ADQ.loading}
 function adReward(label,onReward){S.adCount++;stat("ads");stat("ad:"+adKind(label));statDay().a=(statDay().a||0)+1;save();SFX.coin();onReward();renderTop()}
 async function showNativeAd(label,onReward){
   const ov=overlay(`<h2>${label}</h2><p class="sub">${t("adLoading")}</p><button class="btn" id="adcancel">${t("cancel")}</button>`);ov.style.zIndex=25;
   let gone=false;ov.addEventListener("click",e=>{if(e.target.closest("#adcancel")){e.stopPropagation();gone=true;ov.remove();stat("adCancel")}});
   await admInit();const ok=ADQ.ready||await admLoad();if(gone)return;ov.remove();
-  if(!ok){stat("adFail");save();toast(t("adNone"));admLoad();return}
+  if(!ok){adErr(ADM?"laden":"kein Plugin",ADQ.failErr||"");stat("adFail");save();toast(t("adNone"));admLoad();return}
   ADQ.earned=false;const res=new Promise(r=>{ADQ.done=r});
   ADM.showRewardVideoAd().catch(()=>{});const earned=await res;
   if(earned===null){stat("adFail");save();toast(t("adNone"));return}
@@ -1793,6 +1798,7 @@ function reportText(){
     `Reisen: ${c.flights||0} Flüge, ${Object.keys(S.visited||{}).length} von ${SITES.length} Fundstellen besucht, Tickets: ${c.tixAd||0} per Video, ${c.tixBuy||0} gekauft, ${S.tix||0} übrig`,
     `Expeditionslager: Stufe ${S.campLv||0}`,
     `Videos: ${c.ads||0} geschaut (${ads}), ${c.adCancel||0} abgebrochen, ${c.adFail||0}× keins verfügbar`,
+    ...((x.adErr||[]).length?["Werbefehler (Spieltag, Uhrzeit, Schritt, Code, Meldung):",...x.adErr.map(e=>`  Tag ${e[0]} ${e[1]} · ${e[2]} · Code ${e[3]===""?"?":e[3]} · ${e[4]||"ohne Meldung"}${e[5]?"":" · offline"}`)]:[]),
     `Tagesaufgaben: ${c.dqClaimed||0} abgeholt, ${c.chests||0} Truhen, längste Serie ${x.maxStreak||0} Tage`,
     `Münzen: ${Math.floor(S.coins)} übrig, ${x.spent||0} ausgegeben, Eintritt ${rate()} pro Std.`,
     `Ausbaustufen: Feldflasche ${S.energyLv}, Feldküche ${S.regenLv}, Werkbank ${S.benchLv}, Hacke ${S.precLv}, Sonde ${S.probeLv}`,
@@ -1809,7 +1815,7 @@ function reportText(){
 function reportData(){const x=SS(),c=x.c;   // Reisen: c.flights, c.tixAd, c.tixBuy
   const d={v:1,id:x.id,name:x.name||"",lang:LANG,app:ADM?1:0,start:x.start,at:Date.now(),
     days:Object.fromEntries(Object.entries(x.days).map(([k,v])=>[k,[v.s||0,v.sec||0,v.a||0]])),
-    ads:c.ads||0,adCancel:c.adCancel||0,adFail:c.adFail||0,adKinds:Object.fromEntries(Object.keys(c).filter(k=>k.startsWith("ad:")).map(k=>[k.slice(3),c[k]])),
+    ads:c.ads||0,adCancel:c.adCancel||0,adFail:c.adFail||0,adErr:(x.adErr||[]).slice(-5),adKinds:Object.fromEntries(Object.keys(c).filter(k=>k.startsWith("ad:")).map(k=>[k.slice(3),c[k]])),
     flights:c.flights||0,sites:Object.keys(S.visited||{}).length,done:completed(),eras:ERAS.filter((e,i)=>unlocked(i)).length,digs:c.digsStarted||0,bones:c.bones||0,streak:x.maxStreak||0,tut:x.tut||""};
   return btoa(unescape(encodeURIComponent(JSON.stringify(d))))}
 const SHR=(()=>{try{return window.capacitorExports&&capacitorExports.Capacitor.isNativePlatform()&&window.capacitorShare?capacitorShare.Share:null}catch(e){return null}})();
