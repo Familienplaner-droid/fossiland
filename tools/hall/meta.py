@@ -14,8 +14,9 @@ for f in sorted(os.listdir(d)):
     wood = ndimage.binary_opening(wood, iterations=4)   # dünne Umrisslinien der Knochen entfernen
     lab, n = ndimage.label(wood); sz = ndimage.sum(wood, lab, range(n + 1))
     big = int(np.argmax(sz)); top = np.where(lab == big)[0].min(); sl = ndimage.find_objects(lab)
+    cy = [c[0] for c in ndimage.center_of_mass(wood, lab, range(1, n + 1))]   # Mitte jeder Fläche: rötliche Hörner liegen über dem Sockel
     # Sockel kann durch Füße geteilt sein; Teile oberhalb des Sockels (rötliche Knochen) zählen nicht
-    m = np.isin(lab, [i for i in range(1, n + 1) if sz[i] > sz.max() * .03 and sl[i - 1][0].stop > top])
+    m = np.isin(lab, [i for i in range(1, n + 1) if sz[i] > sz.max() * .03 and sl[i - 1][0].stop > top and cy[i - 1] > top])
     ys, xs = np.where(m)
     by = ys.max(); bx = int(xs[ys >= by - 2].mean())
     lx = xs.min(); ly = int(ys[xs <= lx + 2].mean())
