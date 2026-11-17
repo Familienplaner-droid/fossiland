@@ -1563,7 +1563,7 @@ function renderShop(){
    Isometrische Halle: fertige Skelette frei aufstellen, verschieben und drehen (gespiegelt).
    Bilder ex_<id>.webp, Sockel-Messpunkte in HALLMETA (neu erzeugen mit tools/hall/meta.py).
    Spielstand: S.hall={n:Kantenlänge in Feldern, it:{id:[i,j,gedreht]}} */
-const HALLMETA={"coel":[900,874,319,871,87,714,827,558],"dime":[882,900,307,899,19,714,881,542],"edap":[900,900,326,895,50,708,890,540],"eora":[900,900,382,741,250,664,641,616],"herr":[900,823,320,820,79,655,838,501],"inos":[900,878,299,876,1,679,879,512],"meso":[900,832,278,830,27,663,881,464],"noth":[896,900,273,898,60,753,817,564],"plat":[899,900,288,898,33,725,857,559],"scut":[900,819,309,816,1,617,884,459],"trex":[900,900,360,877,109,716,830,566]};   // [w,h, Sockel vorne x,y, links x,y, rechts x,y]  (tools/hall/meta.py)
+const HALLMETA={"allo":[900,872,343,870,95,701,820,561],"arch":[857,900,350,899,90,723,829,580],"brac":[900,900,340,899,136,784,732,686],"coel":[900,874,319,871,87,714,827,558],"dime":[882,900,307,899,19,714,881,542],"dipl":[900,653,231,650,89,556,861,262],"edap":[900,900,326,895,50,708,890,540],"eora":[900,900,382,741,250,664,641,616],"herr":[900,823,320,820,79,655,838,501],"icht":[900,728,224,726,47,608,845,396],"inos":[900,878,299,876,1,679,879,512],"meso":[900,832,278,830,27,663,881,464],"noth":[896,900,273,898,60,753,817,564],"plat":[899,900,288,898,33,725,857,559],"rham":[900,790,289,789,99,662,795,493],"scut":[900,819,309,816,1,617,884,459],"steg":[899,900,339,898,68,716,852,558],"trex":[900,900,360,877,109,716,830,566]};   // [w,h, Sockel vorne x,y, links x,y, rechts x,y]  (tools/hall/meta.py)
 const HALL_SZ={dime:3,edap:3,scut:3,inos:3,meso:2,plat:4,herr:3,coel:3,eora:2,noth:3,arch:2,allo:4,steg:4,brac:5,dipl:5,icht:3,rham:2,
   tric:4,velo:2,anky:4,spin:5,trex:5,pter:3,mosa:5,pars:4,igua:4,gast:3,basi:5,darw:2,prop:2,andr:4,prac:5,mamm:4,smil:3,nash:3,baer:3,megl:3,glyp:3};   // Sockellänge in Feldern
 const HT=64,HTH=HT*.645,HWALL=150;   // Feldbreite und -höhe, Wandhöhe (in Weltpunkten)
@@ -1628,8 +1628,9 @@ function openHall(){if(HV)return;stat("hallOpen");hallS();
         if(!sp){toast(t("hallNoRoom"));return}p[0]=sp[0];p[1]=sp[1];p[2]=nf}save();hallDraw()}
     else if(b.id==="hlStore"&&HV.sel){delete S.hall.it[HV.sel];HV.sel=null;save();hallUI();hallDraw()}
   });
-  HV.onResize=()=>{if(HV){HV.floor=null;hallFit();hallDraw()}};window.addEventListener("resize",HV.onResize)}
-function closeHall(){if(!HV)return;window.removeEventListener("resize",HV.onResize);HV.el.remove();HV=null;document.body.style.overflow="";if(view==="mus")renderMus()}
+  HV.onResize=()=>{if(HV){HV.floor=null;hallFit();hallDraw()}};window.addEventListener("resize",HV.onResize);
+  try{HV.ro=new ResizeObserver(()=>hallDraw());HV.ro.observe(vp)}catch(e){}}
+function closeHall(){if(!HV)return;window.removeEventListener("resize",HV.onResize);if(HV.ro)HV.ro.disconnect();HV.el.remove();HV=null;document.body.style.overflow="";if(view==="mus")renderMus()}
 function hallTile(sx,sy){return hInv((sx-HV.x)/HV.s,(sy-HV.y)/HV.s)}
 function hallWorld(){const n=hallS().n;return{x0:-n*HT/2,x1:n*HT/2,y0:-HWALL,y1:n*HTH}}
 function hallFit(){const W=HV.vp.clientWidth,H=HV.vp.clientHeight,w=hallWorld();HV.min=Math.min(W/(w.x1-w.x0),H/(w.y1-w.y0))*.96;
@@ -1660,6 +1661,7 @@ function hallFloor(){const n=hallS().n,w=hallWorld(),q=2,c=document.createElemen
   return{c,q,w}}
 function hallPaint(){const{cv,vp}=HV,dpr=Math.min(2,window.devicePixelRatio||1),W=vp.clientWidth,H=vp.clientHeight;
   if(cv.width!==Math.round(W*dpr)||cv.height!==Math.round(H*dpr)){cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);cv.style.width=W+"px";cv.style.height=H+"px"}
+  if(HV.vw&&(HV.vw!==W||HV.vh!==H)){HV.x+=(W-HV.vw)/2;HV.y+=(H-HV.vh)/2;const w=hallWorld();HV.min=Math.min(W/(w.x1-w.x0),H/(w.y1-w.y0))*.96;HV.s=Math.max(HV.s,HV.min);hallClamp()}HV.vw=W;HV.vh=H;   // Bereich unten wurde größer/kleiner: Halle mittig halten
   const x=cv.getContext("2d");x.setTransform(1,0,0,1,0,0);x.clearRect(0,0,cv.width,cv.height);x.setTransform(dpr*HV.s,0,0,dpr*HV.s,dpr*HV.x,dpr*HV.y);
   if(!HV.floor)HV.floor=hallFloor();const F=HV.floor;x.drawImage(F.c,F.w.x0,F.w.y0,F.c.width/F.q,F.c.height/F.q);
   const D=HV.drag,ord=hallOrder().map(o=>D&&o.id===D.id?{...o,p:[D.i,D.j,o.p[2]]}:o);
