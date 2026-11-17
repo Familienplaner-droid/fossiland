@@ -1651,7 +1651,7 @@ function openHall(){if(HV)return;stat("hallOpen");hallS();HGEO=null;
   HV={el,vp,cv,s:1,x:0,y:0,edit:false,sel:null,room:null,drag:null,raf:0,labels:[],tab:"c",tex:{}};
   for(const[k,f]of[["fl","hall_floor.webp"],["wall","hall_wall.webp"]]){const im=new Image();im.onload=()=>{if(HV){HV.tex[k]=im;HV.pat=null;hallDraw()}};im.src=aurl(f)}
   for(const id of Object.keys(S.hall.it))if(!HALLMETA[id])delete S.hall.it[id];
-  requestAnimationFrame(()=>{hallFit();hallUI();hallDraw()});
+  requestAnimationFrame(()=>{hallFit();hallUI();hallDraw();HV.anim=requestAnimationFrame(hAnim)});
   const P=new Map();let pinch=null,moved=0,down=null;
   vp.addEventListener("pointerdown",e=>{if(e.target.closest(".mapzoom"))return;vp.setPointerCapture(e.pointerId);P.set(e.pointerId,{x:e.clientX,y:e.clientY});moved=0;
     const r=vp.getBoundingClientRect(),sx=e.clientX-r.left,sy=e.clientY-r.top;down={lab:hallLabel(sx,sy),hit:hallHit(sx,sy),sx,sy};
@@ -1674,7 +1674,7 @@ function openHall(){if(HV)return;stat("hallOpen");hallS();HGEO=null;
   vp.addEventListener("wheel",e=>{e.preventDefault();const r=vp.getBoundingClientRect();hallZoomAt(e.deltaY<0?1.2:1/1.2,e.clientX-r.left,e.clientY-r.top)},{passive:false});
   el.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;e.stopPropagation();SFX.click();
     if(b.id==="hlClose")closeHall();
-    else if(b.id==="hlEdit"){HV.edit=!HV.edit;HV.sel=null;HV.room=null;hallUI();hallDraw()}
+    else if(b.id==="hlEdit"){HV.edit=!HV.edit;HV.vis=null;HV.sel=null;HV.room=null;hallUI();hallDraw()}
     else if(b.dataset.z)hallZoomAt(+b.dataset.z,vp.clientWidth/2,vp.clientHeight/2);
     else if(b.dataset.tab){HV.tab=b.dataset.tab;hallUI()}
     else if(b.dataset.put){const id=b.dataset.put,sp=hSpot({key:"c:"+id,kind:"c",id},hPref());if(!sp){toast(t(HROOMS.some(r=>hLv(r)>=0&&r.id!=="ein")?"hallFull":"hallNeedRoom"));return}S.hall.it[id]=sp;HV.sel="c:"+id;save();hallUI();hallDraw();hallShow(sp)}
@@ -1693,7 +1693,7 @@ function openHall(){if(HV)return;stat("hallOpen");hallS();HGEO=null;
   });
   HV.onResize=()=>{if(HV){hallFit();hallDraw()}};window.addEventListener("resize",HV.onResize);
   try{HV.ro=new ResizeObserver(()=>hallDraw());HV.ro.observe(vp)}catch(e){}}
-function closeHall(){if(!HV)return;window.removeEventListener("resize",HV.onResize);if(HV.ro)HV.ro.disconnect();HV.el.remove();HV=null;document.body.style.overflow="";if(view==="mus")renderMus()}
+function closeHall(){if(!HV)return;cancelAnimationFrame(HV.anim);window.removeEventListener("resize",HV.onResize);if(HV.ro)HV.ro.disconnect();HV.el.remove();HV=null;document.body.style.overflow="";if(view==="mus")renderMus()}
 // Saal für Neues: der gewählte, sonst der in der Bildmitte
 const hPref=()=>HV.room?hRoom(HV.room):hRoomOf(...hallTile(HV.vp.clientWidth/2,HV.vp.clientHeight/2));
 function hallTile(sx,sy){return hInv((sx-HV.x)/HV.s,(sy-HV.y)/HV.s)}
@@ -1749,16 +1749,17 @@ function hallPaint(){const{cv,vp}=HV,dpr=Math.min(2,window.devicePixelRatio||1),
   // 2) Säle von hinten nach vorne: erst ihre hinteren Wände, dann ihre Exponate, dann die vordere Brüstung
   for(const o of all)if(hFlat(o))hSprite(x,o,W,H);   // Teppiche liegen auf dem Boden unter allem
   const ord=all.filter(o=>!hFlat(o)),byRoom=new Map();
+  if(!HV.edit&&HV.vis){for(const v of HV.vis)ord.push({kind:"v",v,p:[v.i-.5,v.j-.5],k:v.i+v.j});ord.sort((a,b)=>a.k-b.k)}
   for(const o of ord){const r=hRoomOf(o.p[0],o.p[1]);const k=r?r.id:"_";if(!byRoom.has(k))byRoom.set(k,[]);byRoom.get(k).push(o)}
   const rooms=[...HROOMS].sort((a,b)=>a.si+a.sj-b.si-b.sj||a.si-b.si),built=r=>r&&hLv(r)>=0;
   const doorOn=(ax,at,t2)=>G.doors.find(d=>d.ax===ax&&d.at===at&&t2>=d.t0&&t2<d.t0+2&&(built(d.a)||built(d.b)));
   for(const r of rooms){if(!built(r))continue;
     for(const ax of["i","j"]){const at=(ax==="i"?r.si:r.sj)*HS,nb=ax==="i"?hAt(r.si-1,r.sj):hAt(r.si,r.sj-1),h=built(nb)?HHALF:HWALL;
       for(let t2=0;t2<HS;t2++){const tt=(ax==="i"?r.sj:r.si)*HS+t2,dr=doorOn(ax,at,tt);if(dr&&h===HHALF)continue;hWall(x,ax,at,tt,h,dr&&!built(dr.b===r?dr.a:dr.b)?"door":null)}}
-    for(const o of byRoom.get(r.id)||[])hSprite(x,o,W,H);
+    for(const o of byRoom.get(r.id)||[])o.kind==="v"?hVisSprite(x,o.v):hSprite(x,o,W,H);
     for(const ax of["i","j"]){const at=((ax==="i"?r.si:r.sj)+1)*HS,nb=ax==="i"?hAt(r.si+1,r.sj):hAt(r.si,r.sj+1);if(built(nb))continue;
       for(let t2=0;t2<HS;t2++){const tt=(ax==="i"?r.sj:r.si)*HS+t2;if(doorOn(ax,at,tt))continue;hWall(x,ax,at,tt,HPARA,null)}}}
-  for(const o of byRoom.get("_")||[])hSprite(x,o,W,H);
+  for(const o of byRoom.get("_")||[])o.kind==="v"?hVisSprite(x,o.v):hSprite(x,o,W,H);
   // 3) Schilder mit den Namen der Säle (und in Einrichten auch der Bauplätze), in Bildschirmgröße
   x.setTransform(dpr,0,0,dpr,0,0);HV.labels=[];x.font="700 12px "+getComputedStyle(document.body).fontFamily;x.textBaseline="middle";
   for(const r of[...HROOMS].sort((a,b)=>(hLv(a)<0)-(hLv(b)<0))){const L=hLv(r);if(L<0&&!HV.edit)continue;const s=L<0?HS:HLV[L],o=(HS-s)/2,[wx,wy]=HP(r.si*HS+o+s,r.sj*HS+o+s),sx=HV.x+wx*HV.s,sy=HV.y+wy*HV.s-14;
@@ -1841,6 +1842,38 @@ for(const [l,o] of Object.entries({
     hallLotTxt:"Aquí todavía hay un solar libre.",hallBuild:"Construir",hallGrow:"Ampliar a {n} × {n}",hallSize:"Tamaño {n} × {n} casillas",hallMax:"Esta sala ya tiene su tamaño máximo.",
     hallRename:"Nombre de la sala",hallSave:"Guardar",hallRoomHint:"Toca una sala o un solar para construir, ampliar o cambiar el nombre.",hallNoCoins:"Todavía te faltan monedas."}
 }))Object.assign(TX[l],o);
+
+/* --- Besucher: laufen über freie Felder (Ausstellungsfläche und Gänge) von Saal zu Saal und bleiben vor Exponaten stehen.
+   Bilder vis_<art>_f.webp (von vorne, läuft nach links unten) und _b.webp (von hinten, läuft nach rechts oben); gespiegelt ergeben sie die beiden anderen Richtungen. */
+const HVIS=["dad","kid","opa","cam","teen"],HVH=78;   // Figurenhöhe in Weltpunkten
+function hVisCount(){const n=Object.keys(S.hall.it).length+Object.keys(S.hall.rv||{}).length;return n?Math.min(14,2+Math.floor(n/3)):0}
+function hWalk(){const G=hGeo(),w=new Uint8Array(HN*HN);for(let q=0;q<HN*HN;q++)w[q]=G.fl[q]?1:0;   // begehbar = Boden ohne Exponat
+  for(const o of hList()){if(hFlat(o))continue;const[a,b]=hFootO(o,o.p[2]);for(let i=o.p[0];i<o.p[0]+a;i++)for(let j=o.p[1];j<o.p[1]+b;j++)if(i>=0&&j>=0&&i<HN&&j<HN)w[i*HN+j]=0}return w}
+function hPath(w,from,to){const prev=new Int32Array(HN*HN).fill(-1),Q=[from];prev[from]=from;
+  for(let h=0;h<Q.length;h++){const q=Q[h];if(q===to)break;const i=Math.floor(q/HN),j=q%HN;
+    for(const[di,dj]of[[1,0],[-1,0],[0,1],[0,-1]]){const a=i+di,b=j+dj;if(a<0||b<0||a>=HN||b>=HN)continue;const n=a*HN+b;if(prev[n]<0&&w[n]){prev[n]=q;Q.push(n)}}}
+  if(prev[to]<0)return null;const p=[];for(let q=to;q!==from;q=prev[q])p.push(q);return p.reverse()}
+function hVisInit(){const w=hWalk(),cells=[],near=[];for(let q=0;q<HN*HN;q++)if(w[q])cells.push(q);HV.walk=w;HV.vis=[];HV.near=near;if(!cells.length)return;
+  const G=hGeo();for(const q of cells){const i=Math.floor(q/HN),j=q%HN;if(G.fl[q]===1&&[[1,0],[-1,0],[0,1],[0,-1]].some(([a,b])=>{const n=(i+a)*HN+j+b;return i+a>=0&&j+b>=0&&i+a<HN&&j+b<HN&&!w[n]&&G.fl[n]}))near.push(q)}   // Felder direkt vor einem Exponat
+  const n=hVisCount(),pick=()=>cells[Math.floor(Math.random()*cells.length)];
+  for(let k=0;k<n+1;k++){const q=pick();HV.vis.push({t:k===0?"guard":HVIS[k%HVIS.length],i:Math.floor(q/HN)+.5,j:q%HN+.5,path:[],wait:Math.random()*3,dir:[0,1],ph:Math.random()*6})}}
+function hVisStep(dt){if(!HV.vis)hVisInit();const w=HV.walk,cells=[];
+  for(const v of HV.vis){
+    if(v.path.length){const q=v.path[0],ti=Math.floor(q/HN)+.5,tj=q%HN+.5,di=ti-v.i,dj=tj-v.j,d=Math.hypot(di,dj),sp=(v.t==="opa"?1.1:1.6)*dt;
+      if(d<=sp){v.i=ti;v.j=tj;v.path.shift();if(!v.path.length)v.wait=2+Math.random()*4}else{v.i+=di/d*sp;v.j+=dj/d*sp;v.dir=[Math.sign(Math.round(di*10)),Math.sign(Math.round(dj*10))]}
+      v.ph+=dt*9;continue}
+    v.wait-=dt;if(v.wait>0)continue;
+    if(!cells.length)for(let q=0;q<HN*HN;q++)if(w[q])cells.push(q);if(!cells.length)return;
+    const from=Math.floor(v.i)*HN+Math.floor(v.j),pool=HV.near.length&&v.t!=="guard"&&Math.random()<.8?HV.near:cells;let p=null;for(let k=0;k<6&&!p;k++)p=hPath(w,w[from]?from:cells[0],pool[Math.floor(Math.random()*pool.length)]);
+    if(p&&p.length)v.path=p.slice(0,60);else v.wait=2}}
+function hVisSprite(x,v){   // +j: von vorne (links unten) · +i: von vorne gespiegelt · -j: von hinten · -i: von hinten gespiegelt
+  const fwd=v.dir[1]>0||v.dir[0]>0,flip=v.dir[0]!==0,im=hallImg("vis_"+v.t+"_"+(fwd?"f":"b")+".webp");if(!im.complete||!im.naturalWidth)return;
+  const[px,py]=HP(v.i,v.j),h=HVH*(v.t==="kid"?.8:1),wd=h*im.naturalWidth/im.naturalHeight,bob=v.path.length?Math.abs(Math.sin(v.ph))*3:0;
+  x.save();x.translate(px,py);x.fillStyle="rgba(40,20,8,.18)";x.beginPath();x.ellipse(0,0,wd*.32,wd*.12,0,0,7);x.fill();
+  if(flip)x.scale(-1,1);x.drawImage(im,-wd/2,-h-bob,wd,h);x.restore()}
+function hAnim(t){if(!HV)return;HV.anim=requestAnimationFrame(hAnim);const dt=Math.min(.1,(t-(HV.lt||t))/1000);
+  if(HV.edit||document.hidden){HV.lt=t;return}if(dt<.033&&HV.lt)return;HV.lt=t;   // höchstens 30 Bilder pro Sekunde, beim Einrichten Pause
+  hVisStep(dt);if(!HV.raf)hallPaint()}
 
 /* ================= Expeditionskarte ================= */
 const ERA_COL=["#e2553a","#e8a33a","#3aa65a","#d63a8c","#3a8bd6","#5bb8d6"];
