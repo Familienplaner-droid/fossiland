@@ -1578,14 +1578,14 @@ const HALL_SZ={dime:3,edap:3,scut:3,inos:3,meso:2,plat:4,herr:3,coel:3,eora:1,no
 const DECOMETA={"carpet":[600,479,231,478],"desk":[579,600,125,599],"ammo":[504,600,203,599],"nest":[600,546,298,545],"globe":[405,600,202,599],"case":[500,600,249,599],"lamp":[204,600,101,599],"rope":[589,600,83,599],"info":[489,600,370,599],"bench":[600,560,159,559],"cycad":[549,600,269,599],"fern":[573,600,282,599],"vitrine":[364,600,181,599]};   // [w,h, unterster Punkt x,y]
 const HDECO={fern:{f:[1,1],k:1.6,p:300},cycad:{f:[1,1],k:1.6,p:300},bench:{f:[1,2],k:1,p:250},info:{f:[2,1],k:1,p:200},rope:{f:[1,2],k:1,p:150},lamp:{f:[1,1],k:.55,p:250},
   case:{f:[1,1],k:1,p:700},globe:{f:[1,1],k:.95,p:600},nest:{f:[1,1],k:1,p:900},ammo:{f:[1,1],k:1.15,p:800},desk:{f:[1,3],k:1,p:1500},carpet:{f:[2,3],k:1,p:400,flat:1}};   // Grundfläche, Bildbreite relativ zur Grundfläche, Preis (vorläufig)
-const HT=64,HTH=HT*.645,HWALL=150,HHALF=44,HPARA=12,HS=16,HN=3*HS,HLV=[10,12,14,16],HGROW=[2,4,7];   // Feldmaße, Wandhöhen, Platzgröße, Ausbaustufen
-// VORLÄUFIGE Preise (noch per Wirtschafts-Simulation abstimmen): Bau = cost, Vergrößern = cost × HGROW[Stufe]
-const HROOMS=[{id:"ein",si:2,sj:2,cost:400},{id:"e0",si:1,sj:2,e:0,cost:400},{id:"e1",si:0,sj:2,e:1,cost:800},{id:"e2",si:0,sj:1,e:2,cost:2000},
-  {id:"e3",si:0,sj:0,e:3,cost:4000},{id:"e4",si:1,sj:0,e:4,cost:7000},{id:"e5",si:2,sj:0,e:5,cost:10000},{id:"sch",si:2,sj:1,cost:3000},{id:"hof",si:1,sj:1,cost:2000}];
+const HT=64,HTH=HT*.645,HWALL=150,HHALF=44,HPARA=12,HS=16,HN=3*HS,HLV=[10,12,14,16],HGROW=[3,8,20];   // Feldmaße, Wandhöhen, Platzgröße, Ausbaustufen
+// Preise abgestimmt mit tools/sim/museum.py: Bau = cost (wenige Stunden Eintritt, wenn das Zeitalter frei wird), Vergrößern = cost × HGROW[Stufe]
+const HROOMS=[{id:"ein",si:2,sj:2,cost:400},{id:"e0",si:1,sj:2,e:0,cost:150},{id:"e1",si:0,sj:2,e:1,cost:150},{id:"e2",si:0,sj:1,e:2,cost:400},
+  {id:"e3",si:0,sj:0,e:3,cost:1200},{id:"e4",si:1,sj:0,e:4,cost:2000},{id:"e5",si:2,sj:0,e:5,cost:3000},{id:"sch",si:2,sj:1,cost:600},{id:"hof",si:1,sj:1,cost:1500}];
 const HDOORS=[["ein","e0"],["e0","e1"],["e1","e2"],["e2","e3"],["e3","e4"],["e4","e5"],["e5","sch"],["sch","ein"],["hof","e0"],["hof","sch"]];
 const HIMG={};let HV=null,HGEO=null;
 const hRoom=id=>HROOMS.find(r=>r.id===id),hAt=(si,sj)=>HROOMS.find(r=>r.si===si&&r.sj===sj);
-function hallS(){if(!S.hall||S.hall.v!==2){S.hall={v:2,r:{ein:{lv:1}},it:{}};
+function hallS(){if(!S.hall||S.hall.v!==2){S.hall={v:2,r:{ein:{lv:1},e0:{lv:0}},it:{}};   // Eingangshalle und Perm-Saal stehen von Anfang an
     // Einstand: Säle der Zeitalter, in denen schon Skelette fertig sind, stehen bereit, die Skelette sind aufgestellt
     for(const r of HROOMS)if(r.e!=null&&unlocked(r.e)&&CREATURES.some(c=>c.e===r.e&&hallOk(c)))S.hall.r[r.id]={lv:0};HGEO=null;
     for(const c of CREATURES)if(hallOk(c)){const sp=hSpot({key:"c:"+c.id,kind:"c",id:c.id});if(sp)S.hall.it[c.id]=sp}save()}
@@ -1594,7 +1594,8 @@ function hallS(){if(!S.hall||S.hall.v!==2){S.hall={v:2,r:{ein:{lv:1}},it:{}};
 const hLv=r=>{const x=S.hall&&S.hall.r[r.id];return x?x.lv:-1};
 const hName=r=>{const x=S.hall.r[r.id];return(x&&x.nm)||(r.e!=null?t("hallRmEra",{e:ERAS[r.e].name}):t("hallRm_"+r.id))};
 const hCost=r=>{const L=hLv(r);return L<0?r.cost:L+1<HLV.length?Math.round(r.cost*HGROW[L]/50)*50:0};
-const hOpenFor=r=>r.e==null||unlocked(r.e);
+const hOpenFor=r=>r.id==="sch"?Object.keys(S.rares||{}).length>0:r.e==null||unlocked(r.e);   // Schatzkammer ab dem ersten seltenen Fund
+const hLockTxt=r=>r.id==="sch"?t("hallLockRare"):t("hallLotLock",{n:ERAS[r.e].need});
 const hallOk=c=>isFull(c)&&!!HALLMETA[c.id];
 const HP=(i,j)=>[(i-j)*HT/2,(i+j)*HTH/2];
 const hInv=(x,y)=>[(x/(HT/2)+y/(HTH/2))/2,(y/(HTH/2)-x/(HT/2))/2];
@@ -1763,7 +1764,7 @@ function hallPaint(){const{cv,vp}=HV,dpr=Math.min(2,window.devicePixelRatio||1),
   // 3) Schilder mit den Namen der Säle (und in Einrichten auch der Bauplätze), in Bildschirmgröße
   x.setTransform(dpr,0,0,dpr,0,0);HV.labels=[];x.font="700 12px "+getComputedStyle(document.body).fontFamily;x.textBaseline="middle";
   for(const r of[...HROOMS].sort((a,b)=>(hLv(a)<0)-(hLv(b)<0))){const L=hLv(r);if(L<0&&!HV.edit)continue;const s=L<0?HS:HLV[L],o=(HS-s)/2,[wx,wy]=HP(r.si*HS+o+s,r.sj*HS+o+s),sx=HV.x+wx*HV.s,sy=HV.y+wy*HV.s-14;
-    const txt=L<0?(hOpenFor(r)?t("hallLotBuy",{n:nf(r.cost)}):t("hallLotLock",{n:ERAS[r.e].need})):hName(r),w=x.measureText(txt).width+18,lx=sx-w/2,ly=sy-12;
+    const txt=L<0?(hOpenFor(r)?t("hallLotBuy",{n:nf(r.cost)}):hLockTxt(r)):hName(r),w=x.measureText(txt).width+18,lx=sx-w/2,ly=sy-12;
     if(sx<-w||sx>W+w||sy<-30||sy>H+30)continue;
     if(!HV.edit&&s*HT*HV.s<w*1.1)continue;                       // Saal zu klein im Bild: Schild weglassen
     if(HV.labels.some(o=>lx<o.x+o.w+4&&o.x<lx+w+4&&ly<o.y+o.h+4&&o.y<ly+28))continue;   // nicht über ein anderes Schild
@@ -1792,7 +1793,7 @@ function hallUI(){if(!HV)return;const el=HV.el,sh=el.querySelector("#hallsheet")
   const o=HV.sel&&hObj(HV.sel);let top="";
   if(o)top=`<h3>${o.kind==="c"?CREATURES.find(c=>c.id===o.id).n:o.kind==="r"?t("rn_"+o.id):t("dk_"+o.id)}</h3><div class="row"><button class="btn" id="hlTurn">${t("hallTurn")}</button><button class="btn" id="hlStore">${t("hallStore")}</button></div>`;
   if(!o&&HV.room){const r=hRoom(HV.room),L=hLv(r),cost=hCost(r);
-    if(L<0)top=`<h3>${hName(r)}</h3>`+(hOpenFor(r)?`<p>${t("hallLotTxt")}</p>${hBuyBtn(cost,t("hallBuild"))}`:`<p>${t("hallLotLock",{n:ERAS[r.e].need})}</p>`);
+    if(L<0)top=`<h3>${hName(r)}</h3>`+(hOpenFor(r)?`<p>${t("hallLotTxt")}</p>${hBuyBtn(cost,t("hallBuild"))}`:`<p>${hLockTxt(r)}</p>`);
     else top=`<h3>${hEsc(hName(r))}</h3><div class="row hname"><input id="hlName" maxlength="24" value="${hEsc(hName(r))}" aria-label="${t("hallRename")}"><button class="btn" id="hlSaveNm">${t("hallSave")}</button></div>
       <p class="meta">${t("hallSize",{n:HLV[L]})}</p>${cost?hBuyBtn(cost,t("hallGrow",{n:HLV[L+1]})):`<p>${t("hallMax")}</p>`}`}
   const st=CREATURES.filter(c=>hallOk(c)&&!H.it[c.id]),rv=RARES.map(r=>r[0]).filter(id=>S.rares&&S.rares[id]&&!H.rv[id]),tab=HV.tab;
@@ -1809,7 +1810,7 @@ function hallInfo(key){const o=hObj(key);if(!o)return;let h="";
   else if(o.kind==="r")h=`<h3>${t("rn_"+o.id)}</h3><p>${t("rf_"+o.id)}</p>`;else h=`<h3>${t("dk_"+o.id)}</h3>`;
   HV.el.querySelector("#hallsheet").innerHTML=h}
 for(const [l,o] of Object.entries({
-  de:{dk_fern:"Baumfarn",dk_cycad:"Palmfarn",dk_bench:"Bank",dk_info:"Infotafel",dk_rope:"Absperrung",dk_lamp:"Stehlampe",dk_case:"Fossilvitrine",dk_globe:"Globus",dk_nest:"Dino-Nest",dk_ammo:"Riesen-Ammonit",dk_desk:"Empfangstresen",dk_carpet:"Teppich",hallTabC:"Skelette",hallTabD:"Deko",hallTabR:"Funde",hallPutN:"Aufstellen ({n})",hallDecoHint:"Deko kommt in den ausgewählten Saal. Teppiche liegen unter allem.",hallRareHint:"Jeder seltene Fund bekommt eine eigene Vitrine.",hallRareAll:"Alle seltenen Funde sind ausgestellt.",hallRareNone:"Noch keine seltenen Funde. Sie tauchen beim Graben manchmal ganz unten auf.",hallNoSpot:"Hier ist kein freier Platz. Wähle einen anderen Saal.",
+  de:{hallLockRare:"Ab dem ersten seltenen Fund",dk_fern:"Baumfarn",dk_cycad:"Palmfarn",dk_bench:"Bank",dk_info:"Infotafel",dk_rope:"Absperrung",dk_lamp:"Stehlampe",dk_case:"Fossilvitrine",dk_globe:"Globus",dk_nest:"Dino-Nest",dk_ammo:"Riesen-Ammonit",dk_desk:"Empfangstresen",dk_carpet:"Teppich",hallTabC:"Skelette",hallTabD:"Deko",hallTabR:"Funde",hallPutN:"Aufstellen ({n})",hallDecoHint:"Deko kommt in den ausgewählten Saal. Teppiche liegen unter allem.",hallRareHint:"Jeder seltene Fund bekommt eine eigene Vitrine.",hallRareAll:"Alle seltenen Funde sind ausgestellt.",hallRareNone:"Noch keine seltenen Funde. Sie tauchen beim Graben manchmal ganz unten auf.",hallNoSpot:"Hier ist kein freier Platz. Wähle einen anderen Saal.",
     hallT:"Museum",hallOpen:"Museum betreten",hallEdit:"Einrichten",hallDone:"Fertig",hallTurn:"Drehen",hallStore:"Ins Lager",hallDepot:"Lager",
     hallPut:"Tippe auf ein Skelett, um es aufzustellen.",hallDepotEmpty:"Alle fertigen Skelette sind ausgestellt.",hallEmpty:"Noch steht nichts im Museum. Tippe auf Einrichten.",
     hallCount:"{n} Skelette ausgestellt. Tippe auf eines, um mehr zu erfahren.",hallWaiting:"{n} warten im Lager.",hallDrag:"Skelett ziehen oder Saal antippen",hallNoRoom:"Dort ist kein Platz.",
@@ -1817,7 +1818,7 @@ for(const [l,o] of Object.entries({
     hallRm_ein:"Eingangshalle",hallRm_sch:"Schatzkammer",hallRm_hof:"Innenhof",hallRmEra:"{e}-Saal",hallLotBuy:"Bauplatz · {n}",hallLotLock:"Ab {n} fertigen Skeletten",
     hallLotTxt:"Hier ist noch ein Bauplatz.",hallBuild:"Bauen",hallGrow:"Vergrößern auf {n} × {n}",hallSize:"Größe {n} × {n} Felder",hallMax:"Der Saal hat seine volle Größe.",
     hallRename:"Name des Saals",hallSave:"Speichern",hallRoomHint:"Tippe auf einen Saal oder Bauplatz, um zu bauen, zu vergrößern oder umzubenennen.",hallNoCoins:"Dafür fehlen dir noch Münzen."},
-  en:{dk_fern:"Tree fern",dk_cycad:"Cycad",dk_bench:"Bench",dk_info:"Information board",dk_rope:"Rope barrier",dk_lamp:"Floor lamp",dk_case:"Fossil case",dk_globe:"Globe",dk_nest:"Dinosaur nest",dk_ammo:"Giant ammonite",dk_desk:"Reception desk",dk_carpet:"Carpet",hallTabC:"Skeletons",hallTabD:"Decor",hallTabR:"Finds",hallPutN:"Place ({n})",hallDecoHint:"Decor goes into the selected hall. Carpets lie under everything.",hallRareHint:"Every rare find gets its own showcase.",hallRareAll:"All rare finds are on display.",hallRareNone:"No rare finds yet. They sometimes turn up at the very bottom when you dig.",hallNoSpot:"There's no free space here. Choose another hall.",
+  en:{hallLockRare:"From your first rare find",dk_fern:"Tree fern",dk_cycad:"Cycad",dk_bench:"Bench",dk_info:"Information board",dk_rope:"Rope barrier",dk_lamp:"Floor lamp",dk_case:"Fossil case",dk_globe:"Globe",dk_nest:"Dinosaur nest",dk_ammo:"Giant ammonite",dk_desk:"Reception desk",dk_carpet:"Carpet",hallTabC:"Skeletons",hallTabD:"Decor",hallTabR:"Finds",hallPutN:"Place ({n})",hallDecoHint:"Decor goes into the selected hall. Carpets lie under everything.",hallRareHint:"Every rare find gets its own showcase.",hallRareAll:"All rare finds are on display.",hallRareNone:"No rare finds yet. They sometimes turn up at the very bottom when you dig.",hallNoSpot:"There's no free space here. Choose another hall.",
     hallT:"Museum",hallOpen:"Enter the museum",hallEdit:"Arrange",hallDone:"Done",hallTurn:"Turn",hallStore:"To storage",hallDepot:"Storage",
     hallPut:"Tap a skeleton to put it on display.",hallDepotEmpty:"All finished skeletons are on display.",hallEmpty:"Nothing on display yet. Tap Arrange.",
     hallCount:"{n} skeletons on display. Tap one to learn more.",hallWaiting:"{n} waiting in storage.",hallDrag:"Drag a skeleton or tap a hall",hallNoRoom:"There's no room there.",
@@ -1825,7 +1826,7 @@ for(const [l,o] of Object.entries({
     hallRm_ein:"Entrance hall",hallRm_sch:"Treasure room",hallRm_hof:"Courtyard",hallRmEra:"{e} Hall",hallLotBuy:"Building plot · {n}",hallLotLock:"From {n} finished skeletons",
     hallLotTxt:"This is still an empty building plot.",hallBuild:"Build",hallGrow:"Enlarge to {n} × {n}",hallSize:"Size {n} × {n} tiles",hallMax:"This hall has reached its full size.",
     hallRename:"Hall name",hallSave:"Save",hallRoomHint:"Tap a hall or building plot to build, enlarge or rename.",hallNoCoins:"You don't have enough coins yet."},
-  fr:{dk_fern:"Fougère arborescente",dk_cycad:"Cycas",dk_bench:"Banc",dk_info:"Panneau d'information",dk_rope:"Cordon",dk_lamp:"Lampadaire",dk_case:"Vitrine à fossiles",dk_globe:"Globe",dk_nest:"Nid de dinosaure",dk_ammo:"Ammonite géante",dk_desk:"Comptoir d'accueil",dk_carpet:"Tapis",hallTabC:"Squelettes",hallTabD:"Déco",hallTabR:"Trouvailles",hallPutN:"Installer ({n})",hallDecoHint:"La déco va dans la salle choisie. Les tapis passent sous tout le reste.",hallRareHint:"Chaque trouvaille rare a sa propre vitrine.",hallRareAll:"Toutes les trouvailles rares sont exposées.",hallRareNone:"Pas encore de trouvaille rare. Elles apparaissent parfois tout au fond quand tu creuses.",hallNoSpot:"Il n'y a pas de place libre ici. Choisis une autre salle.",
+  fr:{hallLockRare:"Dès ta première trouvaille rare",dk_fern:"Fougère arborescente",dk_cycad:"Cycas",dk_bench:"Banc",dk_info:"Panneau d'information",dk_rope:"Cordon",dk_lamp:"Lampadaire",dk_case:"Vitrine à fossiles",dk_globe:"Globe",dk_nest:"Nid de dinosaure",dk_ammo:"Ammonite géante",dk_desk:"Comptoir d'accueil",dk_carpet:"Tapis",hallTabC:"Squelettes",hallTabD:"Déco",hallTabR:"Trouvailles",hallPutN:"Installer ({n})",hallDecoHint:"La déco va dans la salle choisie. Les tapis passent sous tout le reste.",hallRareHint:"Chaque trouvaille rare a sa propre vitrine.",hallRareAll:"Toutes les trouvailles rares sont exposées.",hallRareNone:"Pas encore de trouvaille rare. Elles apparaissent parfois tout au fond quand tu creuses.",hallNoSpot:"Il n'y a pas de place libre ici. Choisis une autre salle.",
     hallT:"Musée",hallOpen:"Entrer dans le musée",hallEdit:"Aménager",hallDone:"Terminé",hallTurn:"Tourner",hallStore:"En réserve",hallDepot:"Réserve",
     hallPut:"Touche un squelette pour l'exposer.",hallDepotEmpty:"Tous les squelettes terminés sont exposés.",hallEmpty:"Rien n'est encore exposé. Touche Aménager.",
     hallCount:"{n} squelettes exposés. Touches-en un pour en savoir plus.",hallWaiting:"{n} attendent dans la réserve.",hallDrag:"Fais glisser un squelette ou touche une salle",hallNoRoom:"Il n'y a pas de place ici.",
@@ -1833,7 +1834,7 @@ for(const [l,o] of Object.entries({
     hallRm_ein:"Hall d'entrée",hallRm_sch:"Salle du trésor",hallRm_hof:"Cour intérieure",hallRmEra:"Salle {e}",hallLotBuy:"Terrain · {n}",hallLotLock:"À partir de {n} squelettes terminés",
     hallLotTxt:"Ce terrain est encore libre.",hallBuild:"Construire",hallGrow:"Agrandir à {n} × {n}",hallSize:"Taille {n} × {n} cases",hallMax:"Cette salle a atteint sa taille maximale.",
     hallRename:"Nom de la salle",hallSave:"Enregistrer",hallRoomHint:"Touche une salle ou un terrain pour construire, agrandir ou renommer.",hallNoCoins:"Il te manque encore des pièces."},
-  es:{dk_fern:"Helecho arborescente",dk_cycad:"Cícada",dk_bench:"Banco",dk_info:"Panel informativo",dk_rope:"Cordón",dk_lamp:"Lámpara de pie",dk_case:"Vitrina de fósiles",dk_globe:"Globo",dk_nest:"Nido de dinosaurio",dk_ammo:"Amonites gigante",dk_desk:"Mostrador de recepción",dk_carpet:"Alfombra",hallTabC:"Esqueletos",hallTabD:"Decoración",hallTabR:"Hallazgos",hallPutN:"Colocar ({n})",hallDecoHint:"La decoración va a la sala elegida. Las alfombras quedan debajo de todo.",hallRareHint:"Cada hallazgo raro tiene su propia vitrina.",hallRareAll:"Todos los hallazgos raros están expuestos.",hallRareNone:"Aún no tienes hallazgos raros. A veces aparecen al fondo del todo cuando excavas.",hallNoSpot:"Aquí no hay sitio libre. Elige otra sala.",
+  es:{hallLockRare:"Desde tu primer hallazgo raro",dk_fern:"Helecho arborescente",dk_cycad:"Cícada",dk_bench:"Banco",dk_info:"Panel informativo",dk_rope:"Cordón",dk_lamp:"Lámpara de pie",dk_case:"Vitrina de fósiles",dk_globe:"Globo",dk_nest:"Nido de dinosaurio",dk_ammo:"Amonites gigante",dk_desk:"Mostrador de recepción",dk_carpet:"Alfombra",hallTabC:"Esqueletos",hallTabD:"Decoración",hallTabR:"Hallazgos",hallPutN:"Colocar ({n})",hallDecoHint:"La decoración va a la sala elegida. Las alfombras quedan debajo de todo.",hallRareHint:"Cada hallazgo raro tiene su propia vitrina.",hallRareAll:"Todos los hallazgos raros están expuestos.",hallRareNone:"Aún no tienes hallazgos raros. A veces aparecen al fondo del todo cuando excavas.",hallNoSpot:"Aquí no hay sitio libre. Elige otra sala.",
     hallT:"Museo",hallOpen:"Entrar en el museo",hallEdit:"Organizar",hallDone:"Listo",hallTurn:"Girar",hallStore:"Al almacén",hallDepot:"Almacén",
     hallPut:"Toca un esqueleto para exponerlo.",hallDepotEmpty:"Todos los esqueletos terminados están expuestos.",hallEmpty:"Todavía no hay nada expuesto. Toca Organizar.",
     hallCount:"{n} esqueletos expuestos. Toca uno para saber más.",hallWaiting:"{n} esperan en el almacén.",hallDrag:"Arrastra un esqueleto o toca una sala",hallNoRoom:"Ahí no hay sitio.",
