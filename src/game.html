@@ -322,6 +322,9 @@ nav button[aria-selected="true"] svg{color:var(--tape)}
 .maphead .btn.sm{padding:8px 14px;font-size:15px;flex:none}
 .hallsheet{max-height:40vh}
 .hallsheet h3 small{font:700 13px var(--f-body);color:var(--muted)}
+.hname input{flex:2;min-width:0;font:600 16px var(--f-body);padding:10px 12px;border-radius:12px;border:1px solid var(--edge);background:var(--bg);color:var(--fg)}
+.hallsheet .bar{flex:none;height:16px;margin-top:8px}
+.hallsheet .btn[disabled]{opacity:.55}
 .hallsheet .row{display:flex;gap:8px;flex-wrap:wrap}.hallsheet .row .btn{flex:1}
 .hdepot{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;scroll-snap-type:x mandatory}
 .hdep{flex:none;width:112px;border:0;border-radius:14px;background:var(--edge);padding:6px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;color:var(--fg);scroll-snap-align:start}
@@ -1559,52 +1562,79 @@ function renderShop(){
   <div class="row" style="margin-top:8px"><button class="btn" id="tutReplay">${t("tutReplay")}</button>${LNP?`<button class="btn" id="notifT">${t(S.notif?"nOn":"nOff")}</button>`:""}<button class="btn" id="report">${t("report")}</button><button class="btn" id="reset">${t("reset")}</button></div>`;
 }
 
-/* ================= Museumshalle =================
-   Isometrische Halle: fertige Skelette frei aufstellen, verschieben und drehen (gespiegelt).
-   Bilder ex_<id>.webp, Sockel-Messpunkte in HALLMETA (neu erzeugen mit tools/hall/meta.py).
-   Spielstand: S.hall={n:Kantenlänge in Feldern, it:{id:[i,j,gedreht]}} */
+/* ================= Museum (Grundriss) =================
+   Ein zusammenhängender Grundriss aus 3×3 Plätzen zu je HS×HS Feldern, als Rundgang:
+   Eingangshalle → Perm … Eiszeit → Schatzkammer → Eingang, Innenhof in der Mitte.
+   Jeder Saal wird gebaut und in Stufen vergrößert (offene Fläche wächst von der Mitte aus).
+   Exponate: Bilder ex_<id>.webp, Sockel-Messpunkte in HALLMETA (neu erzeugen mit tools/hall/meta.py).
+   Spielstand: S.hall={v:2, r:{saal:{lv,nm}}, it:{id:[i,j,gedreht]}}  (i,j = Felder im ganzen Museum) */
 const HALLMETA={"allo":[900,872,343,870,95,701,820,561],"andr":[879,900,242,899,6,736,839,521],"anky":[900,739,311,736,49,556,890,355],"arch":[900,900,360,872,122,711,800,581],"baer":[856,900,296,898,1,700,854,541],"basi":[900,900,184,863,10,753,883,434],"brac":[900,900,340,899,136,784,732,686],"coel":[900,874,319,871,87,714,827,558],"darw":[900,900,285,899,35,744,847,548],"dime":[882,900,307,899,19,714,881,542],"dipl":[900,653,231,650,89,556,861,262],"edap":[900,900,326,895,50,708,890,540],"eora":[900,900,382,741,250,664,641,616],"gast":[708,900,223,898,1,751,644,614],"glyp":[854,900,294,899,0,714,852,555],"herr":[900,823,320,820,79,655,838,501],"icht":[900,728,224,726,47,608,845,396],"igua":[900,842,288,839,59,676,877,489],"inos":[900,878,299,876,1,679,879,512],"mamm":[854,900,278,899,0,718,791,564],"megl":[830,900,232,898,1,751,650,636],"meso":[900,832,278,830,27,663,881,464],"mosa":[900,779,207,776,29,667,887,427],"nash":[900,848,283,846,1,656,832,494],"noth":[896,900,273,898,60,753,817,564],"pars":[900,899,305,896,59,733,873,551],"plat":[899,900,288,898,33,725,857,559],"prac":[848,900,202,899,1,760,748,603],"prop":[832,900,229,899,1,743,773,554],"pter":[900,781,276,779,74,633,811,459],"rham":[900,790,289,789,99,662,795,493],"scut":[900,819,309,816,1,617,884,459],"smil":[860,900,294,896,1,698,858,531],"spin":[900,900,300,872,80,712,847,527],"steg":[899,900,339,898,68,716,852,558],"trex":[900,900,360,877,109,716,830,566],"tric":[888,900,325,899,37,701,886,531],"velo":[900,865,355,862,117,696,833,548]};   // [w,h, Sockel vorne x,y, links x,y, rechts x,y]  (tools/hall/meta.py)
 const HALL_SZ={dime:3,edap:3,scut:3,inos:3,meso:2,plat:4,herr:3,coel:3,eora:2,noth:3,arch:2,allo:4,steg:4,brac:5,dipl:5,icht:3,rham:2,
   tric:4,velo:2,anky:4,spin:5,trex:5,pter:3,mosa:5,pars:4,igua:4,gast:3,basi:5,darw:2,prop:2,andr:4,prac:5,mamm:4,smil:3,nash:3,baer:3,megl:3,glyp:3};   // Sockellänge in Feldern
-const HT=64,HTH=HT*.645,HWALL=150;   // Feldbreite und -höhe, Wandhöhe (in Weltpunkten)
-const HIMG={};let HV=null;
-function hallS(){if(!S.hall||!S.hall.it)S.hall={n:12,it:{}};return S.hall}
+const HT=64,HTH=HT*.645,HWALL=150,HHALF=44,HPARA=12,HS=16,HN=3*HS,HLV=[10,12,14,16],HGROW=[2,4,7];   // Feldmaße, Wandhöhen, Platzgröße, Ausbaustufen
+// VORLÄUFIGE Preise (noch per Wirtschafts-Simulation abstimmen): Bau = cost, Vergrößern = cost × HGROW[Stufe]
+const HROOMS=[{id:"ein",si:2,sj:2,cost:400},{id:"e0",si:1,sj:2,e:0,cost:400},{id:"e1",si:0,sj:2,e:1,cost:800},{id:"e2",si:0,sj:1,e:2,cost:2000},
+  {id:"e3",si:0,sj:0,e:3,cost:4000},{id:"e4",si:1,sj:0,e:4,cost:7000},{id:"e5",si:2,sj:0,e:5,cost:10000},{id:"sch",si:2,sj:1,cost:3000},{id:"hof",si:1,sj:1,cost:2000}];
+const HDOORS=[["ein","e0"],["e0","e1"],["e1","e2"],["e2","e3"],["e3","e4"],["e4","e5"],["e5","sch"],["sch","ein"],["hof","e0"],["hof","sch"]];
+const HIMG={};let HV=null,HGEO=null;
+const hRoom=id=>HROOMS.find(r=>r.id===id),hAt=(si,sj)=>HROOMS.find(r=>r.si===si&&r.sj===sj);
+function hallS(){if(!S.hall||S.hall.v!==2){S.hall={v:2,r:{ein:{lv:1}},it:{}};
+    // Einstand: Säle der Zeitalter, in denen schon Skelette fertig sind, stehen bereit, die Skelette sind aufgestellt
+    for(const r of HROOMS)if(r.e!=null&&unlocked(r.e)&&CREATURES.some(c=>c.e===r.e&&hallOk(c)))S.hall.r[r.id]={lv:0};HGEO=null;
+    for(const c of CREATURES)if(hallOk(c)){const sp=hallSpot(c.id);if(sp)S.hall.it[c.id]=sp}save()}
+  return S.hall}
+const hLv=r=>{const x=S.hall&&S.hall.r[r.id];return x?x.lv:-1};
+const hName=r=>{const x=S.hall.r[r.id];return(x&&x.nm)||(r.e!=null?t("hallRmEra",{e:ERAS[r.e].name}):t("hallRm_"+r.id))};
+const hCost=r=>{const L=hLv(r);return L<0?r.cost:L+1<HLV.length?Math.round(r.cost*HGROW[L]/50)*50:0};
+const hOpenFor=r=>r.e==null||unlocked(r.e);
 const hallOk=c=>isFull(c)&&!!HALLMETA[c.id];
 const HP=(i,j)=>[(i-j)*HT/2,(i+j)*HTH/2];
 const hInv=(x,y)=>[(x/(HT/2)+y/(HTH/2))/2,(y/(HTH/2)-x/(HT/2))/2];
-// Grundfläche [a entlang i, b entlang j]: ungedreht läuft die lange Sockelseite nach rechts oben (entlang j)
+// Türen: Lage auf der gemeinsamen Kante zweier Säle; der Haupteingang liegt vorne links an der Eingangshalle
+function hDoor(a,b){const A=hRoom(a),B=hRoom(b);return A.si!==B.si?{ax:"i",at:Math.max(A.si,B.si)*HS,t0:A.sj*HS+7,a:A,b:B}:{ax:"j",at:Math.max(A.sj,B.sj)*HS,t0:A.si*HS+7,a:A,b:B}}
+const HMAIN={ax:"j",at:HN,t0:2*HS+7,a:hRoom("ein"),b:null};
+// Geometrie: für jedes Feld 0 = kein Boden, 1 = Ausstellungsfläche, 2 = Gang (frei halten); dazu der Saal je Feld
+function hGeo(){if(HGEO)return HGEO;const fl=new Uint8Array(HN*HN),rm=new Int8Array(HN*HN).fill(-1);
+  HROOMS.forEach((r,k)=>{const L=hLv(r);if(L<0)return;const s=HLV[L],o=(HS-s)/2;
+    for(let i=0;i<HS;i++)for(let j=0;j<HS;j++){const q=(r.si*HS+i)*HN+r.sj*HS+j;rm[q]=k;if(i>=o&&i<o+s&&j>=o&&j<o+s)fl[q]=1}});
+  const doors=[...HDOORS.map(([a,b])=>hDoor(a,b)),HMAIN];
+  for(const d of doors)for(const r of[d.a,d.b]){if(!r||hLv(r)<0)continue;const s=HLV[hLv(r)],dep=Math.max(1,(HS-s)/2),inner=(d.ax==="i"?r.si:r.sj)*HS===d.at;
+    for(let u=0;u<dep;u++)for(let w=0;w<2;w++){const n=inner?d.at+u:d.at-1-u,t2=d.t0+w,q=d.ax==="i"?n*HN+t2:t2*HN+n;if(n>=0&&n<HN)fl[q]=2}}
+  return HGEO={fl,rm,doors}}
 function hallFoot(id,f){const m=HALLMETA[id],L=HALL_SZ[id]||3,W=Math.max(1,Math.min(L,Math.round(L*(m[2]-m[4])/(m[6]-m[2]))));return f?[L,W]:[W,L]}
-function hallFree(id,i,j,f){const H=hallS(),[a,b]=hallFoot(id,f);if(i<0||j<0||i+a>H.n||j+b>H.n)return false;
+function hallFree(id,i,j,f){const H=hallS(),G=hGeo(),[a,b]=hallFoot(id,f);if(i<0||j<0||i+a>HN||j+b>HN)return false;const room=G.rm[i*HN+j];
+  for(let x=i;x<i+a;x++)for(let y=j;y<j+b;y++){const q=x*HN+y;if(G.fl[q]!==1||G.rm[q]!==room)return false}
   for(const[k,p]of Object.entries(H.it)){if(k===id)continue;const[c,d]=hallFoot(k,p[2]);if(i<p[0]+c&&p[0]<i+a&&j<p[1]+d&&p[1]<j+b)return false}return true}
-function hallSpot(id){const n=hallS().n,roomy=(i,j,f)=>{const[a,b]=hallFoot(id,f),H=S.hall;
-    for(const[k,p]of Object.entries(H.it)){if(k===id)continue;const[c,d]=hallFoot(k,p[2]);if(i-1<p[0]+c&&p[0]<i+a+1&&j-1<p[1]+d&&p[1]<j+b+1)return false}return true};
-  for(const pass of[1,0])for(let s=0;s<=2*n;s++)for(let i=0;i<=s;i++){const j=s-i;for(const f of[0,1])if(hallFree(id,i,j,f)&&(!pass||roomy(i,j,f)))return[i,j,f]}return null}
+// Freier Platz: bevorzugt im Saal des eigenen Zeitalters, möglichst mit einem Feld Abstand ringsum
+function hallSpot(id){const H=S.hall,c=CREATURES.find(c=>c.id===id),own=hRoom("e"+c.e),rooms=[own,...HROOMS.filter(r=>r!==own&&r.id!=="hof")].filter(r=>hLv(r)>=0);
+  const roomy=(i,j,f)=>{const[a,b]=hallFoot(id,f);for(const[k,p]of Object.entries(H.it)){if(k===id)continue;const[c2,d]=hallFoot(k,p[2]);if(i-1<p[0]+c2&&p[0]<i+a+1&&j-1<p[1]+d&&p[1]<j+b+1)return false}return true};
+  for(const r of rooms){const s=HLV[hLv(r)],o=(HS-s)/2,i0=r.si*HS+o,j0=r.sj*HS+o;
+    for(const pass of[1,0])for(let d=0;d<=2*s;d++)for(let x=0;x<=d;x++){const i=i0+x,j=j0+d-x;for(const f of[0,1])if(hallFree(id,i,j,f)&&(!pass||roomy(i,j,f)))return[i,j,f]}}return null}
 function hallImg(id){if(HIMG[id])return HIMG[id];const im=new Image();HIMG[id]=im;
   im.onload=()=>{try{const w=Math.ceil(im.width/4),h=Math.ceil(im.height/4),c=document.createElement("canvas");c.width=w;c.height=h;const x=c.getContext("2d");x.drawImage(im,0,0,w,h);
     const d=x.getImageData(0,0,w,h).data,a=new Uint8Array(w*h);for(let k=0;k<w*h;k++)a[k]=d[k*4+3];im.mask={w,h,a}}catch(e){}hallDraw()};
   im.src=aurl("ex_"+id+".webp");return im}
-// Lage eines Exponats auf dem Bildschirm (Weltpunkte): Ankerpunkt = vordere Sockelecke
 function hallBox(id,p){const m=HALLMETA[id],f=p[2],[a,b]=hallFoot(id,f),fr=HP(p[0]+a,p[1]+b),dl=m[2]-m[4],dr=m[6]-m[2];
   const s=Math.min(a*HT/2/(f?dr:dl),b*HT/2/(f?dl:dr));return{fr,s,m,f,a,b}}
-function hallOrder(){const H=hallS();return Object.entries(H.it).map(([id,p])=>{const[a,b]=hallFoot(id,p[2]);return{id,p,k:p[0]+a/2+p[1]+b/2}}).sort((x,y)=>x.k-y.k)}
+const hRoomOf=(i,j)=>{const G=hGeo(),i2=Math.floor(i),j2=Math.floor(j);return i2<0||j2<0||i2>=HN||j2>=HN?null:hAt(Math.floor(i2/HS),Math.floor(j2/HS))};
 
-function openHall(){if(HV)return;stat("hallOpen");hallS();
+function openHall(){if(HV)return;stat("hallOpen");hallS();HGEO=null;
   const el=document.createElement("div");el.className="mapv hallv";el.innerHTML=`<div class="maphead"><h2>${t("hallT")}</h2>
     <button class="btn sm" id="hlEdit"></button>
     <button class="iconbtn" id="hlClose" aria-label="${t("close")}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
     <div class="mapvp hallvp" id="hallvp"><canvas></canvas><div class="maphint" id="hlHint" hidden></div>
-      <div class="mapzoom"><button data-z="1.4" aria-label="+">+</button><button data-z="0.714" aria-label="−">−</button></div></div>
+      <div class="mapzoom"><button data-z="1.4" aria-label="+">+</button><button data-z="0.714" aria-label="-">&minus;</button></div></div>
     <div class="mapsheet hallsheet" id="hallsheet"></div>`;
   document.body.appendChild(el);document.body.style.overflow="hidden";
   const vp=el.querySelector("#hallvp"),cv=vp.querySelector("canvas");
-  HV={el,vp,cv,s:1,x:0,y:0,edit:false,sel:null,drag:null,floor:null,raf:0};
-  for(const id of Object.keys(hallS().it))if(!HALLMETA[id])delete S.hall.it[id];
-  requestAnimationFrame(()=>{hallFit();hallUI()});
+  HV={el,vp,cv,s:1,x:0,y:0,edit:false,sel:null,room:null,drag:null,raf:0,labels:[]};
+  for(const id of Object.keys(S.hall.it))if(!HALLMETA[id])delete S.hall.it[id];
+  requestAnimationFrame(()=>{hallFit();hallUI();hallDraw()});
   const P=new Map();let pinch=null,moved=0,down=null;
   vp.addEventListener("pointerdown",e=>{if(e.target.closest(".mapzoom"))return;vp.setPointerCapture(e.pointerId);P.set(e.pointerId,{x:e.clientX,y:e.clientY});moved=0;
-    const r=vp.getBoundingClientRect();down={x:e.clientX,y:e.clientY,hit:hallHit(e.clientX-r.left,e.clientY-r.top)};
+    const r=vp.getBoundingClientRect(),sx=e.clientX-r.left,sy=e.clientY-r.top;down={lab:hallLabel(sx,sy),hit:hallHit(sx,sy),sx,sy};
     if(P.size===2){const[a,b]=[...P.values()];pinch={d:Math.hypot(a.x-b.x,a.y-b.y),s:HV.s};HV.drag=null}
-    else if(HV.edit&&down.hit){const p=S.hall.it[down.hit],[wi,wj]=hallTile(e.clientX-r.left,e.clientY-r.top);HV.sel=down.hit;HV.drag={id:down.hit,oi:wi-p[0],oj:wj-p[1],i:p[0],j:p[1],ok:true};hallUI();hallDraw()}});
+    else if(HV.edit&&down.hit&&!down.lab){const p=S.hall.it[down.hit],[wi,wj]=hallTile(sx,sy);HV.sel=down.hit;HV.room=null;HV.drag={id:down.hit,oi:wi-p[0],oj:wj-p[1],i:p[0],j:p[1],ok:true};hallUI();hallDraw()}});
   vp.addEventListener("pointermove",e=>{const q=P.get(e.pointerId);if(!q)return;const dx=e.clientX-q.x,dy=e.clientY-q.y;q.x=e.clientX;q.y=e.clientY;moved+=Math.abs(dx)+Math.abs(dy);
     const r=vp.getBoundingClientRect();
     if(P.size>=2&&pinch){const[a,b]=[...P.values()];hallZoomAt(pinch.s*Math.hypot(a.x-b.x,a.y-b.y)/pinch.d/HV.s,(a.x+b.x)/2-r.left,(a.y+b.y)/2-r.top)}
@@ -1615,85 +1645,147 @@ function openHall(){if(HV)return;stat("hallOpen");hallS();
     if(HV.drag&&was===1){const D=HV.drag;HV.drag=null;
       if(moved>=8){if(D.ok){const p=S.hall.it[D.id];if(p[0]!==D.i||p[1]!==D.j){p[0]=D.i;p[1]=D.j;SFX.click();save()}}else toast(t("hallNoRoom"))}
       hallDraw();return}
-    if(was===1&&moved<10&&down){if(HV.edit){HV.sel=down.hit||null;hallUI();hallDraw()}else if(down.hit){SFX.click();hallInfo(down.hit)}}};
+    if(was===1&&moved<10&&down){
+      if(HV.edit){if(down.lab){HV.room=down.lab;HV.sel=null}else if(down.hit){HV.sel=down.hit;HV.room=null}else{const[ti,tj]=hallTile(down.sx,down.sy),r=hRoomOf(ti,tj);HV.room=r?r.id:null;HV.sel=null}SFX.click();hallUI();hallDraw()}
+      else if(down.hit){SFX.click();hallInfo(down.hit)}}};
   vp.addEventListener("pointerup",up);vp.addEventListener("pointercancel",up);
   vp.addEventListener("wheel",e=>{e.preventDefault();const r=vp.getBoundingClientRect();hallZoomAt(e.deltaY<0?1.2:1/1.2,e.clientX-r.left,e.clientY-r.top)},{passive:false});
   el.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;e.stopPropagation();SFX.click();
     if(b.id==="hlClose")closeHall();
-    else if(b.id==="hlEdit"||b.id==="hlDone"){HV.edit=!HV.edit;HV.sel=null;hallUI();hallDraw()}
+    else if(b.id==="hlEdit"){HV.edit=!HV.edit;HV.sel=null;HV.room=null;hallUI();hallDraw()}
     else if(b.dataset.z)hallZoomAt(+b.dataset.z,vp.clientWidth/2,vp.clientHeight/2);
-    else if(b.dataset.put){const id=b.dataset.put,sp=hallSpot(id);if(!sp){toast(t("hallFull"));return}S.hall.it[id]=sp;HV.sel=id;save();hallUI();hallDraw()}
-    else if(b.id==="hlTurn"&&HV.sel){const p=S.hall.it[HV.sel],nf=p[2]?0:1;
-      if(hallFree(HV.sel,p[0],p[1],nf))p[2]=nf;else{const sp=(()=>{const[a,b2]=hallFoot(HV.sel,nf);for(let d=0;d<4;d++)for(const[di,dj]of[[0,0],[-d,0],[0,-d],[-d,-d],[d,0],[0,d]])if(hallFree(HV.sel,p[0]+di,p[1]+dj,nf))return[p[0]+di,p[1]+dj];return null})();
-        if(!sp){toast(t("hallNoRoom"));return}p[0]=sp[0];p[1]=sp[1];p[2]=nf}save();hallDraw()}
+    else if(b.dataset.put){const id=b.dataset.put,sp=hallSpot(id);if(!sp){toast(t(HROOMS.some(r=>hLv(r)>=0&&r.id!=="ein")?"hallFull":"hallNeedRoom"));return}S.hall.it[id]=sp;HV.sel=id;HV.room=null;save();hallUI();hallDraw();hallShow(sp)}
+    else if(b.id==="hlTurn"&&HV.sel){const p=S.hall.it[HV.sel],nf=p[2]?0:1;let sp=null;
+      for(let d=0;d<4&&!sp;d++)for(const[di,dj]of[[0,0],[-d,0],[0,-d],[-d,-d],[d,0],[0,d]])if(!sp&&hallFree(HV.sel,p[0]+di,p[1]+dj,nf))sp=[p[0]+di,p[1]+dj];
+      if(!sp){toast(t("hallNoRoom"));return}p[0]=sp[0];p[1]=sp[1];p[2]=nf;save();hallDraw()}
     else if(b.id==="hlStore"&&HV.sel){delete S.hall.it[HV.sel];HV.sel=null;save();hallUI();hallDraw()}
+    else if(b.id==="hlBuy"&&HV.room){const r=hRoom(HV.room),c=hCost(r);if(!c||!hOpenFor(r))return;if(S.coins<c){toast(t("hallNoCoins"));return}
+      S.coins-=c;SS().spent+=c;countBuy();const L=hLv(r);S.hall.r[r.id]=Object.assign(S.hall.r[r.id]||{},{lv:L+1});stat(L<0?"hallBuild":"hallGrow");HGEO=null;save();SFX.coin();renderTop();hallUI();hallDraw()}
+    else if(b.id==="hlSaveNm"&&HV.room){const v=el.querySelector("#hlName").value.trim().slice(0,24);S.hall.r[HV.room].nm=v;save();hallUI();hallDraw()}
   });
-  HV.onResize=()=>{if(HV){HV.floor=null;hallFit();hallDraw()}};window.addEventListener("resize",HV.onResize);
+  HV.onResize=()=>{if(HV){hallFit();hallDraw()}};window.addEventListener("resize",HV.onResize);
   try{HV.ro=new ResizeObserver(()=>hallDraw());HV.ro.observe(vp)}catch(e){}}
 function closeHall(){if(!HV)return;window.removeEventListener("resize",HV.onResize);if(HV.ro)HV.ro.disconnect();HV.el.remove();HV=null;document.body.style.overflow="";if(view==="mus")renderMus()}
 function hallTile(sx,sy){return hInv((sx-HV.x)/HV.s,(sy-HV.y)/HV.s)}
-function hallWorld(){const n=hallS().n;return{x0:-n*HT/2,x1:n*HT/2,y0:-HWALL,y1:n*HTH}}
-function hallFit(){const W=HV.vp.clientWidth,H=HV.vp.clientHeight,w=hallWorld();HV.min=Math.min(W/(w.x1-w.x0),H/(w.y1-w.y0))*.96;
-  HV.s=Math.min(2.5,Math.max(HV.min,Math.min(W/(w.x1-w.x0),H/(w.y1-w.y0))*.95));HV.x=W/2-(w.x0+w.x1)/2*HV.s;HV.y=H/2-(w.y0+w.y1)/2*HV.s;hallClamp()}
-function hallClamp(){const W=HV.vp.clientWidth,H=HV.vp.clientHeight,w=hallWorld(),pad=40;
+// Weltgrenzen (Weltpunkte) eines Bereichs aus Feldern
+function hBounds(i0,j0,i1,j1){return{x0:(i0-j1)*HT/2,x1:(i1-j0)*HT/2,y0:(i0+j0)*HTH/2-HWALL,y1:(i1+j1)*HTH/2}}
+function hallFit(){const W=HV.vp.clientWidth,H=HV.vp.clientHeight,all=hBounds(0,0,HN,HN),b=HROOMS.filter(r=>hLv(r)>=0);
+  const w=hBounds(Math.min(...b.map(r=>r.si))*HS,Math.min(...b.map(r=>r.sj))*HS,(Math.max(...b.map(r=>r.si))+1)*HS,(Math.max(...b.map(r=>r.sj))+1)*HS);
+  HV.min=Math.min(W/(all.x1-all.x0),H/(all.y1-all.y0))*.96;HV.s=Math.min(2.5,Math.max(HV.min,.24*Math.max(1,Math.min(W,H)/390),Math.min(W/(w.x1-w.x0),H/(w.y1-w.y0))*.95));
+  HV.x=W/2-(w.x0+w.x1)/2*HV.s;HV.y=H/2-(w.y0+w.y1)/2*HV.s;HV.vw=W;HV.vh=H;hallClamp()}
+function hallShow(p){const W=HV.vp.clientWidth,H=HV.vp.clientHeight,[x,y]=HP(p[0],p[1]),sx=HV.x+x*HV.s,sy=HV.y+y*HV.s;   // aufgestelltes Skelett ins Bild holen
+  if(sx<40||sx>W-40||sy<60||sy>H-20){HV.x+=W/2-sx;HV.y+=H*.6-sy;hallClamp();hallDraw()}}
+function hallClamp(){const W=HV.vp.clientWidth,H=HV.vp.clientHeight,w=hBounds(0,0,HN,HN),pad=60;
   const cl=(v,lo,hi)=>lo>hi?(lo+hi)/2:Math.min(hi,Math.max(lo,v));
   HV.x=cl(HV.x,W-pad-w.x1*HV.s,pad-w.x0*HV.s);HV.y=cl(HV.y,H-pad-w.y1*HV.s,pad-w.y0*HV.s)}
 function hallZoomAt(f,cx,cy){const s0=HV.s,s=Math.max(HV.min,Math.min(2.5,s0*f));HV.x=cx-(cx-HV.x)*s/s0;HV.y=cy-(cy-HV.y)*s/s0;HV.s=s;hallClamp();hallDraw()}
+function hallLabel(sx,sy){for(const L of HV.labels)if(sx>=L.x&&sx<=L.x+L.w&&sy>=L.y&&sy<=L.y+L.h)return L.id;return null}
+function hallOrder(){return Object.entries(S.hall.it).map(([id,p])=>{const[a,b]=hallFoot(id,p[2]);return{id,p,k:p[0]+a/2+p[1]+b/2}}).sort((x,y)=>x.k-y.k)}
 // Treffer: oberstes Exponat unter dem Finger (Bildpixel), sonst das, auf dessen Grundfläche getippt wurde
 function hallHit(sx,sy){const wx=(sx-HV.x)/HV.s,wy=(sy-HV.y)/HV.s,ord=hallOrder();
   for(let k=ord.length-1;k>=0;k--){const{id,p}=ord[k],B=hallBox(id,p),im=HIMG[id];let u=(wx-B.fr[0])/B.s,v=(wy-B.fr[1])/B.s;if(B.f)u=-u;u+=B.m[2];v+=B.m[3];
     if(u<0||v<0||u>=B.m[0]||v>=B.m[1])continue;if(!im||!im.mask)return id;const M=im.mask,x=Math.floor(u/B.m[0]*M.w),y=Math.floor(v/B.m[1]*M.h);if(M.a[y*M.w+x]>60)return id}
   const[ti,tj]=hInv(wx,wy);for(const{id,p}of ord){const[a,b]=hallFoot(id,p[2]);if(ti>=p[0]&&ti<p[0]+a&&tj>=p[1]&&tj<p[1]+b)return id}return null}
 function hallDraw(){if(!HV||HV.raf)return;HV.raf=requestAnimationFrame(()=>{if(!HV)return;HV.raf=0;hallPaint()})}
-function hallFloor(){const n=hallS().n,w=hallWorld(),q=2,c=document.createElement("canvas");c.width=Math.ceil((w.x1-w.x0)*q);c.height=Math.ceil((w.y1-w.y0)*q);
-  const x=c.getContext("2d");x.scale(q,q);x.translate(-w.x0,-w.y0);const P=HP,poly=(pts,fill)=>{x.beginPath();pts.forEach((p,k)=>k?x.lineTo(p[0],p[1]):x.moveTo(p[0],p[1]));x.closePath();x.fillStyle=fill;x.fill()};
-  const up=(p,h)=>[p[0],p[1]-h];
-  // Wände hinten links (i=0) und hinten rechts (j=0), mit Holzvertäfelung unten
-  poly([P(0,0),P(0,n),up(P(0,n),HWALL),up(P(0,0),HWALL)],"#d9c4a2");poly([P(0,0),P(n,0),up(P(n,0),HWALL),up(P(0,0),HWALL)],"#e9d9bd");
-  poly([P(0,0),P(0,n),up(P(0,n),46),up(P(0,0),46)],"#8a5a38");poly([P(0,0),P(n,0),up(P(n,0),46),up(P(0,0),46)],"#9c6a44");
-  poly([up(P(0,0),46),up(P(0,n),46),up(P(0,n),52),up(P(0,0),52)],"#6e4429");poly([up(P(0,0),46),up(P(n,0),46),up(P(n,0),52),up(P(0,0),52)],"#7a4c2e");
-  for(let k=1;k<n;k+=3){for(const[a,b,col]of[[P(0,k),P(0,k+1.6),"#c9b28e"],[P(k,0),P(k+1.6,0),"#dcc8a6"]]){poly([up(a,64),up(b,64),up(b,HWALL-22),up(a,HWALL-22)],col)}}
-  // Fußboden: helles Parkett im Schachbrett
-  for(let i=0;i<n;i++)for(let j=0;j<n;j++){poly([P(i,j),P(i+1,j),P(i+1,j+1),P(i,j+1)],(i+j)%2?"#d8b88a":"#cdab7b")}
-  x.strokeStyle="rgba(120,80,40,.18)";x.lineWidth=1;for(let k=0;k<=n;k++){x.beginPath();x.moveTo(...P(k,0));x.lineTo(...P(k,n));x.moveTo(...P(0,k));x.lineTo(...P(n,k));x.stroke()}
-  x.strokeStyle="#5a3a22";x.lineWidth=3;x.beginPath();x.moveTo(...up(P(0,n),HWALL));x.lineTo(...up(P(0,0),HWALL));x.lineTo(...up(P(n,0),HWALL));x.stroke();
-  x.beginPath();x.moveTo(...P(0,0));x.lineTo(...up(P(0,0),HWALL));x.stroke();
-  return{c,q,w}}
+// Bodenmuster: zwei Felder × zwei Felder, im Raster-Koordinatensystem gezeichnet
+function hPat(x,a,b,line){const c=document.createElement("canvas");c.width=c.height=64;const g=c.getContext("2d");g.fillStyle=a;g.fillRect(0,0,64,64);g.fillStyle=b;g.fillRect(32,0,32,32);g.fillRect(0,32,32,32);
+  if(line){g.fillStyle=line;for(const v of[0,32]){g.fillRect(0,v,64,1.5);g.fillRect(v,0,1.5,64)}}
+  const p=x.createPattern(c,"repeat");try{p.setTransform(new DOMMatrix().scale(1/32))}catch(e){return a}return p}
 function hallPaint(){const{cv,vp}=HV,dpr=Math.min(2,window.devicePixelRatio||1),W=vp.clientWidth,H=vp.clientHeight;
   if(cv.width!==Math.round(W*dpr)||cv.height!==Math.round(H*dpr)){cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);cv.style.width=W+"px";cv.style.height=H+"px"}
-  if(HV.vw&&(HV.vw!==W||HV.vh!==H)){HV.x+=(W-HV.vw)/2;HV.y+=(H-HV.vh)/2;const w=hallWorld();HV.min=Math.min(W/(w.x1-w.x0),H/(w.y1-w.y0))*.96;HV.s=Math.max(HV.s,HV.min);hallClamp()}HV.vw=W;HV.vh=H;   // Bereich unten wurde größer/kleiner: Halle mittig halten
-  const x=cv.getContext("2d");x.setTransform(1,0,0,1,0,0);x.clearRect(0,0,cv.width,cv.height);x.setTransform(dpr*HV.s,0,0,dpr*HV.s,dpr*HV.x,dpr*HV.y);
-  if(!HV.floor)HV.floor=hallFloor();const F=HV.floor;x.drawImage(F.c,F.w.x0,F.w.y0,F.c.width/F.q,F.c.height/F.q);
-  const D=HV.drag,ord=hallOrder().map(o=>D&&o.id===D.id?{...o,p:[D.i,D.j,o.p[2]]}:o);
-  const diamond=(i,j,a,b,fill,stroke)=>{x.beginPath();x.moveTo(...HP(i,j));x.lineTo(...HP(i+a,j));x.lineTo(...HP(i+a,j+b));x.lineTo(...HP(i,j+b));x.closePath();if(fill){x.fillStyle=fill;x.fill()}if(stroke){x.strokeStyle=stroke;x.lineWidth=3/HV.s;x.stroke()}};
-  for(const{id,p}of ord){const[a,b]=hallFoot(id,p[2]);diamond(p[0]-.15,p[1]-.15,a+.3,b+.3,"rgba(60,35,15,.16)")}
-  if(HV.edit&&HV.sel&&S.hall.it[HV.sel]){const o=ord.find(o=>o.id===HV.sel),[a,b]=hallFoot(o.id,o.p[2]),bad=D&&D.id===o.id&&!D.ok;
-    diamond(o.p[0],o.p[1],a,b,bad?"rgba(214,58,58,.38)":"rgba(80,200,120,.35)",bad?"#d63a3a":"#3aa65a")}
-  for(const{id,p}of ord){const im=hallImg(id);if(!im.complete||!im.naturalWidth)continue;const B=hallBox(id,p);
-    x.save();x.translate(B.fr[0],B.fr[1]);if(B.f)x.scale(-1,1);if(D&&D.id===id&&!D.ok)x.globalAlpha=.55;x.drawImage(im,-B.m[2]*B.s,-B.m[3]*B.s,B.m[0]*B.s,B.m[1]*B.s);x.restore()}}
-function hallUI(){if(!HV)return;const el=HV.el,sh=el.querySelector("#hallsheet"),H=hallS(),placed=Object.keys(H.it).length;
-  el.querySelector("#hlEdit").textContent=HV.edit?t("hallDone"):t("hallEdit");el.querySelector("#hlEdit").className="btn sm"+(HV.edit?" primary":"");
+  if(HV.vw&&(HV.vw!==W||HV.vh!==H)){HV.x+=(W-HV.vw)/2;HV.y+=(H-HV.vh)/2;const w=hBounds(0,0,HN,HN);HV.min=Math.min(W/(w.x1-w.x0),H/(w.y1-w.y0))*.96;HV.s=Math.max(HV.s,HV.min);hallClamp()}HV.vw=W;HV.vh=H;
+  const x=cv.getContext("2d"),G=hGeo();x.setTransform(1,0,0,1,0,0);x.clearRect(0,0,cv.width,cv.height);
+  const base=[dpr*HV.s,0,0,dpr*HV.s,dpr*HV.x,dpr*HV.y];x.setTransform(...base);
+  if(!HV.pat)HV.pat={fl:hPat(x,"#d8b88a","#cdab7b","rgba(120,80,40,.22)"),cl:hPat(x,"#6e5644","#68513f",null),lot:hPat(x,"#6f8a4e","#67814a",null)};
+  // 1) Böden im Raster-Koordinatensystem: Bauplätze, unfertige Fläche, Ausstellungsfläche, Gänge
+  x.save();x.transform(HT/2,HTH/2,-HT/2,HTH/2,0,0);
+  for(const r of HROOMS){const i0=r.si*HS,j0=r.sj*HS,L=hLv(r);
+    if(L<0){x.fillStyle=HV.pat.lot;x.fillRect(i0,j0,HS,HS);x.strokeStyle="rgba(255,255,255,.35)";x.lineWidth=.08;x.setLineDash([.4,.3]);x.strokeRect(i0+.3,j0+.3,HS-.6,HS-.6);x.setLineDash([]);continue}
+    const s=HLV[L],o=(HS-s)/2;x.fillStyle=HV.pat.cl;x.fillRect(i0,j0,HS,HS);x.fillStyle=HV.pat.fl;x.fillRect(i0+o,j0+o,s,s)}
+  x.fillStyle="#9b3b32";for(let q=0;q<HN*HN;q++)if(G.fl[q]===2)x.fillRect(Math.floor(q/HN)+.08,q%HN+.08,.84,.84);
+  if(HV.edit&&HV.room){const r=hRoom(HV.room),L=hLv(r),s=L<0?HS:HLV[L],o=(HS-s)/2;x.strokeStyle="#3aa65a";x.lineWidth=.12;x.strokeRect(r.si*HS+o,r.sj*HS+o,s,s)}
+  const D=HV.drag;
+  for(const{id,p}of hallOrder()){const q=D&&D.id===id?[D.i,D.j,p[2]]:p,[a,b]=hallFoot(id,q[2]);
+    x.fillStyle="rgba(60,35,15,.16)";x.fillRect(q[0]-.15,q[1]-.15,a+.3,b+.3);
+    if(HV.edit&&HV.sel===id){const bad=D&&D.id===id&&!D.ok;x.fillStyle=bad?"rgba(214,58,58,.38)":"rgba(80,200,120,.35)";x.fillRect(q[0],q[1],a,b);x.strokeStyle=bad?"#d63a3a":"#3aa65a";x.lineWidth=.08;x.strokeRect(q[0],q[1],a,b)}}
+  x.restore();
+  // 2) Säle von hinten nach vorne: erst ihre hinteren Wände, dann ihre Exponate, dann die vordere Brüstung
+  const ord=hallOrder().map(o=>D&&o.id===D.id?{...o,p:[D.i,D.j,o.p[2]]}:o),byRoom=new Map();
+  for(const o of ord){const r=hRoomOf(o.p[0],o.p[1]);const k=r?r.id:"_";if(!byRoom.has(k))byRoom.set(k,[]);byRoom.get(k).push(o)}
+  const rooms=[...HROOMS].sort((a,b)=>a.si+a.sj-b.si-b.sj||a.si-b.si),built=r=>r&&hLv(r)>=0;
+  const doorOn=(ax,at,t2)=>G.doors.find(d=>d.ax===ax&&d.at===at&&t2>=d.t0&&t2<d.t0+2&&(built(d.a)||built(d.b)));
+  for(const r of rooms){if(!built(r))continue;
+    for(const ax of["i","j"]){const at=(ax==="i"?r.si:r.sj)*HS,nb=ax==="i"?hAt(r.si-1,r.sj):hAt(r.si,r.sj-1),h=built(nb)?HHALF:HWALL;
+      for(let t2=0;t2<HS;t2++){const tt=(ax==="i"?r.sj:r.si)*HS+t2,dr=doorOn(ax,at,tt);if(dr&&h===HHALF)continue;hWall(x,ax,at,tt,h,dr&&!built(dr.b===r?dr.a:dr.b)?"door":null)}}
+    for(const o of byRoom.get(r.id)||[])hSprite(x,o,W,H,dpr);
+    for(const ax of["i","j"]){const at=((ax==="i"?r.si:r.sj)+1)*HS,nb=ax==="i"?hAt(r.si+1,r.sj):hAt(r.si,r.sj+1);if(built(nb))continue;
+      for(let t2=0;t2<HS;t2++){const tt=(ax==="i"?r.sj:r.si)*HS+t2;if(doorOn(ax,at,tt))continue;hWall(x,ax,at,tt,HPARA,null)}}}
+  for(const o of byRoom.get("_")||[])hSprite(x,o,W,H,dpr);
+  // 3) Schilder mit den Namen der Säle (und in Einrichten auch der Bauplätze), in Bildschirmgröße
+  x.setTransform(dpr,0,0,dpr,0,0);HV.labels=[];x.font="700 12px "+getComputedStyle(document.body).fontFamily;x.textBaseline="middle";
+  for(const r of[...HROOMS].sort((a,b)=>(hLv(a)<0)-(hLv(b)<0))){const L=hLv(r);if(L<0&&!HV.edit)continue;const s=L<0?HS:HLV[L],o=(HS-s)/2,[wx,wy]=HP(r.si*HS+o+s,r.sj*HS+o+s),sx=HV.x+wx*HV.s,sy=HV.y+wy*HV.s-14;
+    const txt=L<0?(hOpenFor(r)?t("hallLotBuy",{n:nf(r.cost)}):t("hallLotLock",{n:ERAS[r.e].need})):hName(r),w=x.measureText(txt).width+18,lx=sx-w/2,ly=sy-12;
+    if(sx<-w||sx>W+w||sy<-30||sy>H+30)continue;
+    if(!HV.edit&&s*HT*HV.s<w*1.1)continue;                       // Saal zu klein im Bild: Schild weglassen
+    if(HV.labels.some(o=>lx<o.x+o.w+4&&o.x<lx+w+4&&ly<o.y+o.h+4&&o.y<ly+28))continue;   // nicht über ein anderes Schild
+    x.fillStyle=L<0?"rgba(40,60,30,.85)":HV.edit&&HV.room===r.id?"#3aa65a":"rgba(42,29,21,.85)";x.beginPath();x.roundRect?x.roundRect(lx,ly,w,24,12):x.rect(lx,ly,w,24);x.fill();
+    x.fillStyle="#fff6e6";x.textAlign="center";x.fillText(txt,sx,sy);HV.labels.push({id:r.id,x:lx,y:ly,w,h:24})}}
+// Ein Wandstück von einem Feld Breite: Ebene i=at (Feld j=t) oder Ebene j=at (Feld i=t)
+function hWall(x,ax,at,tt,h,door){const a=ax==="i"?HP(at,tt):HP(tt,at),b=ax==="i"?HP(at,tt+1):HP(tt+1,at),up=(p,z)=>[p[0],p[1]-z];
+  const quad=(z0,z1,col)=>{x.beginPath();x.moveTo(...up(a,z0));x.lineTo(...up(b,z0));x.lineTo(...up(b,z1));x.lineTo(...up(a,z1));x.closePath();x.fillStyle=col;x.fill()};
+  const dark=ax==="i";
+  if(h===HWALL){quad(0,46,dark?"#8a5a38":"#9c6a44");quad(46,52,dark?"#6e4429":"#7a4c2e");quad(52,h,dark?"#d9c4a2":"#e9d9bd");
+    if(door){quad(0,104,dark?"#5a3a22":"#6a4428");quad(104,112,"#c9a24a")}
+    x.strokeStyle="#5a3a22";x.lineWidth=2;x.beginPath();x.moveTo(...up(a,h));x.lineTo(...up(b,h));x.stroke()}
+  else{quad(0,h,dark?"#8a5a38":"#9c6a44");quad(h-5,h,dark?"#6e4429":"#7a4c2e")}}
+function hSprite(x,o,W,H,dpr){const{id,p}=o,im=hallImg(id);if(!im.complete||!im.naturalWidth)return;const B=hallBox(id,p),D=HV.drag;
+  const sx=HV.x+B.fr[0]*HV.s,sy=HV.y+B.fr[1]*HV.s,sw=B.m[0]*B.s*HV.s,sh=B.m[1]*B.s*HV.s;if(sx+sw<0||sx-sw>W||sy-sh>H||sy+sh<0)return;
+  x.save();x.translate(B.fr[0],B.fr[1]);if(B.f)x.scale(-1,1);if(D&&D.id===id&&!D.ok)x.globalAlpha=.55;x.drawImage(im,-B.m[2]*B.s,-B.m[3]*B.s,B.m[0]*B.s,B.m[1]*B.s);x.restore()}
+function hallUI(){if(!HV)return;const el=HV.el,sh=el.querySelector("#hallsheet"),H=hallS(),placed=Object.keys(H.it).length,eb=el.querySelector("#hlEdit");
+  eb.textContent=HV.edit?t("hallDone"):t("hallEdit");eb.className="btn sm"+(HV.edit?" primary":"");
   const hint=el.querySelector("#hlHint");hint.hidden=!HV.edit;hint.textContent=t("hallDrag");
   if(!HV.edit){const ready=CREATURES.filter(c=>hallOk(c)&&!H.it[c.id]).length;
     sh.innerHTML=`<p>${placed?t("hallCount",{n:placed}):t("hallEmpty")}${ready?" "+t("hallWaiting",{n:ready}):""}</p>`;return}
-  const st=CREATURES.filter(c=>hallOk(c)&&!H.it[c.id]),c=HV.sel&&H.it[HV.sel]?CREATURES.find(c=>c.id===HV.sel):null;
-  sh.innerHTML=(c?`<h3>${c.n}</h3><div class="row"><button class="btn" id="hlTurn">${t("hallTurn")}</button><button class="btn" id="hlStore">${t("hallStore")}</button></div>`:"")+
-    (st.length?`<h3>${t("hallDepot")} <small>${st.length}</small></h3><div class="hdepot">${st.map(c=>`<button class="hdep" data-put="${c.id}"><img src="${aurl("ex_"+c.id+".webp")}" alt=""><span>${c.n}</span></button>`).join("")}</div>${c?"":`<p>${t("hallPut")}</p>`}`:c?"":`<h3>${t("hallDepot")}</h3><p>${t("hallDepotEmpty")}</p>`)}
-function hallInfo(id){const c=CREATURES.find(c=>c.id===id);const sh=HV.el.querySelector("#hallsheet");
-  sh.innerHTML=`<h3>${c.n}</h3><p class="meta">${ERAS[c.e].name}</p><p>${c.f}</p>`}
+  const st=CREATURES.filter(c=>hallOk(c)&&!H.it[c.id]),c=HV.sel&&H.it[HV.sel]?CREATURES.find(c=>c.id===HV.sel):null;let top="";
+  if(c)top=`<h3>${c.n}</h3><div class="row"><button class="btn" id="hlTurn">${t("hallTurn")}</button><button class="btn" id="hlStore">${t("hallStore")}</button></div>`;
+  else if(HV.room){const r=hRoom(HV.room),L=hLv(r),cost=hCost(r);
+    if(L<0)top=`<h3>${hName(r)}</h3>`+(hOpenFor(r)?`<p>${t("hallLotTxt")}</p>${hBuyBtn(cost,t("hallBuild"))}`:`<p>${t("hallLotLock",{n:ERAS[r.e].need})}</p>`);
+    else top=`<h3>${hEsc(hName(r))}</h3><div class="row hname"><input id="hlName" maxlength="24" value="${hEsc(hName(r))}" aria-label="${t("hallRename")}"><button class="btn" id="hlSaveNm">${t("hallSave")}</button></div>
+      <p class="meta">${t("hallSize",{n:HLV[L]})}</p>${cost?hBuyBtn(cost,t("hallGrow",{n:HLV[L+1]})):`<p>${t("hallMax")}</p>`}`}
+  sh.innerHTML=top+(st.length?`<h3>${t("hallDepot")} <small>${st.length}</small></h3><div class="hdepot">${st.map(c=>`<button class="hdep" data-put="${c.id}"><img src="${aurl("ex_"+c.id+".webp")}" alt=""><span>${c.n}</span></button>`).join("")}</div>${top?"":`<p>${t("hallPut")}</p>`}`
+    :top?"":`<h3>${t("hallDepot")}</h3><p>${t("hallDepotEmpty")}</p><p class="meta">${t("hallRoomHint")}</p>`)}
+function hBuyBtn(cost,label){const ok=S.coins>=cost;return`<button class="btn primary" id="hlBuy"${ok?"":" disabled"}>${label} · <span class="coin sm"></span> ${nf(cost)}</button>${ok?"":`<div class="bar"><i style="width:${Math.min(100,S.coins/cost*100).toFixed(1)}%"></i><span>${nf(Math.floor(S.coins))} / ${nf(cost)}</span></div>`}`}
+const hEsc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function hallInfo(id){const c=CREATURES.find(c=>c.id===id);HV.el.querySelector("#hallsheet").innerHTML=`<h3>${c.n}</h3><p class="meta">${ERAS[c.e].name}</p><p>${c.f}</p>`}
 for(const [l,o] of Object.entries({
-  de:{hallT:"Museumshalle",hallOpen:"Halle betreten",hallEdit:"Einrichten",hallDone:"Fertig",hallTurn:"Drehen",hallStore:"Ins Lager",hallDepot:"Lager",
-    hallPut:"Tippe auf ein Skelett, um es aufzustellen.",hallDepotEmpty:"Alle fertigen Skelette stehen in der Halle.",hallEmpty:"Die Halle ist noch leer. Tippe auf Einrichten und stelle deine fertigen Skelette auf.",
-    hallCount:"{n} Skelette in der Halle. Tippe auf eines, um mehr zu erfahren.",hallWaiting:"{n} warten im Lager.",hallDrag:"Skelett antippen und ziehen",hallNoRoom:"Dort ist kein Platz.",hallFull:"In der Halle ist kein Platz mehr frei."},
-  en:{hallT:"Museum hall",hallOpen:"Enter the hall",hallEdit:"Arrange",hallDone:"Done",hallTurn:"Turn",hallStore:"To storage",hallDepot:"Storage",
-    hallPut:"Tap a skeleton to put it on display.",hallDepotEmpty:"All finished skeletons are on display.",hallEmpty:"The hall is still empty. Tap Arrange and put your finished skeletons on display.",
-    hallCount:"{n} skeletons on display. Tap one to learn more.",hallWaiting:"{n} waiting in storage.",hallDrag:"Tap and drag a skeleton",hallNoRoom:"There's no room there.",hallFull:"There's no free space left in the hall."},
-  fr:{hallT:"Salle du musée",hallOpen:"Entrer dans la salle",hallEdit:"Aménager",hallDone:"Terminé",hallTurn:"Tourner",hallStore:"En réserve",hallDepot:"Réserve",
-    hallPut:"Touche un squelette pour l'exposer.",hallDepotEmpty:"Tous les squelettes terminés sont exposés.",hallEmpty:"La salle est encore vide. Touche Aménager et expose tes squelettes terminés.",
-    hallCount:"{n} squelettes exposés. Touches-en un pour en savoir plus.",hallWaiting:"{n} attendent dans la réserve.",hallDrag:"Touche et fais glisser un squelette",hallNoRoom:"Il n'y a pas de place ici.",hallFull:"Il n'y a plus de place libre dans la salle."},
-  es:{hallT:"Sala del museo",hallOpen:"Entrar en la sala",hallEdit:"Organizar",hallDone:"Listo",hallTurn:"Girar",hallStore:"Al almacén",hallDepot:"Almacén",
-    hallPut:"Toca un esqueleto para exponerlo.",hallDepotEmpty:"Todos los esqueletos terminados están expuestos.",hallEmpty:"La sala aún está vacía. Toca Organizar y expón tus esqueletos terminados.",
-    hallCount:"{n} esqueletos expuestos. Toca uno para saber más.",hallWaiting:"{n} esperan en el almacén.",hallDrag:"Toca y arrastra un esqueleto",hallNoRoom:"Ahí no hay sitio.",hallFull:"Ya no queda sitio libre en la sala."}
+  de:{hallT:"Museum",hallOpen:"Museum betreten",hallEdit:"Einrichten",hallDone:"Fertig",hallTurn:"Drehen",hallStore:"Ins Lager",hallDepot:"Lager",
+    hallPut:"Tippe auf ein Skelett, um es aufzustellen.",hallDepotEmpty:"Alle fertigen Skelette sind ausgestellt.",hallEmpty:"Noch steht nichts im Museum. Tippe auf Einrichten.",
+    hallCount:"{n} Skelette ausgestellt. Tippe auf eines, um mehr zu erfahren.",hallWaiting:"{n} warten im Lager.",hallDrag:"Skelett ziehen oder Saal antippen",hallNoRoom:"Dort ist kein Platz.",
+    hallFull:"In deinen Sälen ist kein Platz mehr frei. Vergrößere einen Saal oder baue einen neuen.",hallNeedRoom:"Baue zuerst einen Saal für deine Skelette.",
+    hallRm_ein:"Eingangshalle",hallRm_sch:"Schatzkammer",hallRm_hof:"Innenhof",hallRmEra:"{e}-Saal",hallLotBuy:"Bauplatz · {n}",hallLotLock:"Ab {n} fertigen Skeletten",
+    hallLotTxt:"Hier ist noch ein Bauplatz.",hallBuild:"Bauen",hallGrow:"Vergrößern auf {n} × {n}",hallSize:"Größe {n} × {n} Felder",hallMax:"Der Saal hat seine volle Größe.",
+    hallRename:"Name des Saals",hallSave:"Speichern",hallRoomHint:"Tippe auf einen Saal oder Bauplatz, um zu bauen, zu vergrößern oder umzubenennen.",hallNoCoins:"Dafür fehlen dir noch Münzen."},
+  en:{hallT:"Museum",hallOpen:"Enter the museum",hallEdit:"Arrange",hallDone:"Done",hallTurn:"Turn",hallStore:"To storage",hallDepot:"Storage",
+    hallPut:"Tap a skeleton to put it on display.",hallDepotEmpty:"All finished skeletons are on display.",hallEmpty:"Nothing on display yet. Tap Arrange.",
+    hallCount:"{n} skeletons on display. Tap one to learn more.",hallWaiting:"{n} waiting in storage.",hallDrag:"Drag a skeleton or tap a hall",hallNoRoom:"There's no room there.",
+    hallFull:"Your halls are full. Enlarge a hall or build a new one.",hallNeedRoom:"Build a hall for your skeletons first.",
+    hallRm_ein:"Entrance hall",hallRm_sch:"Treasure room",hallRm_hof:"Courtyard",hallRmEra:"{e} Hall",hallLotBuy:"Building plot · {n}",hallLotLock:"From {n} finished skeletons",
+    hallLotTxt:"This is still an empty building plot.",hallBuild:"Build",hallGrow:"Enlarge to {n} × {n}",hallSize:"Size {n} × {n} tiles",hallMax:"This hall has reached its full size.",
+    hallRename:"Hall name",hallSave:"Save",hallRoomHint:"Tap a hall or building plot to build, enlarge or rename.",hallNoCoins:"You don't have enough coins yet."},
+  fr:{hallT:"Musée",hallOpen:"Entrer dans le musée",hallEdit:"Aménager",hallDone:"Terminé",hallTurn:"Tourner",hallStore:"En réserve",hallDepot:"Réserve",
+    hallPut:"Touche un squelette pour l'exposer.",hallDepotEmpty:"Tous les squelettes terminés sont exposés.",hallEmpty:"Rien n'est encore exposé. Touche Aménager.",
+    hallCount:"{n} squelettes exposés. Touches-en un pour en savoir plus.",hallWaiting:"{n} attendent dans la réserve.",hallDrag:"Fais glisser un squelette ou touche une salle",hallNoRoom:"Il n'y a pas de place ici.",
+    hallFull:"Tes salles sont pleines. Agrandis une salle ou construis-en une nouvelle.",hallNeedRoom:"Construis d'abord une salle pour tes squelettes.",
+    hallRm_ein:"Hall d'entrée",hallRm_sch:"Salle du trésor",hallRm_hof:"Cour intérieure",hallRmEra:"Salle {e}",hallLotBuy:"Terrain · {n}",hallLotLock:"À partir de {n} squelettes terminés",
+    hallLotTxt:"Ce terrain est encore libre.",hallBuild:"Construire",hallGrow:"Agrandir à {n} × {n}",hallSize:"Taille {n} × {n} cases",hallMax:"Cette salle a atteint sa taille maximale.",
+    hallRename:"Nom de la salle",hallSave:"Enregistrer",hallRoomHint:"Touche une salle ou un terrain pour construire, agrandir ou renommer.",hallNoCoins:"Il te manque encore des pièces."},
+  es:{hallT:"Museo",hallOpen:"Entrar en el museo",hallEdit:"Organizar",hallDone:"Listo",hallTurn:"Girar",hallStore:"Al almacén",hallDepot:"Almacén",
+    hallPut:"Toca un esqueleto para exponerlo.",hallDepotEmpty:"Todos los esqueletos terminados están expuestos.",hallEmpty:"Todavía no hay nada expuesto. Toca Organizar.",
+    hallCount:"{n} esqueletos expuestos. Toca uno para saber más.",hallWaiting:"{n} esperan en el almacén.",hallDrag:"Arrastra un esqueleto o toca una sala",hallNoRoom:"Ahí no hay sitio.",
+    hallFull:"Tus salas están llenas. Amplía una sala o construye una nueva.",hallNeedRoom:"Construye primero una sala para tus esqueletos.",
+    hallRm_ein:"Vestíbulo",hallRm_sch:"Sala del tesoro",hallRm_hof:"Patio",hallRmEra:"Sala {e}",hallLotBuy:"Solar · {n}",hallLotLock:"Desde {n} esqueletos terminados",
+    hallLotTxt:"Aquí todavía hay un solar libre.",hallBuild:"Construir",hallGrow:"Ampliar a {n} × {n}",hallSize:"Tamaño {n} × {n} casillas",hallMax:"Esta sala ya tiene su tamaño máximo.",
+    hallRename:"Nombre de la sala",hallSave:"Guardar",hallRoomHint:"Toca una sala o un solar para construir, ampliar o cambiar el nombre.",hallNoCoins:"Todavía te faltan monedas."}
 }))Object.assign(TX[l],o);
 
 /* ================= Expeditionskarte ================= */
