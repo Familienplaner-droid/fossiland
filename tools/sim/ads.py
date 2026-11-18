@@ -74,7 +74,7 @@ def run(P, days=60):
         for _ in other:
             if ads < P["ad_will"]:
                 ads += 1
-        coins += rate * P["hours"] + rate * 8 * (P["offline_mult"] - 1) + rate * .5 * P["show"] + P["dig_coins"] * (1 + .5 * era) * new
+        coins += rate * P["hours"] + rate * P["offline_h"] + rate * 1 * P["show"] + P["dig_coins"] * (1 + .5 * era) * new
         while q and q[0][1] <= coins * .6:
             k, c = q.pop(0); coins -= c; L[k] += 1
         if P["museum"]:
@@ -85,7 +85,7 @@ def run(P, days=60):
 
 
 BASE = dict(appetite=650, night_h=10.5, regen_mult=1 / .85, lab_use=.6, e_bone=21, e_grow=0.0, coin_share=.15, buy_cap=99,
-            min_price=55, ad_will=30, hours=21.5, dig_coins=12, offline_mult=2, show=0, museum=True, endgame=.4, site_grow=0.0)
+            min_price=55, ad_will=30, hours=21.5, dig_coins=12, offline_h=8, show=0, museum=True, endgame=.4, site_grow=0.0)
 DAYS = (1, 2, 3, 4, 5, 7, 10, 14, 18, 21, 25, 30, 40, 50, 60)
 
 
@@ -102,11 +102,8 @@ def show(name, P):
 
 
 if __name__ == "__main__":
-    show("Heute (fleißig, wie Kari)", dict(BASE))
-    show("A: Münzkauf höchstens 3× am Tag", dict(BASE, buy_cap=3))
-    show("B: Ausdauer pro Knochen +20 % je Zeitalter", dict(BASE, e_grow=.2))
-    show("A + B + Sonderausstellung (2 Videos)", dict(BASE, buy_cap=3, e_grow=.2, show=2))
-    show("D: Grabung kostet je Zeitalter +25 % Ausdauer (Spieler will gleich viele Grabungen)", dict(BASE, e_grow=.25, site_grow=.25))
-    show("D + Sonderausstellung (2 Videos)", dict(BASE, e_grow=.25, site_grow=.25, show=2, buy_cap=3))
-    show("Gelegenheitsspieler heute (Lust 300, höchstens 10 Videos)", dict(BASE, appetite=300, ad_will=10, hours=14, lab_use=.4))
-    show("Gelegenheitsspieler mit D + Sonderausstellung", dict(BASE, appetite=300, ad_will=10, hours=14, lab_use=.4, buy_cap=3, e_grow=.25, site_grow=.25, show=2))
+    show("Vorher (bis 1.0.27)", dict(BASE))
+    NEW = dict(BASE, e_grow=.1, site_grow=.1, offline_h=2, show=3)
+    show("Neu: +10 % je Zeitalter, Offline-Video +2 Std., Sonderausstellung 3×", NEW)
+    show("Gelegenheitsspieler vorher (Lust 300, höchstens 10 Videos)", dict(BASE, appetite=300, ad_will=10, hours=14, lab_use=.4))
+    show("Gelegenheitsspieler neu", dict(NEW, appetite=300, ad_will=10, hours=14, lab_use=.4))
