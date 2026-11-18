@@ -366,8 +366,7 @@ nav button[aria-selected="true"] svg{color:var(--tape)}
 .wrap{max-width:max(480px,min(760px,calc((100vh - 560px)*.889 + 16px)))}
 @supports (height:100dvh){.wrap{max-width:max(480px,min(760px,calc((100dvh - 560px)*.889 + 16px)))}}
 nav .in{max-width:760px}
-.modal{max-height:calc(100vh - 24px);overflow:auto}
-@supports (height:100dvh){.modal{max-height:calc(100dvh - 24px)}}
+.modal{max-height:100%;overflow:auto}   /* nie höher als die Fläche innerhalb der Ränder, sonst ist oben etwas abgeschnitten und nicht erreichbar */
 /* Mehrere Karten nebeneinander, wenn Platz ist */
 @media (min-width:760px){
   .mus{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));align-items:start}
