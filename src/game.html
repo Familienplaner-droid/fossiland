@@ -1682,14 +1682,14 @@ function openHall(){if(HV)return;stat("hallOpen");hallS();HGEO=null;
     else if(b.dataset.rv){const id=b.dataset.rv,sp=hSpot({key:"r:"+id,kind:"r",id},hPref());if(!sp){toast(t("hallNoSpot"));return}S.hall.rv[id]=sp;HV.sel="r:"+id;save();hallUI();hallDraw();hallShow(sp)}
     else if(b.dataset.deco){const ty=b.dataset.deco,H=S.hall,own=(H.inv[ty]||0)>0,pr=HDECO[ty].p;if(!own&&S.coins<pr){toast(t("hallNoCoins"));return}
       const sp=hSpot({key:"d:neu",kind:"d",id:ty},hPref());if(!sp){toast(t("hallNoSpot"));return}
-      if(own)H.inv[ty]--;else{S.coins-=pr;SS().spent+=pr;countBuy();stat("decoBuy");SFX.coin();renderTop()}
+      if(own)H.inv[ty]--;else{S.coins-=pr;SS().spent+=pr;stat("decoBuy");SFX.coin();renderTop()}
       const k="k"+(H.dn=(H.dn||0)+1);H.dk[k]={t:ty,p:sp};HV.sel="d:"+k;save();hallUI();hallDraw();hallShow(sp)}
     else if(b.id==="hlTurn"&&HV.sel){const o=hObj(HV.sel),p=o.p,nf=p[2]?0:1;let sp=null;
       for(let d=0;d<4&&!sp;d++)for(const[di,dj]of[[0,0],[-d,0],[0,-d],[-d,-d],[d,0],[0,d]])if(!sp&&hFree(o,p[0]+di,p[1]+dj,nf))sp=[p[0]+di,p[1]+dj];
       if(!sp){toast(t("hallNoRoom"));return}p[0]=sp[0];p[1]=sp[1];p[2]=nf;save();hallDraw()}
     else if(b.id==="hlStore"&&HV.sel){const o=hObj(HV.sel),H=S.hall;if(o.kind==="c")delete H.it[o.id];else if(o.kind==="r")delete H.rv[o.id];else{delete H.dk[o.key.slice(2)];H.inv[o.id]=(H.inv[o.id]||0)+1}HV.sel=null;save();hallUI();hallDraw()}
     else if(b.id==="hlBuy"&&HV.room){const r=hRoom(HV.room),c=hCost(r);if(!c||!hOpenFor(r))return;if(S.coins<c){toast(t("hallNoCoins"));return}
-      S.coins-=c;SS().spent+=c;countBuy();const L=hLv(r);S.hall.r[r.id]=Object.assign(S.hall.r[r.id]||{},{lv:L+1});stat(L<0?"hallBuild":"hallGrow");HGEO=null;save();SFX.coin();renderTop();hallUI();hallDraw()}
+      S.coins-=c;SS().spent+=c;const L=hLv(r);S.hall.r[r.id]=Object.assign(S.hall.r[r.id]||{},{lv:L+1});stat(L<0?"hallBuild":"hallGrow");HGEO=null;save();SFX.coin();renderTop();hallUI();hallDraw()}
     else if(b.id==="hlSaveNm"&&HV.room){const v=el.querySelector("#hlName").value.trim().slice(0,24);S.hall.r[HV.room].nm=v;save();hallUI();hallDraw()}
   });
   HV.onResize=()=>{if(HV){hallFit();hallDraw()}};window.addEventListener("resize",HV.onResize);
