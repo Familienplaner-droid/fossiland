@@ -363,6 +363,10 @@ nav button[aria-selected="true"] svg{color:var(--tape)}
 .coach .guide{position:absolute;left:-4px;bottom:0;width:104px;height:auto;pointer-events:none;filter:drop-shadow(0 4px 6px rgba(0,0,0,.25))}
 .modal .guide-top{display:block;width:110px;height:auto;margin:-4px auto -8px;filter:drop-shadow(0 6px 10px rgba(0,0,0,.4))}
 .toast{position:fixed;left:50%;top:calc(12px + env(safe-area-inset-top,0px));transform:translate(-50%,0);background:var(--bone);color:#2a1a0e;padding:10px 18px;border-radius:999px;font-weight:700;font-size:14px;max-width:calc(100% - 32px);text-align:center;z-index:50;transition:opacity .25s,transform .25s;pointer-events:none;box-shadow:0 4px 0 var(--bone-dk)}
+/* Tipps der Paläontologin im richtigen Moment (je Tipp nur einmal) */
+.gtip{position:fixed;left:50%;transform:translateX(-50%);top:calc(64px + env(safe-area-inset-top,0px));width:min(460px,calc(100% - 24px));z-index:15;display:flex;gap:10px;align-items:flex-end;background:var(--bone);color:#2a1a0e;border-radius:16px;padding:10px 14px 10px 8px;box-shadow:0 8px 24px rgba(0,0,0,.45);animation:rise .35s}
+.gtip img{height:72px;flex-shrink:0;margin-bottom:-10px}.gtip p{margin:0;font-size:.95rem;line-height:1.35}.gtip small{display:block;opacity:.6;margin-top:4px;font-size:.78rem}
+#quit.nudge{animation:nudge 1.4s ease-in-out infinite}@keyframes nudge{50%{box-shadow:0 0 0 6px rgba(241,190,90,.55)}}
 .toast[data-show="0"]{opacity:0;transform:translate(-50%,-12px)}
 @keyframes fade{from{opacity:0}}
 @keyframes rise{from{transform:translateY(40px);opacity:0}}
@@ -797,6 +801,7 @@ const perMin=ms=>nf(ms/60000)+" "+t("min");
 if(S.st<0||S.st==null){S.st=energyMax();S.stT=Date.now()}
 if(!Array.isArray(S.lab))S.lab=[];
 if(!S.lang)S.lang=detectLang();applyLang(S.lang);
+for(const [l,o] of Object.entries({"de": {"tip_crack": "Oh, ein Riss! Tipp: Nimm in der Nähe von Knochen lieber den Pinsel. Die Hacke ist schneller, kann Knochen aber beschädigen.", "tip_end": "Alle Knochen dieser Grabung sind gefunden! Tippe auf „Grabung beenden“, dann sparst du Ausdauer für die nächste.", "tip_probe": "Tipp: Die Sonde zeigt dir, wo Knochen liegen. So gräbst du nicht ins Leere und sparst Ausdauer.", "tipTap": "Antippen zum Schließen"}, "en": {"tip_crack": "Oh, a crack! Tip: near bones, use the brush instead. The pickaxe is faster but can damage bones.", "tip_end": "All bones of this dig are found! Tap “End dig” to save energy for the next one.", "tip_probe": "Tip: the probe shows you where bones are. That way you don't dig in the wrong places and save energy.", "tipTap": "Tap to close"}, "fr": {"tip_crack": "Oh, une fissure ! Astuce : près des os, prends plutôt le pinceau. La pioche est plus rapide mais peut abîmer les os.", "tip_end": "Tous les os de cette fouille sont trouvés ! Touche « Terminer la fouille » pour garder de l'énergie pour la suivante.", "tip_probe": "Astuce : la sonde te montre où sont les os. Tu ne creuses pas au hasard et tu économises de l'énergie.", "tipTap": "Touche pour fermer"}, "es": {"tip_crack": "¡Vaya, una grieta! Consejo: cerca de los huesos, usa mejor el pincel. El pico es más rápido, pero puede dañar los huesos.", "tip_end": "¡Ya has encontrado todos los huesos de esta excavación! Toca «Terminar excavación» para ahorrar energía para la siguiente.", "tip_probe": "Consejo: la sonda te muestra dónde están los huesos. Así no excavas a ciegas y ahorras energía.", "tipTap": "Toca para cerrar"}}))Object.assign(TX[l],o);
 const crackChance=()=>Math.max(.1,.6-S.precLv*.12);
 const pickFree=()=>S.precLv*.06;   // Profi-Hacke: Chance auf einen Hackenschlag ohne Ausdauer (6 % pro Stufe)
 const probesMax=()=>1+S.probeLv;
@@ -957,7 +962,7 @@ function restoreDig(){const s=S.dig;if(!s||s.v!==2||s.over||s.era!==S.era||!s.g|
     return{r:Math.floor(i/COLS),c:i%COLS,d:a[0],hp:a[1],need:String(a[2]).split("").map(Number),crack:!!a[3],probe:!!a[4],obj:a[5]>=0?objs[a[5]]:null,bd:a[6]||0,rad:!!a[7],cr}});
   D={era:s.era,grid,objs,target,probes:s.pr,finds:s.f||[],over:false,earned:s.e||0,adDouble:!!s.ad[0],adProbe:!!s.ad[1]};
   tool="brush";particles=[];renderDig();return true}
-function showEmpty(){if(!document.querySelector(".overlay"))stat("empty");
+function showEmpty(){if(!document.querySelector(".overlay")){stat("empty");S.emptyN=(S.emptyN||0)+1}
   if(document.querySelector(".overlay"))return;
   const ads=adsLeft(),p=buyPrice(),now=Date.now();
   const ov=overlay(`<img class="guide-top" src="${aurl(gpose("think"))}" alt=""><h2>${t("empty")}</h2><p class="sub">${t("emptySub",{m:perMin(regenMs()),t:`<b id="fullIn">${fmt(fullIn(now))}</b>`})}</p>
@@ -1169,8 +1174,15 @@ const cellDone=g=>g.d>=3||(g.obj&&g.d>g.bd);
 function burst(g,n,col,speed=1){const[x,y]=cellXY(g);for(let i=0;i<n;i++)particles.push({x:x+cs/2+(Math.random()-.5)*cs*.6,y:y+cs/2+(Math.random()-.5)*cs*.4,vx:(Math.random()-.5)*3*speed,vy:(-Math.random()*3-1)*speed,life:1,col,s:2+Math.random()*3.5,g:.25,t:"d"})}
 function sparkle(cells,col="#fff3c4"){cells.forEach(([y,x])=>{for(let i=0;i<6;i++)particles.push({x:(x+.5)*cs,y:(y+.5)*cs,vx:(Math.random()-.5)*4,vy:(Math.random()-.5)*4,life:1,col,s:3+Math.random()*3,g:0,t:"s"})})}
 
+// Tipp einmalig zeigen; ist gerade ein Fenster oder die Anleitung offen, später noch einmal versuchen
+function gTip(k,pose,n=0){S.tips=S.tips||{};if(S.tips[k])return;
+  if(document.querySelector(".overlay,.coach,.title")||(tutI>=0&&tutI<TUT.length)){if(n<6)setTimeout(()=>gTip(k,pose,n+1),2500);return}
+  S.tips[k]=1;save();stat("tip_"+k);document.querySelector(".gtip")?.remove();
+  const el=document.createElement("div");el.className="gtip";el.innerHTML=`<img src="${aurl(gpose(pose))}" alt=""><p>${t("tip_"+k)}<small>${t("tipTap")}</small></p>`;
+  document.body.appendChild(el);const close=()=>el.remove();el.onclick=close;setTimeout(close,12000)}
 function hit(i){
   if(!D||D.over)return;
+  if((S.emptyN||0)>=3&&!(S.tips&&S.tips.probe)&&tool!=="probe"&&D.probes>0)gTip("probe","point");
   const g=D.grid[i];
   if(tool==="probe"){
     if(D.probes<=0)return;D.probes--;SFX.probe();tutEvent("probe");dqAdd("probes");
@@ -1201,7 +1213,7 @@ function hit(i){
   while(dmg>0&&!cellDone(g)){g.hp--;dmg--;
     if(g.hp<=0){g.d++;dqAdd("cells");if(!g.obj){D.blind=(D.blind||0)+1;if(D.blind===12&&D.probes>0&&!D.grid.some(q=>q.probe)){setTimeout(()=>toast(t("blindTip")),400)}}burst(g,8,LAY()[Math.min(2,g.d-1)][1],1);
       if(g.obj&&g.d>g.bd)exposed=true;else if(g.d<3)g.hp=g.need[g.d];else{g.hp=0;if(!g.obj)SFX.clear()}}}
-  if(exposed&&tool==="pick"&&g.obj.kind==="bone"&&dmg>0&&Math.random()<crackChance()){g.crack=true;SFX.crack();buzz([30,30,30]);toast(t("crack"))}
+  if(exposed&&tool==="pick"&&g.obj.kind==="bone"&&dmg>0&&Math.random()<crackChance()){g.crack=true;SFX.crack();buzz([30,30,30]);toast(t("crack"));setTimeout(()=>gTip("crack","think"),900)}
   if(exposed){g.hp=0;g.probe=false;g.rad=false}
   if(exposed)checkFound(g);
   if(D.objs.every(o=>o.found)){D.over=true;dqAdd("digs");setTimeout(showResult,900)}
@@ -1231,6 +1243,7 @@ function checkFound(g){if(!g.obj||g.obj.found)return;setTimeout(siteGiftCheck,50
         else{const v=Math.round(3*em);S.coins+=v;D.earned+=v;SFX.bone();D.finds.push([IC.bone,t("dupe",{pn}),`+${v}`,""]);toast(t("dupeToast",{v}))}
       }
       save();
+      if(o.kind==="bone"&&!D.over&&D.objs.filter(q=>q.kind==="bone").every(q=>q.found))setTimeout(()=>{gTip("end","point");renderDig()},1200);
     }
   }
 }
@@ -1422,7 +1435,7 @@ function renderDig(){
   const left=bones.length-got,canRefill=ads>0&&left>0&&S.st<5;
   $("hint").textContent=D.over?"":tool==="probe"?t("hintProbe"):tool==="radar"?t("hintRadar"):tool==="jack"?t("hintJack"):t("hintDig",{s:SOILNAMES[D.era].join(", ")});
   $("digRow").innerHTML=D.over?`<button class="btn primary" id="again">${t("newDig")}</button>`
-    :`${canRefill?`<button class="btn ad" id="refill">${t("plusEnergy")}</button>`:""}<button class="btn" id="quit">${t("endDig")}</button>`;
+    :`${canRefill?`<button class="btn ad" id="refill">${t("plusEnergy")}</button>`:""}<button class="btn${left===0?" nudge":""}" id="quit">${t("endDig")}</button>`;
   renderEras();
 }
 function showResult(){
