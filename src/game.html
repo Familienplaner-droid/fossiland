@@ -1624,7 +1624,7 @@ const WIKI={dime:[295,272,3.5,"L",250,"F"],edap:[303,280,3.5,"L",300,"P"],scut:[
   tric:[68,66,9,"L",9000,"P"],velo:[75,71,2,"L",15,"F"],anky:[68,66,7,"L",6000,"P"],spin:[99,93,14,"L",7000,"FF"],trex:[68,66,12,"L",8000,"F"],pter:[86,84,6,"W",30,"Fi"],mosa:[70,66,12,"L",7000,"F"],pars:[76,74,9.5,"L",2500,"P"],igua:[126,122,10,"L",3500,"P"],
   gast:[56,45,2,"H",175,"P"],basi:[41,34,18,"L",6000,"F"],darw:[47,47,.6,"L",.65,"P"],prop:[47,45,.5,"H",10,"P"],andr:[45,36,3,"L",0,"A"],prac:[34,23,7.5,"L",15000,"P"],
   mamm:[.4,.004,3.4,"H",6000,"P"],smil:[2.5,.01,1.9,"L",280,"F"],nash:[.35,.014,3.5,"L",2000,"P"],baer:[.3,.025,3,"L",500,"P"],megl:[.4,.0077,2.1,"H",600,"P"],glyp:[2.5,.01,3.3,"L",2000,"P"]};
-const WREAL=new Set(["trex"]);   // Arten mit realistischen Profilbildern real_<id> (lebend) und realsk_<id> (Skelett)
+const WREAL=new Set(["trex","dime","edap","scut","inos","meso"]);   // Arten mit realistischen Profilbildern real_<id> (lebend) und realsk_<id> (Skelett)
 const WLIVE=new Set(["dime","edap","scut","inos","meso"]);   // Arten, für die es schon ein Lebendbild gibt
 const wkKnown=c=>Object.keys(mus(c.id)).length>0||[0,1,2,3,4].some(i=>labHas(c.id,i));
 const wkNum=x=>x.toLocaleString(S.lang==="en"?"en-GB":S.lang==="es"?"es-ES":S.lang==="fr"?"fr-FR":"de-DE",{maximumFractionDigits:x<10?1:0});
