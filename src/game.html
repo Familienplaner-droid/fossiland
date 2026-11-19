@@ -339,6 +339,13 @@ nav button[aria-selected="true"] svg{color:var(--tape)}
 .wpic{position:relative;aspect-ratio:1;max-height:42vh;margin:0 auto;width:100%;border-radius:18px;background:radial-gradient(ellipse at 50% 60%,#5a4130,#2c1f16 75%)}
 .wpic img{position:absolute;inset:6%;width:88%;height:88%;object-fit:contain;transition:opacity .45s}
 .wpic img.live{opacity:0}.wpic.on img.live{opacity:1}.wpic.on img:not(.live){opacity:0}
+/* Ansicht „Echt“: realistische Profilbilder (Skelett und lebend), heller Museumshintergrund */
+.wpic img.real{opacity:0;inset:4%;width:92%;height:92%}
+.wpic.re{aspect-ratio:3/2;background:radial-gradient(ellipse at 50% 55%,#f6efe2,#d8cbb4 80%)}
+.wpic.re img:not(.real){opacity:0}.wpic.re img.real.sk{opacity:1}.wpic.re.on img.real.sk{opacity:0}.wpic.re.on img.real.lv{opacity:1}
+.wseg{display:flex;gap:4px;margin:0 auto 8px;padding:4px;border-radius:999px;background:rgba(0,0,0,.28);width:max-content}
+.wseg button{border:0;border-radius:999px;padding:6px 16px;font:inherit;font-weight:700;color:#e9d9c4;background:none}
+.wseg button.on{background:#f1e3cf;color:#3a2618}
 .wmean{margin:-6px 0 0;color:var(--muted)}
 .wfacts{margin:0;display:flex;flex-direction:column;gap:2px;border-radius:14px;overflow:hidden}
 .wrow{display:grid;grid-template-columns:minmax(96px,34%) 1fr;gap:10px;padding:9px 12px;background:var(--edge)}
@@ -1617,6 +1624,7 @@ const WIKI={dime:[295,272,3.5,"L",250,"F"],edap:[303,280,3.5,"L",300,"P"],scut:[
   tric:[68,66,9,"L",9000,"P"],velo:[75,71,2,"L",15,"F"],anky:[68,66,7,"L",6000,"P"],spin:[99,93,14,"L",7000,"FF"],trex:[68,66,12,"L",8000,"F"],pter:[86,84,6,"W",30,"Fi"],mosa:[70,66,12,"L",7000,"F"],pars:[76,74,9.5,"L",2500,"P"],igua:[126,122,10,"L",3500,"P"],
   gast:[56,45,2,"H",175,"P"],basi:[41,34,18,"L",6000,"F"],darw:[47,47,.6,"L",.65,"P"],prop:[47,45,.5,"H",10,"P"],andr:[45,36,3,"L",0,"A"],prac:[34,23,7.5,"L",15000,"P"],
   mamm:[.4,.004,3.4,"H",6000,"P"],smil:[2.5,.01,1.9,"L",280,"F"],nash:[.35,.014,3.5,"L",2000,"P"],baer:[.3,.025,3,"L",500,"P"],megl:[.4,.0077,2.1,"H",600,"P"],glyp:[2.5,.01,3.3,"L",2000,"P"]};
+const WREAL=new Set(["trex"]);   // Arten mit realistischen Profilbildern real_<id> (lebend) und realsk_<id> (Skelett)
 const WLIVE=new Set(["dime","edap","scut","inos","meso"]);   // Arten, für die es schon ein Lebendbild gibt
 const wkKnown=c=>Object.keys(mus(c.id)).length>0||[0,1,2,3,4].some(i=>labHas(c.id,i));
 const wkNum=x=>x.toLocaleString(S.lang==="en"?"en-GB":S.lang==="es"?"es-ES":S.lang==="fr"?"fr-FR":"de-DE",{maximumFractionDigits:x<10?1:0});
@@ -1628,8 +1636,10 @@ function openWiki(id,back){const c=CREATURES.find(k=>k.id===id);if(!c||!wkKnown(
   const W=WIKI[id],full=isFull(c),live=WLIVE.has(id),n=Object.keys(mus(id)).length,sites=SITES.map((s,i)=>s.sp.includes(id)?i:-1).filter(i=>i>=0);
   const size=W[2]<1?Math.round(W[2]*100)+" cm":wkNum(W[2])+" m",wt=W[4]?(W[4]>=1000?wkNum(W[4]/1000)+" t":wkNum(W[4])+" kg"):"";
   const row=(l,v,s)=>`<div class="wrow"><dt>${l}</dt><dd>${v}${s?`<small>${s}</small>`:""}</dd></div>`;
-  const ov=overlay(`<div class="wpic" id="wPic"><img id="wImg" src="${aurl("ex_"+id+".webp")}" alt="${c.n}">${live&&full?`<img id="wLive" class="live" src="${aurl("live_"+id+".webp")}" alt="">`:""}</div>
-    ${live?full?`<div class="row"><button class="btn" id="wTog">${t("wkLive")}</button></div>`:`<p class="hint">${t("wkLiveLock")}</p>`:""}
+  const real=WREAL.has(id),re=real&&!!S.wkRe;
+  const ov=overlay(`${real?`<div class="wseg"><button data-m="0" class="${re?"":"on"}">${t("wkComic")}</button><button data-m="1" class="${re?"on":""}">${t("wkReal")}</button></div>`:""}
+    <div class="wpic${re?" re":""}" id="wPic"><img id="wImg" src="${aurl("ex_"+id+".webp")}" alt="${c.n}">${live&&full?`<img id="wLive" class="live" src="${aurl("live_"+id+".webp")}" alt="">`:""}${real?`<img class="real sk" src="${aurl("realsk_"+id+".webp")}" alt="">${full?`<img class="real lv" src="${aurl("real_"+id+".webp")}" alt="">`:""}`:""}</div>
+    <div class="row" id="wTogR"><button class="btn" id="wTog">${t("wkLive")}</button></div><p class="hint" id="wLock">${t("wkLiveLock")}</p>
     <h2>${c.n}</h2><p class="wmean">${t("wkMean")}: <i>${t("wm_"+id)}</i></p>
     <dl class="wfacts">${row(t("wkEra"),ERAS[c.e].name,wkTime(W[0],W[1]))}
       ${row(t(W[3]==="H"?"wkHeight":W[3]==="W"?"wkSpan":"wkLen"),size,t(W[3]==="H"?"wkCmpH":W[3]==="W"?"wkCmpW":"wkCmpL",{x:wkSize(W[2],W[3])}))}
@@ -1640,9 +1650,14 @@ function openWiki(id,back){const c=CREATURES.find(k=>k.id===id);if(!c||!wkKnown(
     <p class="wdid"><b>${t("wkDid")}</b> ${c.f}</p>
     <div class="row">${back?`<button class="btn" id="wBack">${t("wkIndex")}</button>`:""}<button class="btn primary" id="wClose">${t("close")}</button></div>`);
   ov.querySelector(".modal").classList.add("wiki");
+  const pic=ov.querySelector("#wPic"),tog=ov.querySelector("#wTog");
+  // Lebend-Knopf nur, wenn es für die gewählte Ansicht ein Lebendbild gibt und das Skelett komplett ist
+  const upd=()=>{const r=pic.classList.contains("re"),has=r?real:live;ov.querySelector("#wTogR").hidden=!(has&&full);ov.querySelector("#wLock").hidden=!(has&&!full);
+    if(!(has&&full))pic.classList.remove("on");tog.textContent=t(pic.classList.contains("on")?"wkSkel":"wkLive")};upd();
   ov.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;e.stopPropagation();SFX.click();
     if(b.id==="wClose")ov.remove();else if(b.id==="wBack"){ov.remove();openWikiIndex()}
-    else if(b.id==="wTog"){const p=ov.querySelector("#wPic"),on=p.classList.toggle("on");b.textContent=t(on?"wkSkel":"wkLive")}})}
+    else if(b.id==="wTog"){pic.classList.toggle("on");upd()}
+    else if(b.dataset.m){const r=b.dataset.m==="1";S.wkRe=r?1:0;save();pic.classList.toggle("re",r);ov.querySelectorAll(".wseg button").forEach(x=>x.classList.toggle("on",x===b));upd()}})}
 // Lexikon-Übersicht (Infotafel in der Halle): alle bekannten Arten mit Suche
 function openWikiIndex(){const known=CREATURES.filter(wkKnown);
   const ov=overlay(`<h2>${t("wkIndex")}</h2><p class="sub">${t("wkKnownN",{a:known.length,b:CREATURES.length})}</p>
@@ -1656,7 +1671,7 @@ function openWikiIndex(){const known=CREATURES.filter(wkKnown);
 for(const [l,o] of Object.entries({
   de:{wkMean:"Der Name bedeutet",wkEra:"Zeitalter",wkTime:"vor {a}–{b} Mio. Jahren",wkTimeK:"vor {a} bis {b} Jahren",wkLen:"Länge",wkHeight:"Größe",wkSpan:"Flügelspannweite",wkWeight:"Gewicht",wkWUnk:"unbekannt",wkSkull:"Bisher wurde nur sein riesiger Schädel gefunden.",wkTime1:"vor {a} Mio. Jahren",
     wkCmpL:"so lang wie {x}",wkCmpH:"so groß wie {x}",wkCmpW:"so breit wie {x}",wkCmpKg:"so schwer wie {x}",wkFood:"Nahrung",wkSites:"Fundorte",wkBones:"Knochen",wkBonesN:"{n} von 5 gefunden",wkFull:"Skelett komplett",
-    wkDid:"Wusstest du?",wkLive:"Lebend zeigen",wkSkel:"Skelett zeigen",wkLiveLock:"Wie das Tier lebend aussah, siehst du, wenn das Skelett komplett ist.",wkIndex:"Dino-Lexikon",wkKnownN:"{a} von {b} Arten entdeckt",wkNone:"Grabe Knochen aus, dann füllt sich das Lexikon.",
+    wkDid:"Wusstest du?",wkComic:"Comic",wkReal:"Echt",wkLive:"Lebend zeigen",wkSkel:"Skelett zeigen",wkLiveLock:"Wie das Tier lebend aussah, siehst du, wenn das Skelett komplett ist.",wkIndex:"Dino-Lexikon",wkKnownN:"{a} von {b} Arten entdeckt",wkNone:"Grabe Knochen aus, dann füllt sich das Lexikon.",
     dP:"Pflanzen",dF:"Fleisch",dFi:"Fische",dFF:"Fische und Fleisch",dA:"Allesfresser",dI:"Insekten und kleine Tiere",
     o_cat:"eine Katze",o_dog:"ein großer Hund",o_kid:"ein Kind",o_man:"ein Erwachsener",o_car:"ein Auto",o_cars:"{n} Autos",o_bus:"ein Schulbus",o_buses:"{n} Schulbusse",o_horse:"ein Pferd",o_ele:"ein Elefant",o_eles:"{n} Elefanten",o_kids:"{n} Kinder übereinander",
     wm_dime:"zwei Arten von Zähnen",wm_edap:"Bodenechse",wm_scut:"Schildechse",wm_inos:"benannt nach dem Geologen Inostranzew",wm_meso:"mittlere Echse",wm_plat:"flache Echse",wm_herr:"Herreras Echse",wm_coel:"hohle Gestalt",wm_eora:"Räuber der Morgenröte",wm_noth:"falsche Echse",
@@ -1665,7 +1680,7 @@ for(const [l,o] of Object.entries({
     wm_andr:"Andrews' Herrscher",wm_prac:"beinahe ein Horntier",wm_mamm:"erstgeborenes Mammut",wm_smil:"Messerzahn",wm_nash:"Hohlzahn",wm_baer:"Bär der Höhlen",wm_megl:"großes Geweih",wm_glyp:"gemeißelter Zahn"},
   en:{wkMean:"The name means",wkEra:"Era",wkTime:"{a}–{b} million years ago",wkTimeK:"{a} to {b} years ago",wkLen:"Length",wkHeight:"Height",wkSpan:"Wingspan",wkWeight:"Weight",wkWUnk:"unknown",wkSkull:"So far only its huge skull has been found.",wkTime1:"{a} million years ago",
     wkCmpL:"as long as {x}",wkCmpH:"as tall as {x}",wkCmpW:"as wide as {x}",wkCmpKg:"as heavy as {x}",wkFood:"Food",wkSites:"Fossil sites",wkBones:"Bones",wkBonesN:"{n} of 5 found",wkFull:"Skeleton complete",
-    wkDid:"Did you know?",wkLive:"Show it alive",wkSkel:"Show skeleton",wkLiveLock:"Complete the skeleton to see what the animal looked like alive.",wkIndex:"Dino encyclopedia",wkKnownN:"{a} of {b} species discovered",wkNone:"Dig up bones and the encyclopedia will fill up.",
+    wkDid:"Did you know?",wkComic:"Cartoon",wkReal:"Realistic",wkLive:"Show it alive",wkSkel:"Show skeleton",wkLiveLock:"Complete the skeleton to see what the animal looked like alive.",wkIndex:"Dino encyclopedia",wkKnownN:"{a} of {b} species discovered",wkNone:"Dig up bones and the encyclopedia will fill up.",
     dP:"Plants",dF:"Meat",dFi:"Fish",dFF:"Fish and meat",dA:"Omnivore",dI:"Insects and small animals",
     o_cat:"a cat",o_dog:"a big dog",o_kid:"a child",o_man:"a grown-up",o_car:"a car",o_cars:"{n} cars",o_bus:"a school bus",o_buses:"{n} school buses",o_horse:"a horse",o_ele:"an elephant",o_eles:"{n} elephants",o_kids:"{n} children standing on each other",
     wm_dime:"two kinds of teeth",wm_edap:"ground lizard",wm_scut:"shield lizard",wm_inos:"named after the geologist Inostrantsev",wm_meso:"middle lizard",wm_plat:"flat lizard",wm_herr:"Herrera's lizard",wm_coel:"hollow form",wm_eora:"dawn plunderer",wm_noth:"false lizard",
@@ -1674,7 +1689,7 @@ for(const [l,o] of Object.entries({
     wm_andr:"Andrews' ruler",wm_prac:"near the horned beast",wm_mamm:"first-born mammoth",wm_smil:"knife tooth",wm_nash:"hollow tooth",wm_baer:"bear of the caves",wm_megl:"great antler",wm_glyp:"carved tooth"},
   fr:{wkMean:"Le nom signifie",wkEra:"Époque",wkTime:"il y a {a} à {b} millions d'années",wkTimeK:"il y a {a} à {b} ans",wkLen:"Longueur",wkHeight:"Hauteur",wkSpan:"Envergure",wkWeight:"Poids",wkWUnk:"inconnu",wkSkull:"Jusqu'ici, on n'a trouvé que son énorme crâne.",wkTime1:"il y a {a} millions d'années",
     wkCmpL:"aussi long que {x}",wkCmpH:"aussi grand que {x}",wkCmpW:"aussi large que {x}",wkCmpKg:"aussi lourd que {x}",wkFood:"Nourriture",wkSites:"Sites de fouilles",wkBones:"Os",wkBonesN:"{n} sur 5 trouvés",wkFull:"Squelette complet",
-    wkDid:"Le savais-tu ?",wkLive:"Le voir vivant",wkSkel:"Voir le squelette",wkLiveLock:"Complète le squelette pour voir à quoi ressemblait l'animal vivant.",wkIndex:"Encyclopédie des dinos",wkKnownN:"{a} espèces découvertes sur {b}",wkNone:"Déterre des os et l'encyclopédie se remplira.",
+    wkDid:"Le savais-tu ?",wkComic:"BD",wkReal:"Réaliste",wkLive:"Le voir vivant",wkSkel:"Voir le squelette",wkLiveLock:"Complète le squelette pour voir à quoi ressemblait l'animal vivant.",wkIndex:"Encyclopédie des dinos",wkKnownN:"{a} espèces découvertes sur {b}",wkNone:"Déterre des os et l'encyclopédie se remplira.",
     dP:"Plantes",dF:"Viande",dFi:"Poissons",dFF:"Poissons et viande",dA:"Omnivore",dI:"Insectes et petits animaux",
     o_cat:"un chat",o_dog:"un grand chien",o_kid:"un enfant",o_man:"un adulte",o_car:"une voiture",o_cars:"{n} voitures",o_bus:"un bus scolaire",o_buses:"{n} bus scolaires",o_horse:"un cheval",o_ele:"un éléphant",o_eles:"{n} éléphants",o_kids:"{n} enfants les uns sur les autres",
     wm_dime:"deux sortes de dents",wm_edap:"lézard du sol",wm_scut:"lézard bouclier",wm_inos:"nommé d'après le géologue Inostrantsev",wm_meso:"lézard du milieu",wm_plat:"lézard plat",wm_herr:"lézard de Herrera",wm_coel:"forme creuse",wm_eora:"pillard de l'aube",wm_noth:"faux lézard",
@@ -1683,7 +1698,7 @@ for(const [l,o] of Object.entries({
     wm_andr:"souverain d'Andrews",wm_prac:"presque une bête à cornes",wm_mamm:"mammouth premier-né",wm_smil:"dent couteau",wm_nash:"dent creuse",wm_baer:"ours des cavernes",wm_megl:"grands bois",wm_glyp:"dent sculptée"},
   es:{wkMean:"El nombre significa",wkEra:"Época",wkTime:"hace {a}–{b} millones de años",wkTimeK:"hace {a} a {b} años",wkLen:"Longitud",wkHeight:"Altura",wkSpan:"Envergadura",wkWeight:"Peso",wkWUnk:"desconocido",wkSkull:"Hasta ahora solo se ha encontrado su enorme cráneo.",wkTime1:"hace {a} millones de años",
     wkCmpL:"tan largo como {x}",wkCmpH:"tan alto como {x}",wkCmpW:"tan ancho como {x}",wkCmpKg:"tan pesado como {x}",wkFood:"Alimentación",wkSites:"Yacimientos",wkBones:"Huesos",wkBonesN:"{n} de 5 encontrados",wkFull:"Esqueleto completo",
-    wkDid:"¿Sabías que…?",wkLive:"Verlo vivo",wkSkel:"Ver esqueleto",wkLiveLock:"Completa el esqueleto para ver cómo era el animal en vida.",wkIndex:"Enciclopedia de dinos",wkKnownN:"{a} de {b} especies descubiertas",wkNone:"Desentierra huesos y la enciclopedia se irá llenando.",
+    wkDid:"¿Sabías que…?",wkComic:"Cómic",wkReal:"Realista",wkLive:"Verlo vivo",wkSkel:"Ver esqueleto",wkLiveLock:"Completa el esqueleto para ver cómo era el animal en vida.",wkIndex:"Enciclopedia de dinos",wkKnownN:"{a} de {b} especies descubiertas",wkNone:"Desentierra huesos y la enciclopedia se irá llenando.",
     dP:"Plantas",dF:"Carne",dFi:"Peces",dFF:"Peces y carne",dA:"Omnívoro",dI:"Insectos y animales pequeños",
     o_cat:"un gato",o_dog:"un perro grande",o_kid:"un niño",o_man:"un adulto",o_car:"un coche",o_cars:"{n} coches",o_bus:"un autobús escolar",o_buses:"{n} autobuses escolares",o_horse:"un caballo",o_ele:"un elefante",o_eles:"{n} elefantes",o_kids:"{n} niños uno encima de otro",
     wm_dime:"dos tipos de dientes",wm_edap:"lagarto del suelo",wm_scut:"lagarto escudo",wm_inos:"en honor al geólogo Inostrántsev",wm_meso:"lagarto intermedio",wm_plat:"lagarto plano",wm_herr:"lagarto de Herrera",wm_coel:"forma hueca",wm_eora:"saqueador del amanecer",wm_noth:"falso lagarto",
