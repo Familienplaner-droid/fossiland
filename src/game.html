@@ -1028,6 +1028,12 @@ const ADQ={init:null,ready:false,loading:null,earned:false,done:null};
 function adErr(step,e){try{const x=SS();x.adErr=x.adErr||[];const d=new Date();
   x.adErr.push([dayNo(),d.toTimeString().slice(0,5),step,e&&e.code!=null?e.code:"",String((e&&(e.message||e.errorMessage))||e||"").slice(0,120),navigator.onLine?1:0]);
   if(x.adErr.length>12)x.adErr.shift();save()}catch(_){}}
+// Spielfehler für den Testbericht: [Spieltag, Uhrzeit, Meldung, Zeile, Ansicht]
+function jsErr(msg,line){try{const x=SS();x.jsErr=x.jsErr||[];const d=new Date(),v=document.querySelector("section[id^=\"v-\"]:not([hidden])");
+  const m=String(msg||"").slice(0,140),last=x.jsErr[x.jsErr.length-1];if(last&&last[2]===m&&last[3]===line){last[5]=(last[5]||1)+1;save();return}
+  x.jsErr.push([dayNo(),d.toTimeString().slice(0,5),m,line||0,v?v.id.replace("v-",""):"",1]);if(x.jsErr.length>12)x.jsErr.shift();save()}catch(_){}}
+addEventListener("error",e=>{if(e.message)jsErr(e.message,e.lineno)});
+addEventListener("unhandledrejection",e=>jsErr("Promise: "+((e.reason&&(e.reason.message||e.reason))||"?"),0));
 function admInit(){if(!ADM)return Promise.resolve(false);if(ADQ.init)return ADQ.init;
   ADQ.init=(async()=>{try{
     await ADM.initialize({initializeForTesting:ADS_TESTING,tagForChildDirectedTreatment:true,tagForUnderAgeOfConsent:true,maxAdContentRating:"General"});
@@ -2322,6 +2328,7 @@ function reportText(){
     `Reisen: ${c.flights||0} Flüge, ${Object.keys(S.visited||{}).length} von ${SITES.length} Fundstellen besucht, Tickets: ${c.tixAd||0} per Video, ${c.tixBuy||0} gekauft, ${S.tix||0} übrig`,
     `Expeditionslager: Stufe ${S.campLv||0}`,
     `Videos: ${c.ads||0} geschaut (${ads}), ${c.adCancel||0} abgebrochen, ${c.adFail||0}× keins verfügbar`,
+    ...((x.jsErr||[]).length?["Spielfehler (Spieltag, Uhrzeit, Ansicht, Meldung, Zeile):",...x.jsErr.map(e=>`  Tag ${e[0]} ${e[1]} · ${e[4]||"?"} · ${e[2]} · Z. ${e[3]}${e[5]>1?` · ${e[5]}×`:""}`)]:[]),
     ...((x.adErr||[]).length?["Werbefehler (Spieltag, Uhrzeit, Schritt, Code, Meldung):",...x.adErr.map(e=>`  Tag ${e[0]} ${e[1]} · ${e[2]} · Code ${e[3]===""?"?":e[3]} · ${e[4]||"ohne Meldung"}${e[5]?"":" · offline"}`)]:[]),
     `Tagesaufgaben: ${c.dqClaimed||0} abgeholt, ${c.chests||0} Truhen, längste Serie ${x.maxStreak||0} Tage`,
     `Münzen: ${Math.floor(S.coins)} übrig, ${x.spent||0} ausgegeben, Eintritt ${rate()} pro Std.`,
@@ -2339,7 +2346,7 @@ function reportText(){
 function reportData(){const x=SS(),c=x.c;   // Reisen: c.flights, c.tixAd, c.tixBuy
   const d={v:1,id:x.id,name:x.name||"",lang:LANG,app:ADM?1:0,start:x.start,at:Date.now(),
     days:Object.fromEntries(Object.entries(x.days).map(([k,v])=>[k,[v.s||0,v.sec||0,v.a||0]])),
-    ads:c.ads||0,adCancel:c.adCancel||0,adFail:c.adFail||0,adErr:(x.adErr||[]).slice(-5),adKinds:Object.fromEntries(Object.keys(c).filter(k=>k.startsWith("ad:")).map(k=>[k.slice(3),c[k]])),
+    ads:c.ads||0,adCancel:c.adCancel||0,adFail:c.adFail||0,adErr:(x.adErr||[]).slice(-5),jsErr:(x.jsErr||[]).slice(-5),adKinds:Object.fromEntries(Object.keys(c).filter(k=>k.startsWith("ad:")).map(k=>[k.slice(3),c[k]])),
     flights:c.flights||0,sites:Object.keys(S.visited||{}).length,done:completed(),eras:ERAS.filter((e,i)=>unlocked(i)).length,digs:c.digsStarted||0,bones:c.bones||0,streak:x.maxStreak||0,tut:x.tut||""};
   return btoa(unescape(encodeURIComponent(JSON.stringify(d))))}
 const SHR=(()=>{try{return window.capacitorExports&&capacitorExports.Capacitor.isNativePlatform()&&window.capacitorShare?capacitorShare.Share:null}catch(e){return null}})();
