@@ -388,7 +388,7 @@ nav .in{max-width:760px}
 /* Quer gehalten: Grabungsfeld links in voller Höhe, Steuerung rechts, Navigation als Leiste */
 @media (orientation:landscape) and (min-width:600px){
   body{padding-left:calc(98px + env(safe-area-inset-left,0px));padding-top:8px;padding-bottom:max(12px,env(safe-area-inset-bottom,0px))}
-  nav{top:0;bottom:0;right:auto;width:calc(84px + env(safe-area-inset-left,0px));padding:max(10px,env(safe-area-inset-top,0px)) 6px max(10px,env(safe-area-inset-bottom,0px)) max(6px,env(safe-area-inset-left,0px));display:flex;align-items:center;box-shadow:6px 0 18px rgba(0,0,0,.35)}
+  nav{top:0;bottom:0;right:auto;box-sizing:border-box;width:calc(84px + env(safe-area-inset-left,0px));   /* border-box: sonst kommt die Kamera-Aussparung doppelt dazu und die Leiste ragt über den Inhalt */padding:max(10px,env(safe-area-inset-top,0px)) 6px max(10px,env(safe-area-inset-bottom,0px)) max(6px,env(safe-area-inset-left,0px));display:flex;align-items:center;box-shadow:6px 0 18px rgba(0,0,0,.35)}
   nav .in{grid-template-columns:1fr;gap:8px;width:100%}
   nav button{padding:10px 2px}
   .wrap{max-width:1400px;width:100%;--pitw:min(calc(100vw - 98px - 300px - 44px),calc((100vh - 92px)*.909))}
