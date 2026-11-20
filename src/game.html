@@ -1053,7 +1053,7 @@ async function showNativeAd(label,onReward){
   let gone=false;ov.addEventListener("click",e=>{if(e.target.closest("#adcancel")){e.stopPropagation();gone=true;ov.remove();stat("adCancel")}});
   await admInit();const ok=ADQ.ready||await admLoad();if(gone)return;ov.remove();
   if(!ok){adErr(ADM?"laden":"kein Plugin",ADQ.failErr||"");stat("adFail");save();toast(t("adNone"));admLoad();return}
-  ADQ.earned=false;const res=new Promise(r=>{ADQ.done=r});
+  ADQ.earned=false;ADQ.ready=false;const res=new Promise(r=>{ADQ.done=r});   // geladenes Video gilt sofort als verbraucht, sonst „already shown“, wenn das Schließen-Ereignis verloren geht
   ADM.showRewardVideoAd().catch(()=>{});const earned=await res;
   if(earned===null){stat("adFail");save();toast(t("adNone"));return}
   if(earned)adReward(label,onReward);else{stat("adCancel");save();toast(t("noReward"))}}
