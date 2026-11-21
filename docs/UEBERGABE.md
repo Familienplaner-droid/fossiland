@@ -115,3 +115,10 @@ Kari, Jano und Finn. Ihre Berichte vom 14. bis 16.11. sind ausgewertet und die g
 - Fehlende Bilder zeigen eine Infotafel „Bild folgt bald“ (`iurl()`). Gelieferte Bilder der neuen Arten/Funde in `HAVE` eintragen (z. B. `"ex_parad.webp"`), für die Halle danach `tools/hall/meta.py` laufen lassen.
 - `soil_6`–`soil_11` sind vorläufig eingefärbte Kopien von `soil_1`; die Landschaft wird bis zum Bild gezeichnet (`SCENES`).
 - Neue Arten stehen in der Halle in den vorhandenen Sälen (eigene Säle gibt es noch nicht).
+
+## Zeitalter in echter Reihenfolge (21.11.)
+- Index jetzt chronologisch: 0 Kambrium, 1 Ordovizium, 2 Silur, 3 Devon, 4 Karbon, 5 Perm, 6 Trias, 7 Jura, 8 Kreide, 9 Paläogen, 10 Neogen, 11 Eiszeit.
+- `need` = [0,0,3,6,10,14,18,23,28,35,41,46]; Wirtschaft über `eraL(e)=e*5/11` (Stufe 0–5 wie vorher), LABMIN 40…300 min.
+- `scene_/floor_` gibt es nur für 5,6,7,8,9,11 (`SCENE_IMG`); `soil_0..11` umbenannt. Schnee: `S.era===11`.
+- Neue Arten/Funde stehen in `NEWC`/`NEWR` (Platzhalter über `iurl`, bis Bild in `HAVE`).
+- Spielstand-Migration (`S.eraV=2`): alte Nummern über N=[5,6,7,8,9,11,0,1,2,3,4,10]; früher erreichte Zeitalter bleiben über `S.eraKeep` offen.
