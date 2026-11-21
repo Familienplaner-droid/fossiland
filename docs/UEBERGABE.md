@@ -108,3 +108,10 @@ Kari, Jano und Finn. Ihre Berichte vom 14. bis 16.11. sind ausgewertet und die g
   - Familienrichtlinien
   - Release-Schlüssel als GitHub-Secrets (siehe README)
   - Spielstand in der Cloud
+
+## Erweiterung: sechs neue Zeitalter (Stand 21.11.2026)
+- Zeitalter 6–11: Kambrium, Ordovizium, Silur, Devon, Karbon, Neogen (nach der Eiszeit, `need` 30–50 Skelette). 30 neue Arten, 21 Fundstellen, 12 seltene Funde, Texte in 4 Sprachen.
+- Prompts: Doc „Fossiland – Prompts für neue Zeitalter“ (https://claude.ai/artifact/9C4jYZSgiWLQL8xYs1STr4).
+- Fehlende Bilder zeigen eine Infotafel „Bild folgt bald“ (`iurl()`). Gelieferte Bilder der neuen Arten/Funde in `HAVE` eintragen (z. B. `"ex_parad.webp"`), für die Halle danach `tools/hall/meta.py` laufen lassen.
+- `soil_6`–`soil_11` sind vorläufig eingefärbte Kopien von `soil_1`; die Landschaft wird bis zum Bild gezeichnet (`SCENES`).
+- Neue Arten stehen in der Halle in den vorhandenen Sälen (eigene Säle gibt es noch nicht).
