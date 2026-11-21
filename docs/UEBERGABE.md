@@ -122,3 +122,10 @@ Kari, Jano und Finn. Ihre Berichte vom 14. bis 16.11. sind ausgewertet und die g
 - `scene_/floor_` gibt es nur für 5,6,7,8,9,11 (`SCENE_IMG`); `soil_0..11` umbenannt. Schnee: `S.era===11`.
 - Neue Arten/Funde stehen in `NEWC`/`NEWR` (Platzhalter über `iurl`, bis Bild in `HAVE`).
 - Spielstand-Migration (`S.eraV=2`): alte Nummern über N=[5,6,7,8,9,11,0,1,2,3,4,10]; früher erreichte Zeitalter bleiben über `S.eraKeep` offen.
+
+## Museumsbilder und Fundstücke der neuen Arten (21.11.)
+- 3D-Werkstatt läuft wieder: `pip install bpy`, Skripte nach /home/claude/fossil3d kopieren. Wirbeltiere: `skel3d.py <id>` (CRE-Liste), Wirbellose: `invert.py <id>` (SPEC), Fundstücke: `sprites.py all`.
+- Packen wie pack.py (Maske ×40 als _m.png). Fertige Arten in `SKOWN` eintragen (dann normales Museumsbild statt ex_/Platzhalter).
+- Fundstücke je Tiergruppe: `SPRX` (trilo, soft, lobo) über `sprOf(id,teil)`; andere Gruppen nutzen noch Knochen.
+- Hallucigenia hat Gruppe `lobo` (Teil „Stacheln“ statt „Lappen“).
+- Erledigt: Kambrium (parad, anoma, opabi, hallu, pikai).

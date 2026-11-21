@@ -30,6 +30,8 @@ CRE = [  # id, plan, skull, skull scale
     ("tric", "quad", None, 1), ("velo", "biped", None, .85), ("anky", "quad", None, 1), ("spin", "biped", None, 1), ("trex", "biped", None, 1.4), ("pter", "wing", None, 1), ("mosa", "fish", None, 1.25), ("pars", "biped", None, 1), ("igua", "biped", None, 1),
     ("gast", "biped", "gast", 1.2), ("basi", "fish", None, 1), ("darw", "mammal", None, .75), ("prop", "mammal", None, .85), ("andr", "mammal", None, 1.3), ("prac", "mammal", None, 1),
     ("mamm", "mammal", None, 1.2), ("smil", "mammal", None, 1), ("nash", "mammal", None, 1), ("baer", "mammal", None, 1.1), ("megl", "mammal", None, 1), ("glyp", "quad", None, .8),
+    ("acant", "quad", None, .9),
+    ("pikai", "fish", None, .55),
 ]
 
 U = 1 / 20.0
