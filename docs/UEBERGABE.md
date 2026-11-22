@@ -129,3 +129,7 @@ Kari, Jano und Finn. Ihre Berichte vom 14. bis 16.11. sind ausgewertet und die g
 - Fundstücke je Tiergruppe: `SPRX` (trilo, soft, lobo) über `sprOf(id,teil)`; andere Gruppen nutzen noch Knochen.
 - Hallucigenia hat Gruppe `lobo` (Teil „Stacheln“ statt „Lappen“).
 - Erledigt: Kambrium (parad, anoma, opabi, hallu, pikai).
+
+## Testberichte 22.11.
+- Bericht: „von 12 Zeitaltern“ (war fest 6), Ereignisse auf die letzten 15 gekürzt (WhatsApp schnitt die FSL1-Daten ab), ResizeObserver-Warnung wird nicht mehr als Spielfehler gezählt.
+- LABMIN zurück auf die alten Werte für Perm–Eiszeit (Umsortierung hatte Perm/Trias verlangsamt), frühe Zeitalter 20–60 min.
