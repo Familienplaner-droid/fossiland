@@ -961,7 +961,7 @@ function preload(){
 }
 
 /* ================= Zeit: Ausdauer-Vorrat & Präparationslabor ================= */
-const LABMIN=[40,50,60,75,90,110,130,160,190,220,260,300];       // Minuten pro Knochen je Zeitalter
+const LABMIN=[20,25,30,40,50,60,90,130,180,240,270,300];   // Perm–Eiszeit wie vor der Umsortierung, frühe Zeitalter schneller       // Minuten pro Knochen je Zeitalter
 const SKIP=0.2;                             // ein Video oder Münz-Sprung spart 20 % der Präparationszeit
 const labSlots=()=>2+S.benchLv;
 const labHas=(id,p)=>S.lab.some(x=>x.id===id&&x.part===p);
@@ -1100,10 +1100,10 @@ function adErr(step,e){try{const x=SS();x.adErr=x.adErr||[];const d=new Date();
   x.adErr.push([dayNo(),d.toTimeString().slice(0,5),step,e&&e.code!=null?e.code:"",String((e&&(e.message||e.errorMessage))||e||"").slice(0,120),navigator.onLine?1:0]);
   if(x.adErr.length>12)x.adErr.shift();save()}catch(_){}}
 // Spielfehler für den Testbericht: [Spieltag, Uhrzeit, Meldung, Zeile, Ansicht]
-function jsErr(msg,line){try{const x=SS();x.jsErr=x.jsErr||[];const d=new Date(),v=document.querySelector("section[id^=\"v-\"]:not([hidden])");
+function jsErr(msg,line){try{const x=SS();x.jsErr=(x.jsErr||[]).filter(e=>!/ResizeObserver/.test(e[2]));const d=new Date(),v=document.querySelector("section[id^=\"v-\"]:not([hidden])");
   const m=String(msg||"").slice(0,140),last=x.jsErr[x.jsErr.length-1];if(last&&last[2]===m&&last[3]===line){last[5]=(last[5]||1)+1;save();return}
   x.jsErr.push([dayNo(),d.toTimeString().slice(0,5),m,line||0,v?v.id.replace("v-",""):"",1]);if(x.jsErr.length>12)x.jsErr.shift();save()}catch(_){}}
-addEventListener("error",e=>{if(e.message)jsErr(e.message,e.lineno)});
+addEventListener("error",e=>{if(e.message&&!/ResizeObserver loop/.test(e.message))jsErr(e.message,e.lineno)});   // ResizeObserver-Meldung ist eine harmlose Browser-Warnung
 addEventListener("unhandledrejection",e=>jsErr("Promise: "+((e.reason&&(e.reason.message||e.reason))||"?"),0));
 function admInit(){if(!ADM)return Promise.resolve(false);if(ADQ.init)return ADQ.init;
   ADQ.init=(async()=>{try{
@@ -2400,7 +2400,7 @@ function reportText(){
     `Durchschnitt: ${act.length?(totS/act.length).toFixed(1).replace(".",","):0} Sitzungen pro Spieltag`,
     "",
     `Anleitung: ${x.tut||"nicht gesehen"}`,
-    `Fortschritt: ${completed()} von ${CREATURES.length} Skeletten komplett, ${ERAS.filter((e,i)=>unlocked(i)).length} von 6 Zeitaltern frei`,
+    `Fortschritt: ${completed()} von ${CREATURES.length} Skeletten komplett, ${ERAS.filter((e,i)=>unlocked(i)).length} von ${ERAS.length} Zeitaltern frei`,
     `Grabungen: ${c.digsStarted||0} begonnen, ${c.digs||0} ganz geleert, ${c.digsQuit||0} beendet`,
     `Gegraben: ${c.cells||0} Felder, ${c.bones||0} Knochen (${(c.bones||0)-(c.intact||0)} mit Riss), ${c.relics||0} Schätze, Sonde ${c.probes||0}×`,
     `Labor: ${c.prepared||0} Knochen fertig, beschleunigt ${c.speed||0}× (davon ${c.buyLab||0}× mit Münzen)`,
@@ -2408,14 +2408,14 @@ function reportText(){
     `Reisen: ${c.flights||0} Flüge, ${Object.keys(S.visited||{}).length} von ${SITES.length} Fundstellen besucht, Tickets: ${c.tixAd||0} per Video, ${c.tixBuy||0} gekauft, ${S.tix||0} übrig`,
     `Expeditionslager: Stufe ${S.campLv||0}`,
     `Videos: ${c.ads||0} geschaut (${ads}), ${c.adCancel||0} abgebrochen, ${c.adFail||0}× keins verfügbar`,
-    ...((x.jsErr||[]).length?["Spielfehler (Spieltag, Uhrzeit, Ansicht, Meldung, Zeile):",...x.jsErr.map(e=>`  Tag ${e[0]} ${e[1]} · ${e[4]||"?"} · ${e[2]} · Z. ${e[3]}${e[5]>1?` · ${e[5]}×`:""}`)]:[]),
+    ...((x.jsErr=(x.jsErr||[]).filter(e=>!/ResizeObserver/.test(e[2]))).length?["Spielfehler (Spieltag, Uhrzeit, Ansicht, Meldung, Zeile):",...x.jsErr.map(e=>`  Tag ${e[0]} ${e[1]} · ${e[4]||"?"} · ${e[2]} · Z. ${e[3]}${e[5]>1?` · ${e[5]}×`:""}`)]:[]),
     ...((x.adErr||[]).length?["Werbefehler (Spieltag, Uhrzeit, Schritt, Code, Meldung):",...x.adErr.map(e=>`  Tag ${e[0]} ${e[1]} · ${e[2]} · Code ${e[3]===""?"?":e[3]} · ${e[4]||"ohne Meldung"}${e[5]?"":" · offline"}`)]:[]),
     `Tagesaufgaben: ${c.dqClaimed||0} abgeholt, ${c.chests||0} Truhen, längste Serie ${x.maxStreak||0} Tage`,
     `Münzen: ${Math.floor(S.coins)} übrig, ${x.spent||0} ausgegeben, Eintritt ${rate()} pro Std.`,
     `Ausbaustufen: Feldflasche ${S.energyLv}, Feldküche ${S.regenLv}, Werkbank ${S.benchLv}, Hacke ${S.precLv}, Sonde ${S.probeLv}`,
     "",
-    "Ereignisse (Spieltag):",
-    ...(x.ev.length?x.ev.map(e=>`  Tag ${e[0]}: ${e[1]}`):["  keine"]),
+    `Ereignisse (Spieltag${x.ev.length>15?", die letzten 15 von "+x.ev.length:""}):`,   // gekürzt, damit der Bericht in eine Messenger-Nachricht passt
+    ...(x.ev.length?x.ev.slice(-15).map(e=>`  Tag ${e[0]}: ${e[1]}`):["  keine"]),
     "",
     "Daten für die Auswertung (bitte mitschicken):",
     "FSL1:"+reportData()
