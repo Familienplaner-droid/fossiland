@@ -936,7 +936,7 @@ const aurl=n=>(window.EMB&&window.EMB[n])||ASSET+n;   // im Download sind die Gr
 const HAVE=new Set(["ex_camer.webp","live_camer.webp","ex_isote.webp","live_isote.webp","ex_megag.webp","live_megag.webp","ex_sacab.webp","live_sacab.webp","ex_asaph.webp","live_asaph.webp","real_parad.webp","realsk_parad.webp","real_pikai.webp","realsk_pikai.webp","real_anoma.webp","realsk_anoma.webp","real_opabi.webp","realsk_opabi.webp","real_hallu.webp","realsk_hallu.webp","ex_parad.webp", "live_parad.webp", "sk_parad.webp", "ex_anoma.webp", "live_anoma.webp", "sk_anoma.webp", "ex_opabi.webp", "live_opabi.webp", "sk_opabi.webp", "ex_hallu.webp", "live_hallu.webp", "sk_hallu.webp", "ex_pikai.webp", "live_pikai.webp", "sk_pikai.webp"]);
 const SKOWN=new Set(["parad","anoma","opabi","hallu","pikai"]);   // Museums-Renderings (sk_ + Maske) der neuen Arten, die schon da sind
 const NEWC=new Set(["parad", "anoma", "opabi", "hallu", "pikai", "camer", "isote", "megag", "sacab", "asaph", "ptery", "euryp", "dalma", "clima", "pneum", "dunkl", "tikta", "acant", "bothr", "clado", "megan", "arthr", "hylon", "pulmo", "crass", "megal", "deino", "thyla", "titan", "chali"]),NEWR=new Set(["r_burgess", "r_archaeo", "r_bryozoa", "r_nautilus", "r_cooksonia", "r_chaincoral", "r_archaeopteris", "r_placoderm", "r_lepido", "r_coalfern", "r_megtooth", "r_hipparion"]);   // Arten und Funde der Erweiterung (Bilder kommen nach und nach)
-const SCENE_IMG=new Set([0,5,6,7,8,9,11]);   // Zeitalter mit gemalter Landschaft (scene_/floor_)
+const SCENE_IMG=new Set([0,1,5,6,7,8,9,11]);   // Zeitalter mit gemalter Landschaft (scene_/floor_)
 let NEWF=null;const phC={};
 function phURL(){const k=LANG;if(phC[k])return phC[k];
   const txt=t("phSoon").replace(/&/g,"&amp;").replace(/</g,"&lt;");
