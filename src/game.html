@@ -1868,6 +1868,7 @@ const hExt=()=>hBounds(Math.min(...HROOMS.map(r=>r.si))*HS,Math.min(...HROOMS.ma
 const HIMG={};let HV=null,HGEO=null;
 // Kleintier-Vitrinen: kleine Arten stehen nicht einzeln auf dem Sockel, sondern gemeinsam in einer Vitrine im Saal ihres Zeitalters (echte Länge in m)
 const SMALL={0:[["hallu",.03],["pikai",.05],["opabi",.07],["parad",.37]],1:[["asaph",.1],["sacab",.35]],2:[["pneum",.01],["dalma",.07],["clima",.15],["euryp",.25]],3:[["bothr",.4]],4:[["hylon",.2]]};
+const VKPOS={"hallu":[0,0,320,162],"pikai":[322,0,320,48],"opabi":[644,0,320,84],"parad":[0,164,320,138],"asaph":[322,164,320,260],"sacab":[644,164,320,75],"pneum":[0,426,320,74],"dalma":[322,426,320,103],"clima":[644,426,320,118],"euryp":[0,546,320,178],"bothr":[322,546,320,111],"hylon":[644,546,320,103]};   // Lage der Kleintiere im Bild vk_sheet.webp
 const SMALLID=new Set(Object.values(SMALL).flat().map(x=>x[0]));
 const kvIn=e=>(SMALL[e]||[]).filter(([id])=>{const c=CREATURES.find(k=>k.id===id);return c&&hallOk(c)});   // fertige Kleintiere eines Zeitalters
 const hRoom=id=>HROOMS.find(r=>r.id===id),hAt=(si,sj)=>HROOMS.find(r=>r.si===si&&r.sj===sj);
@@ -2080,9 +2081,9 @@ function hSprite(x,o,W,H){const im=hallImg(hFile(o));if(!im.complete||!im.natura
   if(o.kind==="r"){const ri=hallImg(o.id+".webp");if(ri.complete&&ri.naturalWidth){const w=B.m[0]*.6,h=w*ri.naturalHeight/ri.naturalWidth,cx=B.m[0]*.5,by=B.m[1]*.6;   // Fund auf dem Samtblock in der Vitrine
     x.drawImage(ri,(cx-w/2-B.m[2])*B.s,(by-h-B.m[3])*B.s,w*B.s,h*B.s)}}
   if(o.kind==="k"){const L=SMALL[o.id]||[],n=L.length,mx=Math.max(...L.map(z=>z[1])),done=new Set(kvIn(+o.id).map(z=>z[0])),sw=470/Math.max(n,1);   // Kleintiere nebeneinander auf dem Filz, dann die Glasscheiben darüber
-    L.forEach(([id,len],k)=>{if(!done.has(id))return;const a=hallImg("vk_"+id+".webp");if(!a.complete||!a.naturalWidth)return;
-      const tq=(k+.5)/n,u=66+tq*460,v=268-tq*90+10,f=Math.max(.72,Math.sqrt(len/mx));let w=sw*1.02*f,h=w*a.naturalHeight/a.naturalWidth;if(h>110*f){h=110*f;w=h*a.naturalWidth/a.naturalHeight}
-      x.drawImage(a,(u-w/2-B.m[2])*B.s,(v-h-B.m[3])*B.s,w*B.s,h*B.s)});
+    L.forEach(([id,len],k)=>{if(!done.has(id))return;const a=hallImg("vk_sheet.webp"),R=VKPOS[id];if(!a.complete||!a.naturalWidth||!R)return;
+      const tq=(k+.5)/n,u=66+tq*460,v=268-tq*90+10,f=Math.max(.72,Math.sqrt(len/mx));let w=sw*1.02*f,h=w*R[3]/R[2];if(h>110*f){h=110*f;w=h*R[2]/R[3]}
+      x.drawImage(a,R[0],R[1],R[2],R[3],(u-w/2-B.m[2])*B.s,(v-h-B.m[3])*B.s,w*B.s,h*B.s)});
     const g=hallImg("vit_glass.webp");if(g.complete&&g.naturalWidth)x.drawImage(g,-B.m[2]*B.s,-B.m[3]*B.s,B.m[0]*B.s,B.m[1]*B.s)}
   x.restore()}
 function hallUI(){if(!HV)return;const el=HV.el,sh=el.querySelector("#hallsheet"),H=hallS(),placed=Object.keys(H.it).length,eb=el.querySelector("#hlEdit");
