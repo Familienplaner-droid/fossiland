@@ -138,3 +138,10 @@ Kari, Jano und Finn. Ihre Berichte vom 14. bis 16.11. sind ausgewertet und die g
 - Alle 6 neuen Zeitalter haben Hallen-Exponat (ex_), Comic-Lebendbild (live_), Echt-Bilder (real_/realsk_), Landschaft (scene_), Boden (soil_) und seltene Funde.
 - Werkzeuge: /tmp/pairped.py (Sockel-Paare angleichen, Sockel nur untere Bildhälfte), /tmp/rescale.py (Größenvergleich maßstabsgetreu neu setzen: id:Länge_m:coin|hand|man, negative Länge = Höhe; SILX=Anteil links, ab dem die Silhouette gesucht wird).
 - Offen: eigene Hallen-Säle für Kambrium–Karbon und Neogen.
+
+## Museums-Anbau (24.11.)
+- Raster jetzt 5×5 Sektoren (HN=5*HS), genutzt werden 4 Reihen × 5 Spalten. Neuer Flügel rechts: zt (Zeittunnel, 2,3), kam (2,4), ord (1,4), sil (0,4), dev (0,3), kar (1,3) mit Tür zu e0 (Perm). Neogen-Saal „neo“ auf (2,0), Eiszeit e5 eine Reihe nach vorne auf (3,0).
+- Haupteingang jetzt vorne (ax "i") an der Eingangshalle. Bounds/Zoom über hExt().
+- Migration S.hall.m2: Inhalte im alten Eiszeit-Sektor werden um HS verschoben; wer den Eiszeit-Saal hat, bekommt den Neogen-Saal geschenkt (sonst wäre er abgeschnitten).
+- Neue Spielstände: Eingangshalle + Zeittunnel + Kambrium-Saal gebaut.
+- Fix: hSpot suchte den Saal per "e"+Zeitalter-Index (seit der Umsortierung falsch), jetzt per r.e.
