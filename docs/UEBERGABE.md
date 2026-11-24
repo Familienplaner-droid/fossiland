@@ -133,3 +133,8 @@ Kari, Jano und Finn. Ihre Berichte vom 14. bis 16.11. sind ausgewertet und die g
 ## Testberichte 22.11.
 - Bericht: „von 12 Zeitaltern“ (war fest 6), Ereignisse auf die letzten 15 gekürzt (WhatsApp schnitt die FSL1-Daten ab), ResizeObserver-Warnung wird nicht mehr als Spielfehler gezählt.
 - LABMIN zurück auf die alten Werte für Perm–Eiszeit (Umsortierung hatte Perm/Trias verlangsamt), frühe Zeitalter 20–60 min.
+
+## Bilder der neuen Zeitalter komplett (24.11.)
+- Alle 6 neuen Zeitalter haben Hallen-Exponat (ex_), Comic-Lebendbild (live_), Echt-Bilder (real_/realsk_), Landschaft (scene_), Boden (soil_) und seltene Funde.
+- Werkzeuge: /tmp/pairped.py (Sockel-Paare angleichen, Sockel nur untere Bildhälfte), /tmp/rescale.py (Größenvergleich maßstabsgetreu neu setzen: id:Länge_m:coin|hand|man, negative Länge = Höhe; SILX=Anteil links, ab dem die Silhouette gesucht wird).
+- Offen: eigene Hallen-Säle für Kambrium–Karbon und Neogen.
