@@ -145,3 +145,8 @@ Kari, Jano und Finn. Ihre Berichte vom 14. bis 16.11. sind ausgewertet und die g
 - Migration S.hall.m2: Inhalte im alten Eiszeit-Sektor werden um HS verschoben; wer den Eiszeit-Saal hat, bekommt den Neogen-Saal geschenkt (sonst wäre er abgeschnitten).
 - Neue Spielstände: Eingangshalle + Zeittunnel + Kambrium-Saal gebaut.
 - Fix: hSpot suchte den Saal per "e"+Zeitalter-Index (seit der Umsortierung falsch), jetzt per r.e.
+
+## Kleintier-Vitrinen (24.11.)
+- SMALL (Zeitalter → [id, Länge m]) für Kambrium–Karbon; diese Arten stehen nicht einzeln, sondern in der Vitrine ihres Saals (S.hall.kv[era], kind "k", Fußabdruck 1×2).
+- Bilder: vit_open.webp (Vitrine ohne Glas), vit_glass.webp (Glas-Overlay aus Differenz), vk_<id>.webp (freigestellte Fossilien aus realsk_). DECOMETA.vitk.
+- Migration S.hall.m3: einzeln aufgestellte Kleintiere wandern in die Vitrine.
