@@ -108,7 +108,7 @@ header{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .tool .tst,.up .tst{position:absolute;left:6px;top:6px;width:16px;height:16px}
 .chbtn.full{animation:chPulse 1.2s ease-in-out infinite}
 @keyframes chPulse{50%{transform:scale(1.15) rotate(-6deg)}}
-.chbtn svg{width:26px;height:26px}
+.chbtn svg{width:26px;height:26px}.chbtn .xdt{width:30px;height:30px;align-items:center}.chov .xdt.big{width:150px;height:120px;align-items:center}
 .chov .chimg{width:150px;height:120px;margin:0 auto;display:grid;place-items:center}
 .chov .chimg svg{width:120px;height:120px}
 .chov .chimg.pop{animation:chPop .6s ease-out}
@@ -439,7 +439,7 @@ nav .in{max-width:760px}
   #hint{display:none}
   .title{gap:8px}.title .btn.primary{margin-top:4px;padding:10px 26px;font-size:22px}
 }
-@media (max-width:400px){header .logo{font-size:18px}header .hdr-r{gap:4px}header .iconbtn{width:32px;height:32px}header .pill{padding:3px 7px 3px 3px;gap:4px}header .chbtn svg{width:22px;height:22px}}
+@media (max-width:400px){header .logo{font-size:18px}header .hdr-r{gap:4px}header .iconbtn{width:32px;height:32px}header .pill{padding:3px 7px 3px 3px;gap:4px}header .chbtn svg{width:22px;height:22px}header .chbtn .xdt{width:26px;height:26px}}
 @media (max-width:440px){header #mute{display:none}}
 </style>
 
@@ -1028,9 +1028,9 @@ const chNextX=()=>chS().n%2===0&&chS().got.length<XD.length;
 const CHEST_OPEN='<svg viewBox="0 0 48 48"><rect x="6" y="22" width="36" height="20" rx="4" fill="#8a5530"/><path d="M8 22 12 6h24l4 16z" fill="#a8693c"/><path d="M12 9h24" stroke="#c9a25a" stroke-width="3"/><ellipse cx="24" cy="23" rx="15" ry="4" fill="#ffd27a"/><circle cx="17" cy="21" r="3" fill="#ffe9a8"/><circle cx="29" cy="20" r="2.5" fill="#ffe9a8"/><rect x="6" y="24" width="36" height="5" fill="#c9a25a"/><path d="M10 42V26M38 42V26" stroke="#5e3a1e" stroke-width="2"/></svg>';
 function chKey(){const c=chS();c.k++;renderChest();const msg=c.k>=CH_KEYS?t("chReady"):t("chKeyT",{a:c.k,b:CH_KEYS});setTimeout(()=>{if(!document.querySelector(".chov"))toast(msg)},1300)}
 function renderChest(){const b=$("chBtn");if(!b)return;b.hidden=!(S.tutDone||S.digs>2);const c=chS(),full=c.k>=CH_KEYS;b.classList.toggle("full",full);b.setAttribute("aria-label",t("chT"));
-  b.innerHTML=CHEST_SVG+`<span class="nb">${full?"!":c.k+"/"+CH_KEYS}</span>`}
+  b.innerHTML=(XDPOS.chest?xdPic("chest"):CHEST_SVG)+`<span class="nb">${full?"!":c.k+"/"+CH_KEYS}</span>`}
 function showChest(){stat("chestView");const c=chS(),full=c.k>=CH_KEYS,nx=chNextX();
-  const ov=overlay(`<div class="chov"><div class="chimg">${CHEST_SVG}</div><h2>${t("chT")}</h2><p class="sub">${t("chD",{n:CH_KEYS})}</p>
+  const ov=overlay(`<div class="chov"><div class="chimg">${XDPOS.chest?xdPic("chest","big"):CHEST_SVG}</div><h2>${t("chT")}</h2><p class="sub">${t("chD",{n:CH_KEYS})}</p>
     <div class="bar"><i style="width:${Math.min(100,c.k/CH_KEYS*100)}%"></i><span>${t("chKeys",{a:Math.min(c.k,CH_KEYS),b:CH_KEYS})}</span></div>
     <p class="meta" style="margin-top:8px">${nx?t("chNextX"):t("chNextT")}<br>${t("chColl",{a:c.got.length,b:XD.length})} · ${t("chParts",{n:c.p})}</p>
     <div class="row">${full?`<button class="btn primary" id="chGo">${t("chOpen")}</button>`:""}<button class="btn" id="chNo">${t("close")}</button></div></div>`);
@@ -1042,7 +1042,7 @@ function openChest(){const c=chS();if(c.k<CH_KEYS)return;c.k-=CH_KEYS;const x=ch
   if(x){const id=XD[c.got.length][0];c.got.push(id);S.hall.inv[id]=(S.hall.inv[id]||0)+1;rw.push(`<div>${xdPic(id)}<b>${t("dk_"+id)}</b></div>`);statEv("Truhe: Exponat "+id)}
   if(!x||ttDone()){const k=c.n%4<2?"radar":"jack";S.tools=S.tools||{radar:0,jack:0};S.tools[k]=(S.tools[k]||0)+1;rw.push(`<div>${ICP[k]}<b>+1 ${t(k)}</b></div>`)}
   stat("chest");save();renderChest();SFX.complete();
-  const ov=overlay(`<div class="chov"><div class="chimg pop">${CHEST_OPEN}</div><h2>${t("chGot")}</h2><div class="chrw">${rw.join("")}</div>
+  const ov=overlay(`<div class="chov"><div class="chimg pop">${XDPOS.chesto?xdPic("chesto","big"):CHEST_OPEN}</div><h2>${t("chGot")}</h2><div class="chrw">${rw.join("")}</div>
     ${x?`<p class="meta">${t("chExpoHint")}</p>`:""}<div class="row">${x?`<button class="btn primary" id="chHall">${t("chToHall")}</button>`:""}<button class="btn" id="chOk">${t("close")}</button></div></div>`);
   ov.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;e.stopPropagation();SFX.click();ov.remove();if(b.id==="chHall"){openHall();if(HV){HV.edit=true;HV.tab="d";hallUI();hallDraw()}}})}
 const GEAR_SVG='<svg viewBox="0 0 24 24" width="40" height="40"><path d="M12 2l1.6 2.6 3-.7.7 3 2.6 1.6-1.4 2.7 1.4 2.7-2.6 1.6-.7 3-3-.7L12 22l-1.6-2.6-3 .7-.7-3-2.6-1.6 1.4-2.7-1.4-2.7 2.6-1.6.7-3 3 .7z" fill="#b9c2cc" stroke="#6b7480" stroke-width="1"/><circle cx="12" cy="12" r="3.4" fill="#4a3426"/></svg>';
@@ -1942,12 +1942,12 @@ const HDECO={fern:{f:[1,1],k:1.6,p:300},cycad:{f:[1,1],k:1.6,p:300},bench:{f:[1,
   case:{f:[1,1],k:1,p:700},globe:{f:[1,1],k:.95,p:600},nest:{f:[1,1],k:1,p:900},ammo:{f:[1,1],k:1.15,p:800},desk:{f:[1,3],k:1,p:1500},carpet:{f:[2,3],k:1,p:400,flat:1}};   // Grundfläche, Bildbreite relativ zur Grundfläche, Preis (vorläufig)
 // Exklusive Exponate aus der Sammeltruhe (Reihenfolge = Belohnungsreihenfolge), Bilder in xd_sheet.webp (Lage in XDPOS)
 const XD=[["xmeg",[1,1],1.03],["xgeode",[1,1],0.99],["xmeteor",[1,1],0.92],["xtrophy",[1,1],0.87],["xstatue",[1,1],0.82],["xtric",[1,1],0.89],["xcave",[1,1],0.92],["xcore",[1,1],0.82],
-  ["xvolc",[1,1],1.0],["xmicro",[1,1],0.88],["xclock",[1,1],0.82],["xhour",[1,1],0.82],["xfire",[1,1],1.05],["xterra",[1,1],1],["xtusk",[1,2],1],["xtrex",[1,2],1],["xcab",[1,2],1],
-  ["xfount",[2,2],1],["xmosaic",[2,2],1,1],["xcar",[2,3],1]];
+  ["xvolc",[1,1],1.0],["xmicro",[1,1],0.88],["xclock",[1,1],0.82],["xhour",[1,1],0.82],["xfire",[1,1],1.0],["xterra",[1,1],0.9],["xtusk",[1,2],1],["xtrex",[1,2],1],["xcab",[1,2],1],
+  ["xfount",[2,2],0.95],["xmosaic",[2,2],1,1],["xcar",[2,3],1]];
 for(const[id,f,k,fl]of XD)HDECO[id]={f,k,p:0,x:1,flat:fl};
-const XDPOS={"xmeg":[0,0,337,420],"xgeode":[339,0,328,420],"xmeteor":[669,0,370,420],"xtrophy":[1041,0,236,420],"xstatue":[1279,0,227,420],"xtric":[1508,0,420,407],"xcave":[0,422,420,384],"xcore":[422,422,158,420],"xvolc":[582,422,404,420],"xmicro":[988,422,201,420],"xclock":[1191,422,172,420],"xhour":[1365,422,203,420]};   // id → [x,y,w,h] im Sammelbild; leer = Platzhalter
-const XDMETA={"xmeg":[337,420,87,419],"xgeode":[328,420,150,419],"xmeteor":[370,420,94,419],"xtrophy":[236,420,60,419],"xstatue":[227,420,51,419],"xtric":[420,407,92,406],"xcave":[420,384,80,383],"xcore":[158,420,76,419],"xvolc":[404,420,124,419],"xmicro":[201,420,98,419],"xclock":[172,420,33,419],"xhour":[203,420,23,419]};
-const XDSHEET=[2048, 842];   // Größe des Sammelbilds
+const XDPOS={"xmeg":[0,0,337,420],"xgeode":[339,0,328,420],"xmeteor":[669,0,370,420],"xtrophy":[1041,0,236,420],"xstatue":[1279,0,227,420],"xtric":[1508,0,420,407],"xcave":[0,422,420,384],"xcore":[422,422,158,420],"xvolc":[582,422,404,420],"xmicro":[988,422,201,420],"xclock":[1191,422,172,420],"xhour":[1365,422,203,420],"xfire":[1570,422,418,420],"xterra":[0,844,388,420],"xtusk":[390,844,420,299],"xtrex":[812,844,420,330],"xcab":[1234,844,420,307],"xfount":[0,1266,420,414],"xmosaic":[422,1266,420,299],"xcar":[844,1266,420,334],"chest":[1266,1266,240,191],"chesto":[1508,1266,237,240]};   // id → [x,y,w,h] im Sammelbild; leer = Platzhalter
+const XDMETA={"xmeg":[337,420,87,419],"xgeode":[328,420,150,419],"xmeteor":[370,420,94,419],"xtrophy":[236,420,60,419],"xstatue":[227,420,51,419],"xtric":[420,407,92,406],"xcave":[420,384,80,383],"xcore":[158,420,76,419],"xvolc":[404,420,124,419],"xmicro":[201,420,98,419],"xclock":[172,420,33,419],"xhour":[203,420,23,419],"xfire":[418,420,123,419],"xterra":[388,420,106,419],"xtusk":[420,299,47,298],"xtrex":[420,330,59,329],"xcab":[420,307,39,306],"xfount":[420,414,209,413],"xmosaic":[420,299,208,298],"xcar":[420,334,157,333],"chest":[240,191,57,190],"chesto":[237,240,62,239]};
+const XDSHEET=[2048, 1680];   // Größe des Sammelbilds
 function xdPic(id,cls){const R=XDPOS[id];if(!R)return`<span class="xdt ph ${cls||""}">?</span>`;const[W,H]=XDSHEET,sc=Math.max(R[2],R[3]),pc=(a,b)=>b?(a/b*100).toFixed(2):0;
   return`<span class="xdt ${cls||""}" role="img" aria-label="${t("dk_"+id)}"><i style="width:${pc(R[2],sc)}%;height:${pc(R[3],sc)}%;background-image:url('${aurl("xd_sheet.webp")}');background-size:${pc(W,R[2])}% ${pc(H,R[3])}%;background-position:${pc(R[0],W-R[2])}% ${pc(R[1],H-R[3])}%"></i></span>`}
 const HT=64,HTH=HT*.645,HWALL=150,HHALF=44,HPARA=12,HS=16,HN=5*HS,HLV=[10,12,14,16],HGROW=[3,8,20];   // Feldmaße, Wandhöhen, Platzgröße, Ausbaustufen

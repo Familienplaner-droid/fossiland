@@ -1,5 +1,5 @@
 import json,re
-d=json.load(open("/tmp/xd/data.json"));OV={"xvolc":1.0}
+d=json.load(open("/tmp/xd/data.json"));OV={"xvolc":1.0,"xfount":.95,"xfire":1.0,"xterra":.9}
 p="/home/claude/fossiland/src/game.html";s=open(p).read()
 s=re.sub(r'const XDPOS=\{[^;]*\};','const XDPOS='+json.dumps(d["pos"],separators=(",",":"))+';',s,1)
 s=re.sub(r'const XDSHEET=\[[^\]]*\];','const XDSHEET='+json.dumps(d["sheet"])+';',s,1)
