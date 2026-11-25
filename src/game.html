@@ -359,7 +359,7 @@ nav button[aria-selected="true"] svg{color:var(--tape)}
 .wpic{cursor:zoom-in}.wzoom{position:absolute;right:8px;bottom:8px;width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,.45);display:grid;place-items:center;pointer-events:none}
 .zoomv{position:fixed;inset:0;z-index:30;background:#1b120c;touch-action:none;overflow:hidden;animation:fade .2s}
 .zoomv.re{background:radial-gradient(ellipse at 50% 55%,#f6efe2,#d8cbb4 85%)}
-.zoomv img{position:absolute;left:0;top:0;transform-origin:0 0;user-select:none;-webkit-user-drag:none;pointer-events:none}
+.zoomv img{position:absolute;left:0;top:0;max-width:none;max-height:none;transform-origin:0 0;user-select:none;-webkit-user-drag:none;pointer-events:none}
 .zoomv .zbar{position:absolute;left:0;right:0;top:0;display:flex;gap:8px;justify-content:flex-end;align-items:center;padding:max(10px,env(safe-area-inset-top,0px)) max(12px,env(safe-area-inset-right,0px)) 0 max(12px,env(safe-area-inset-left,0px))}
 .zoomv .zbar .btn{flex:none;padding:8px 14px;font-size:15px}
 .zoomv .zhint{position:absolute;left:50%;bottom:calc(14px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:rgba(0,0,0,.55);color:#fff;padding:6px 14px;border-radius:999px;font-size:13px;white-space:nowrap;pointer-events:none;transition:opacity .6s}
