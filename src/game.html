@@ -732,7 +732,7 @@ const DATA_TX={
 const TX={
  de:{coins:"Münzen",soundOff:"Ton aus",soundOn:"Ton an",pit:"Grabungsfeld. Pfeiltasten bewegen, Enter gräbt.",navDig:"Grabung",navMus:"Museum",navLab:"Labor",navShop:"Werkstatt",
   eraDone:"komplett ★",eraLocked:"ab {n} Skeletten",trail:"Spur von <b>{n}</b>",
-  probe:"Sonde",probeSub:"zeigt Funde 3×3",probeAd:"+1 Sonde",used:"schon genutzt",perVideo:"per Video",brush:"Pinsel",brushSub:"1 Schicht · sicher",pick:"Hacke",pickSub:"2 Schichten · {p} % Risiko",
+  probe:"Sonde",probeSub:"zeigt Funde 3×3",used:"schon genutzt",perVideo:"per Video",brush:"Pinsel",brushSub:"1 Schicht · sicher",pick:"Hacke",pickSub:"2 Schichten · {p} % Risiko",
   hintProbe:"Tippe irgendwo hin: Die Sonde markiert verborgene Funde mit einem Fähnchen.",hintDig:"Drei Schichten, von oben nach unten: {s}. Findest du oben nichts, grab tiefer. Wölbt sich der Boden, bist du kurz davor. Die Hacke gräbt doppelt so schnell, kann freiliegende Knochen aber anknacksen.",
   newDig:"Neue Grabung",plusEnergy:"+20 Ausdauer",endDig:"Grabung beenden",full:"voll",plusIn:"+1 in {t}",
   crack:"Knacks! Der Knochen hat einen Riss",relicFound:"{n}! +{v} Münzen",toLab:"ins Labor",damaged:" (beschädigt)",boneFound:"{pn} geborgen{d}, ab ins Labor",dupe:"{pn} (doppelt, verkauft)",dupeToast:"Doppelter Fund: +{v}",
@@ -747,11 +747,11 @@ const TX={
   collection:"Deine Sammlung",collSub:"{a} von {b} Skeletten ausgestellt · Eintritt {r} Münzen pro Stunde",eraCompl:"komplett · Eintritt ×1,5",eraProg:"{a} von {b} · Bonus bei allen: +{x}",unknown:"Unbekannte Art",perHour:"+{r} / Std.",inLab:"{n} im Labor",noBones:"Noch kein Knochen gefunden.",
   musHint:"Ältere Zeitalter sind leichter, jüngere bringen mehr: Jedes Zeitalter erhöht Fundwerte und Eintritt. Ist ein Zeitalter komplett, steigt dessen Eintritt um 50 %. Neue Funde werden erst im Labor präpariert (gelb umrandet). Beschädigte Teile tauschst du bei späteren Funden automatisch gegen intakte.",
   skeleton:"Skelett {n}",rateTop:"+{r}/Std.",
-  upEnergy:"Feldflasche",upEnergyD:"Ausdauer-Vorrat {a} → {b}",upRegen:"Feldküche",upRegenD:"1 Ausdauer alle {a} → {b}",upBench:"Werkbank",upBenchD:"Werkbänke im Labor {a} → {b}",upPrec:"Profi-Hacke",upPrecD:"Gratis-Schläge {a} % → {b} % · weniger Risse",upProbe:"Bodensonde",upProbeD:"Sonden pro Grabung {a} → {b}",
-  shopSub:"Sonden gelten ab der nächsten Grabung",maxed:"Voll ausgebaut",reset:"Spielstand löschen",resetQ:"Spielstand löschen?",resetSub:"Alle Funde, Münzen und Ausbauten gehen verloren.",keep:"Behalten",del:"Löschen",newGame:"Neuer Spielstand",upgraded:"Ausgebaut!",language:"Sprache",min:"Min."},
+  upEnergy:"Feldflasche",upEnergyD:"Ausdauer-Vorrat {a} → {b}",upRegen:"Feldküche",upRegenD:"1 Ausdauer alle {a} → {b}",upBench:"Werkbank",upBenchD:"Werkbänke im Labor {a} → {b}",upPrec:"Profi-Hacke",upPrecD:"Gratis-Schläge {a} % → {b} % · weniger Risse",upProbe:"Bodensonde",probeAd:"+2 Sonden",probeGet:"Sonden holen",probeEmpty:"heute leer",probeD:"Deine Sonden sind für heute verbraucht. Morgen lädt die Bodensonde wieder {n} Stück auf.",probeVids:"Sonden-Videos heute: noch {a} von {b}",upProbeD:"Sonden pro Tag {a} → {b}",prNewsT:"Neu: Sonden pro Tag",prNews:"Die Bodensonde lädt sich jetzt jeden Tag neu auf, statt bei jeder Grabung. Mehr Sonden gibt es über die Werkstatt, per Video oder für Münzen.",
+  shopSub:"Sonden laden jeden Tag neu auf",maxed:"Voll ausgebaut",reset:"Spielstand löschen",resetQ:"Spielstand löschen?",resetSub:"Alle Funde, Münzen und Ausbauten gehen verloren.",keep:"Behalten",del:"Löschen",newGame:"Neuer Spielstand",upgraded:"Ausgebaut!",language:"Sprache",min:"Min."},
  en:{coins:"Coins",soundOff:"Sound off",soundOn:"Sound on",pit:"Dig site. Arrow keys move, Enter digs.",navDig:"Dig",navMus:"Museum",navLab:"Lab",navShop:"Workshop",
   eraDone:"complete ★",eraLocked:"{n} skeletons needed",trail:"Tracking <b>{n}</b>",
-  probe:"Probe",probeSub:"shows finds 3×3",probeAd:"+1 probe",used:"already used",perVideo:"watch video",brush:"Brush",brushSub:"1 layer · safe",pick:"Pickaxe",pickSub:"2 layers · {p}% risk",
+  probe:"Probe",probeSub:"shows finds 3×3",used:"already used",perVideo:"watch video",brush:"Brush",brushSub:"1 layer · safe",pick:"Pickaxe",pickSub:"2 layers · {p}% risk",
   hintProbe:"Tap anywhere: the probe marks hidden finds with a flag.",hintDig:"Three layers, top to bottom: {s}. Nothing up top? Dig deeper. When the ground bulges, you are close. The pickaxe digs twice as fast but can crack exposed bones.",
   newDig:"New dig",plusEnergy:"+20 energy",endDig:"End dig",full:"full",plusIn:"+1 in {t}",
   crack:"Crack! The bone is damaged",relicFound:"{n}! +{v} coins",toLab:"to the lab",damaged:" (damaged)",boneFound:"{pn} recovered{d}, off to the lab",dupe:"{pn} (duplicate, sold)",dupeToast:"Duplicate find: +{v}",
@@ -766,11 +766,11 @@ const TX={
   collection:"Your collection",collSub:"{a} of {b} skeletons on display · entry {r} coins per hour",eraCompl:"complete · entry ×1.5",eraProg:"{a} of {b} · bonus for all: +{x}",unknown:"Unknown species",perHour:"+{r} / hr",inLab:"{n} in the lab",noBones:"No bones found yet.",
   musHint:"Older eras are easier, newer ones pay more: each era raises find values and entry fees. When an era is complete, its entry fees rise by 50%. New finds are prepared in the lab first (outlined in yellow). Damaged parts are swapped for intact ones automatically in later finds.",
   skeleton:"Skeleton {n}",rateTop:"+{r}/hr",
-  upEnergy:"Canteen",upEnergyD:"Energy supply {a} → {b}",upRegen:"Field kitchen",upRegenD:"1 energy every {a} → {b}",upBench:"Workbench",upBenchD:"Lab workbenches {a} → {b}",upPrec:"Pro pickaxe",upPrecD:"Free swings {a}% → {b}% · fewer cracks",upProbe:"Ground probe",upProbeD:"Probes per dig {a} → {b}",
-  shopSub:"Probes apply from the next dig",maxed:"Fully upgraded",reset:"Delete progress",resetQ:"Delete progress?",resetSub:"All finds, coins and upgrades will be lost.",keep:"Keep",del:"Delete",newGame:"New game started",upgraded:"Upgraded!",language:"Language",min:"min"},
+  upEnergy:"Canteen",upEnergyD:"Energy supply {a} → {b}",upRegen:"Field kitchen",upRegenD:"1 energy every {a} → {b}",upBench:"Workbench",upBenchD:"Lab workbenches {a} → {b}",upPrec:"Pro pickaxe",upPrecD:"Free swings {a}% → {b}% · fewer cracks",upProbe:"Ground probe",probeAd:"+2 probes",probeGet:"Get probes",probeEmpty:"empty today",probeD:"Your probes are used up for today. Tomorrow the ground probe recharges {n}.",probeVids:"Probe videos today: {a} of {b} left",upProbeD:"Probes per day {a} → {b}",prNewsT:"New: probes per day",prNews:"The ground probe now recharges every day instead of every dig. Get more probes in the workshop, by video or for coins.",
+  shopSub:"Probes recharge every day",maxed:"Fully upgraded",reset:"Delete progress",resetQ:"Delete progress?",resetSub:"All finds, coins and upgrades will be lost.",keep:"Keep",del:"Delete",newGame:"New game started",upgraded:"Upgraded!",language:"Language",min:"min"},
  fr:{coins:"Pièces",soundOff:"Couper le son",soundOn:"Activer le son",pit:"Site de fouille. Flèches pour se déplacer, Entrée pour creuser.",navDig:"Fouille",navMus:"Musée",navLab:"Labo",navShop:"Atelier",
   eraDone:"terminé ★",eraLocked:"dès {n} squelettes",trail:"Sur la piste : <b>{n}</b>",
-  probe:"Sonde",probeSub:"détecte en 3×3",probeAd:"+1 sonde",used:"déjà utilisé",perVideo:"avec vidéo",brush:"Pinceau",brushSub:"1 couche · sûr",pick:"Pioche",pickSub:"2 couches · {p} % de risque",
+  probe:"Sonde",probeSub:"détecte en 3×3",used:"déjà utilisé",perVideo:"avec vidéo",brush:"Pinceau",brushSub:"1 couche · sûr",pick:"Pioche",pickSub:"2 couches · {p} % de risque",
   hintProbe:"Touche n'importe où : la sonde marque les trouvailles cachées d'un drapeau.",hintDig:"Trois couches, de haut en bas : {s}. Rien en surface ? Creuse plus profond. Si le sol forme une bosse, tu y es presque. La pioche creuse deux fois plus vite mais peut fêler les os dégagés.",
   newDig:"Nouvelle fouille",plusEnergy:"+20 d'énergie",endDig:"Terminer la fouille",full:"plein",plusIn:"+1 dans {t}",
   crack:"Crac ! L'os est fêlé",relicFound:"{n} ! +{v} pièces",toLab:"au labo",damaged:" (abîmé)",boneFound:"Trouvé : {pn}{d}, direction le labo",dupe:"{pn} (en double, vendu)",dupeToast:"Trouvaille en double : +{v}",
@@ -785,11 +785,11 @@ const TX={
   collection:"Ta collection",collSub:"{a} squelettes exposés sur {b} · entrées {r} pièces par heure",eraCompl:"complète · entrées ×1,5",eraProg:"{a} sur {b} · bonus pour tous : +{x}",unknown:"Espèce inconnue",perHour:"+{r} / h",inLab:"{n} au labo",noBones:"Aucun os trouvé pour l'instant.",
   musHint:"Les ères anciennes sont plus faciles, les récentes rapportent plus : chaque ère augmente la valeur des trouvailles et des entrées. Quand une ère est complète, ses entrées augmentent de 50 %. Les nouvelles trouvailles passent d'abord au labo (bordure jaune). Les pièces abîmées sont remplacées automatiquement par des intactes lors des fouilles suivantes.",
   skeleton:"Squelette {n}",rateTop:"+{r}/h",
-  upEnergy:"Gourde",upEnergyD:"Réserve d'énergie {a} → {b}",upRegen:"Cuisine de camp",upRegenD:"1 énergie toutes les {a} → {b}",upBench:"Établi",upBenchD:"Établis au labo {a} → {b}",upPrec:"Pioche pro",upPrecD:"Coups gratuits {a} % → {b} % · moins de fissures",upProbe:"Sonde de terrain",upProbeD:"Sondes par fouille {a} → {b}",
-  shopSub:"Les sondes comptent dès la prochaine fouille",maxed:"Amélioration maximale",reset:"Effacer la partie",resetQ:"Effacer la partie ?",resetSub:"Toutes les trouvailles, pièces et améliorations seront perdues.",keep:"Garder",del:"Effacer",newGame:"Nouvelle partie",upgraded:"Amélioré !",language:"Langue",min:"min"},
+  upEnergy:"Gourde",upEnergyD:"Réserve d'énergie {a} → {b}",upRegen:"Cuisine de camp",upRegenD:"1 énergie toutes les {a} → {b}",upBench:"Établi",upBenchD:"Établis au labo {a} → {b}",upPrec:"Pioche pro",upPrecD:"Coups gratuits {a} % → {b} % · moins de fissures",upProbe:"Sonde de terrain",probeAd:"+2 sondes",probeGet:"Recharger",probeEmpty:"vide aujourd'hui",probeD:"Tes sondes sont épuisées pour aujourd'hui. Demain, la sonde se recharge de {n}.",probeVids:"Vidéos de sondes aujourd'hui : {a} sur {b}",upProbeD:"Sondes par jour {a} → {b}",prNewsT:"Nouveau : sondes par jour",prNews:"La sonde se recharge maintenant chaque jour au lieu de chaque fouille. Plus de sondes à l'atelier, en vidéo ou contre des pièces.",
+  shopSub:"Les sondes se rechargent chaque jour",maxed:"Amélioration maximale",reset:"Effacer la partie",resetQ:"Effacer la partie ?",resetSub:"Toutes les trouvailles, pièces et améliorations seront perdues.",keep:"Garder",del:"Effacer",newGame:"Nouvelle partie",upgraded:"Amélioré !",language:"Langue",min:"min"},
  es:{coins:"Monedas",soundOff:"Silenciar",soundOn:"Activar sonido",pit:"Zona de excavación. Flechas para moverte, Intro para excavar.",navDig:"Excavar",navMus:"Museo",navLab:"Laboratorio",navShop:"Taller",
   eraDone:"completo ★",eraLocked:"con {n} esqueletos",trail:"Rastro de <b>{n}</b>",
-  probe:"Sonda",probeSub:"detecta en 3×3",probeAd:"+1 sonda",used:"ya usado",perVideo:"con vídeo",brush:"Pincel",brushSub:"1 capa · seguro",pick:"Pico",pickSub:"2 capas · {p} % riesgo",
+  probe:"Sonda",probeSub:"detecta en 3×3",used:"ya usado",perVideo:"con vídeo",brush:"Pincel",brushSub:"1 capa · seguro",pick:"Pico",pickSub:"2 capas · {p} % riesgo",
   hintProbe:"Toca en cualquier sitio: la sonda marca los hallazgos ocultos con una bandera.",hintDig:"Tres capas, de arriba abajo: {s}. ¿Nada arriba? Excava más hondo. Si el suelo se abomba, ya casi está. El pico excava el doble de rápido, pero puede agrietar los huesos al descubierto.",
   newDig:"Nueva excavación",plusEnergy:"+20 de energía",endDig:"Terminar excavación",full:"lleno",plusIn:"+1 en {t}",
   crack:"¡Crac! El hueso se ha agrietado",relicFound:"¡{n}! +{v} monedas",toLab:"al laboratorio",damaged:" (dañado)",boneFound:"Encontrado: {pn}{d}, al laboratorio",dupe:"{pn} (repetido, vendido)",dupeToast:"Hallazgo repetido: +{v}",
@@ -804,8 +804,8 @@ const TX={
   collection:"Tu colección",collSub:"{a} de {b} esqueletos expuestos · entradas {r} monedas por hora",eraCompl:"completa · entradas ×1,5",eraProg:"{a} de {b} · bonus por todos: +{x}",unknown:"Especie desconocida",perHour:"+{r} / h",inLab:"{n} en el laboratorio",noBones:"Aún no has encontrado huesos.",
   musHint:"Las eras antiguas son más fáciles y las recientes dan más: cada era aumenta el valor de los hallazgos y de las entradas. Cuando completas una era, sus entradas suben un 50 %. Los hallazgos nuevos pasan primero por el laboratorio (borde amarillo). Las piezas dañadas se cambian solas por otras intactas en hallazgos posteriores.",
   skeleton:"Esqueleto {n}",rateTop:"+{r}/h",
-  upEnergy:"Cantimplora",upEnergyD:"Reserva de energía {a} → {b}",upRegen:"Cocina de campo",upRegenD:"1 de energía cada {a} → {b}",upBench:"Mesa de trabajo",upBenchD:"Mesas en el laboratorio {a} → {b}",upPrec:"Pico profesional",upPrecD:"Golpes gratis {a} % → {b} % · menos grietas",upProbe:"Sonda de suelo",upProbeD:"Sondas por excavación {a} → {b}",
-  shopSub:"Las sondas se aplican en la próxima excavación",maxed:"Al máximo",reset:"Borrar partida",resetQ:"¿Borrar partida?",resetSub:"Se perderán todos los hallazgos, monedas y mejoras.",keep:"Conservar",del:"Borrar",newGame:"Nueva partida",upgraded:"¡Mejorado!",language:"Idioma",min:"min"}
+  upEnergy:"Cantimplora",upEnergyD:"Reserva de energía {a} → {b}",upRegen:"Cocina de campo",upRegenD:"1 de energía cada {a} → {b}",upBench:"Mesa de trabajo",upBenchD:"Mesas en el laboratorio {a} → {b}",upPrec:"Pico profesional",upPrecD:"Golpes gratis {a} % → {b} % · menos grietas",upProbe:"Sonda de suelo",probeAd:"+2 sondas",probeGet:"Recargar",probeEmpty:"vacía hoy",probeD:"Tus sondas se han agotado por hoy. Mañana la sonda recarga {n}.",probeVids:"Vídeos de sondas hoy: quedan {a} de {b}",upProbeD:"Sondas por día {a} → {b}",prNewsT:"Nuevo: sondas por día",prNews:"La sonda ahora se recarga cada día en lugar de en cada excavación. Consigue más en el taller, con vídeo o con monedas.",
+  shopSub:"Las sondas se recargan cada día",maxed:"Al máximo",reset:"Borrar partida",resetQ:"¿Borrar partida?",resetSub:"Se perderán todos los hallazgos, monedas y mejoras.",keep:"Conservar",del:"Borrar",newGame:"Nueva partida",upgraded:"¡Mejorado!",language:"Idioma",min:"min"}
 };
 
 for(const [l,o] of Object.entries({"de": {"play": "Spielen", "tagline": "Graben, Präparieren & Museum", "tutNext": "Weiter", "tutSkip": "Überspringen", "tutDone": "Viel Spaß beim Graben!", "tutReplay": "Anleitung ansehen", "t1h": "Willkommen in Fossiland!", "t1": "Du leitest eine Ausgrabung. Irgendwo in dieser Grube stecken die Knochen eines Urzeittiers. Ich zeige dir kurz, wie es geht.", "t2h": "Die Sonde", "t2": "Tippe auf die Sonde. Mit ihr findest du heraus, wo etwas im Boden liegt.", "t3h": "Suchen", "t3": "Tippe jetzt mitten ins Feld. Fähnchen zeigen dir, wo Knochen oder Schätze liegen.", "t4h": "Graben", "t4": "Tippe auf die Felder mit Fähnchen, bis der Knochen frei liegt. Manche Knochen liegen tiefer im Boden, dann grab einfach weiter nach unten. Der Pinsel ist sicher. Die Hacke gräbt schneller, kann Knochen aber anknacksen. Jedes Tippen kostet 1 Ausdauer.", "t5h": "Ab ins Labor", "t5": "Super, dein erster Fund! Frische Knochen stecken noch im Gestein. Tippe auf „{x}“.", "t6h": "Präparieren", "t6": "Hier wird dein Fund freigelegt. Normalerweise dauert das 1 bis 5 Stunden, auch wenn das Spiel geschlossen ist. Dein erster Knochen ist schon in einer Minute fertig.", "t7h": "Das Museum", "t7": "Fertige Knochen kommen ins Museum. Tippe auf „{x}“.", "t8h": "Skelette sammeln", "t8": "Fehlende Teile siehst du als Schatten. Ist ein Skelett komplett, zahlen Besucher Eintritt, auch während du nicht spielst. Komplette Skelette schalten neue Zeitalter frei.", "t9h": "Die Werkstatt", "t9": "Mit Münzen verbesserst du deine Ausrüstung. Tippe auf „{x}“.", "t10h": "Ausbauen", "t10": "Mehr Ausdauer, mehr Sonden, mehr Werkbänke: Hier lohnt es sich, regelmäßig vorbeizuschauen. Deine Ausdauer lädt sich übrigens von selbst wieder auf.", "t11h": "Weitergraben", "t11": "Das war's! Tippe auf „{x}“ und grab den Rest deines Tiers aus."}, "en": {"play": "Play", "tagline": "Fossil Dig, Prep & Museum", "tutNext": "Next", "tutSkip": "Skip", "tutDone": "Have fun digging!", "tutReplay": "Show tutorial", "t1h": "Welcome to Fossiland!", "t1": "You're running a dig. Somewhere in this pit lie the bones of a prehistoric animal. Let me show you how it works.", "t2h": "The probe", "t2": "Tap the probe. It shows you where something is buried.", "t3h": "Search", "t3": "Now tap the middle of the pit. Flags show where bones or treasures are.", "t4h": "Dig", "t4": "Tap the flagged squares until the bone is free. Some bones lie deeper, so just keep digging down. The brush is safe. The pickaxe is faster but can crack bones. Each tap costs 1 energy.", "t5h": "Off to the lab", "t5": "Great, your first find! Fresh bones are still stuck in rock. Tap “{x}”.", "t6h": "Preparing", "t6": "This is where your find is freed from the rock. Usually it takes 1 to 5 hours, even while the game is closed. Your first bone will be ready in one minute.", "t7h": "The museum", "t7": "Finished bones go to the museum. Tap “{x}”.", "t8h": "Collect skeletons", "t8": "Missing parts show up as shadows. Once a skeleton is complete, visitors pay entry fees, even while you're not playing. Complete skeletons unlock new eras.", "t9h": "The workshop", "t9": "Use coins to improve your gear. Tap “{x}”.", "t10h": "Upgrades", "t10": "More energy, more probes, more workbenches: it pays to check back here regularly. Your energy also refills by itself.", "t11h": "Keep digging", "t11": "That's it! Tap “{x}” and dig up the rest of your animal."}, "fr": {"play": "Jouer", "tagline": "Fouilles, préparation & musée", "tutNext": "Suivant", "tutSkip": "Passer", "tutDone": "Bonne fouille !", "tutReplay": "Revoir le tutoriel", "t1h": "Bienvenue à Fossiland !", "t1": "Tu diriges une fouille. Quelque part dans ce terrain se cachent les os d'un animal préhistorique. Je te montre comment faire.", "t2h": "La sonde", "t2": "Touche la sonde. Elle t'indique où quelque chose est enfoui.", "t3h": "Chercher", "t3": "Touche maintenant le milieu du terrain. Les drapeaux montrent où se trouvent des os ou des trésors.", "t4h": "Creuser", "t4": "Touche les cases avec un drapeau jusqu'à ce que l'os soit dégagé. Certains os sont plus profonds : continue simplement à creuser. Le pinceau est sûr. La pioche va plus vite mais peut fêler les os. Chaque coup coûte 1 d'énergie.", "t5h": "Direction le labo", "t5": "Bravo, ta première trouvaille ! Les os frais sont encore pris dans la roche. Touche « {x} ».", "t6h": "Préparer", "t6": "C'est ici que ta trouvaille est dégagée de la roche. D'habitude, cela prend de 1 à 5 heures, même quand le jeu est fermé. Ton premier os sera prêt dans une minute.", "t7h": "Le musée", "t7": "Les os prêts vont au musée. Touche « {x} ».", "t8h": "Collectionner", "t8": "Les pièces manquantes apparaissent en ombre. Quand un squelette est complet, les visiteurs paient l'entrée, même quand tu ne joues pas. Les squelettes complets débloquent de nouvelles ères.", "t9h": "L'atelier", "t9": "Utilise tes pièces pour améliorer ton matériel. Touche « {x} ».", "t10h": "Améliorations", "t10": "Plus d'énergie, plus de sondes, plus d'établis : ça vaut le coup de revenir ici souvent. Ton énergie se recharge aussi toute seule.", "t11h": "Continuer", "t11": "C'est tout ! Touche « {x} » et déterre le reste de ton animal."}, "es": {"play": "Jugar", "tagline": "Excava, prepara y exhibe", "tutNext": "Siguiente", "tutSkip": "Saltar", "tutDone": "¡Que disfrutes excavando!", "tutReplay": "Ver tutorial", "t1h": "¡Bienvenido a Fossiland!", "t1": "Diriges una excavación. En algún lugar de este terreno están los huesos de un animal prehistórico. Te enseño cómo funciona.", "t2h": "La sonda", "t2": "Toca la sonda. Te muestra dónde hay algo enterrado.", "t3h": "Buscar", "t3": "Ahora toca el centro del terreno. Las banderas indican dónde hay huesos o tesoros.", "t4h": "Excavar", "t4": "Toca las casillas con bandera hasta que el hueso quede libre. Algunos huesos están más hondos: sigue excavando hacia abajo. El pincel es seguro. El pico es más rápido, pero puede agrietar los huesos. Cada toque cuesta 1 de energía.", "t5h": "Al laboratorio", "t5": "¡Genial, tu primer hallazgo! Los huesos nuevos siguen atrapados en la roca. Toca «{x}».", "t6h": "Preparar", "t6": "Aquí se libera tu hallazgo de la roca. Normalmente tarda de 1 a 5 horas, incluso con el juego cerrado. Tu primer hueso estará listo en un minuto.", "t7h": "El museo", "t7": "Los huesos listos van al museo. Toca «{x}».", "t8h": "Colecciona esqueletos", "t8": "Las piezas que faltan se ven como sombras. Cuando un esqueleto está completo, los visitantes pagan entrada, incluso cuando no juegas. Los esqueletos completos desbloquean eras nuevas.", "t9h": "El taller", "t9": "Usa monedas para mejorar tu equipo. Toca «{x}».", "t10h": "Mejoras", "t10": "Más energía, más sondas, más mesas: merece la pena pasarse por aquí a menudo. Además, tu energía se recarga sola.", "t11h": "Sigue excavando", "t11": "¡Eso es todo! Toca «{x}» y desentierra el resto de tu animal."}}))Object.assign(TX[l],o);
@@ -866,12 +866,15 @@ if(!S.lang)S.lang=detectLang();applyLang(S.lang);
 for(const [l,o] of Object.entries({"de": {"tip_crack": "Oh, ein Riss! Tipp: Nimm in der Nähe von Knochen lieber den Pinsel. Die Hacke ist schneller, kann Knochen aber beschädigen.", "tip_end": "Alle Knochen dieser Grabung sind gefunden! Tippe auf „Grabung beenden“, dann sparst du Ausdauer für die nächste.", "tip_probe": "Tipp: Die Sonde zeigt dir, wo Knochen liegen. So gräbst du nicht ins Leere und sparst Ausdauer.", "tipTap": "Antippen zum Schließen"}, "en": {"tip_crack": "Oh, a crack! Tip: near bones, use the brush instead. The pickaxe is faster but can damage bones.", "tip_end": "All bones of this dig are found! Tap “End dig” to save energy for the next one.", "tip_probe": "Tip: the probe shows you where bones are. That way you don't dig in the wrong places and save energy.", "tipTap": "Tap to close"}, "fr": {"tip_crack": "Oh, une fissure ! Astuce : près des os, prends plutôt le pinceau. La pioche est plus rapide mais peut abîmer les os.", "tip_end": "Tous les os de cette fouille sont trouvés ! Touche « Terminer la fouille » pour garder de l'énergie pour la suivante.", "tip_probe": "Astuce : la sonde te montre où sont les os. Tu ne creuses pas au hasard et tu économises de l'énergie.", "tipTap": "Touche pour fermer"}, "es": {"tip_crack": "¡Vaya, una grieta! Consejo: cerca de los huesos, usa mejor el pincel. El pico es más rápido, pero puede dañar los huesos.", "tip_end": "¡Ya has encontrado todos los huesos de esta excavación! Toca «Terminar excavación» para ahorrar energía para la siguiente.", "tip_probe": "Consejo: la sonda te muestra dónde están los huesos. Así no excavas a ciegas y ahorras energía.", "tipTap": "Toca para cerrar"}}))Object.assign(TX[l],o);
 const crackChance=()=>Math.max(.1,.6-S.precLv*.12);
 const pickFree=()=>S.precLv*.06;   // Profi-Hacke: Chance auf einen Hackenschlag ohne Ausdauer (6 % pro Stufe)
-const probesMax=()=>1+S.probeLv;
+const probesMax=()=>1+S.probeLv;   // Sonden pro TAG (1 bis 10), nicht mehr pro Grabung
+const PROBE_COST=[150,300,500,800,1200,1800,2600,3600,5000],PRAD_MAX=10;   // Ausbau der Bodensonde; höchstens 10 Sonden-Videos am Tag
+function prTick(){if(S.prDay!==today()){const first=S.prDay===undefined;S.prDay=today();S.pr=probesMax();S.prAd=0;S.prBuy=0;if(first&&S.digs>0)S.prNews=1}return S.pr}
+const prPrice=()=>Math.round(Math.max(100,rate())*Math.pow(2,S.prBuy||0));   // 2 Sonden = 1 Std. Eintritt, jeder weitere Kauf am Tag doppelt
 const costs={   // per Simulation abgestimmt: Ausbauten verteilen sich auf ca. 10 Spieltage
   energy:()=>Math.round(220*Math.pow(1.58,S.energyLv)),
   regen:()=>Math.round(450*Math.pow(1.9,S.regenLv)),
   prec:()=>Math.round(300*Math.pow(1.85,S.precLv)),
-  probe:()=>Math.round(180*Math.pow(1.8,S.probeLv)),
+  probe:()=>PROBE_COST[S.probeLv]||0,
   bench:()=>[2500,12000][S.benchLv]||0,
   camp:()=>(CAMP[S.campLv||0]||[0])[0]};
 const mus=id=>S.museum[id]||(S.museum[id]={});
@@ -988,6 +991,15 @@ const spCount=k=>((S.tools||(S.tools={radar:0,jack:0}))[k]||0);
 function spGive(k,n){spCount(k);S.tools[k]+=n;save()}
 if(!S.toolGift){S.toolGift=1;spCount("radar");S.tools.radar+=1;S.tools.jack+=1}
 const spPrice=k=>Math.round(Math.max(k==="radar"?90:120,rate()*(k==="radar"?2:2.5)));
+function prNewsShow(){if(!S.prNews)return;S.prNews=0;save();const ov=overlay(`<img class="guide-top" src="${aurl(gpose("point"))}" alt=""><h2>${t("prNewsT")}</h2><p class="sub">${t("prNews")}</p><button class="btn primary" id="prnOk">${t("tutNext")}</button>`);ov.addEventListener("click",e=>{if(e.target.closest("button")){SFX.click();ov.remove()}})}
+function prOffer(){prTick();const ads=adsLeft(),va=PRAD_MAX-(S.prAd||0),pr=prPrice();   // Sonden nachladen: Video (+2) oder Münzen (+2)
+  const ov=overlay(`<img class="guide-top" src="${aurl(gpose("think"))}" alt=""><h2>${t("probeGet")}</h2><p class="sub">${t("probeD",{n:probesMax()})}</p>
+    <div class="row"><button class="btn ad" id="prad" ${ads>0&&va>0?"":"disabled"}>${t("probeAd")}</button><button class="btn" id="prbuy" ${S.coins>=pr?"":"disabled"}>+2 · <span class="coin sm"></span>${pr}</button></div>
+    <div class="adleft">${t("probeVids",{a:Math.max(0,va),b:PRAD_MAX})}</div><button class="btn" id="prno">${t("close")}</button>`);
+  ov.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;e.stopPropagation();SFX.click();
+    if(b.id==="prno"){ov.remove();return}
+    if(b.id==="prad"){ov.remove();showRewardedAd(t("probeAd"),()=>{prTick();S.pr+=2;S.prAd=(S.prAd||0)+1;tool="probe";save();renderDig();toast(t("probeAd"))})}
+    if(b.id==="prbuy"&&S.coins>=pr){S.coins-=pr;SS().spent+=pr;countBuy();stat("buyProbe");prTick();S.pr+=2;S.prBuy=(S.prBuy||0)+1;tool="probe";SFX.coin();ov.remove();save();renderTop();renderDig();toast(t("probeAd"))}})}
 function spOffer(k){const ads=adsLeft(),pr=spPrice(k);
   const ov=overlay(`<img class="guide-top" src="${aurl(gpose("think"))}" alt=""><h2>${t(k)}</h2><p class="sub">${t(k+"D")}</p>
     <div class="row"><button class="btn ad" id="spad" ${ads>0?"":"disabled"}>${t("spTry")}</button><button class="btn" id="spbuy" ${S.coins>=pr?"":"disabled"}>${t("spBuy")} · <span class="coin sm"></span>${pr}</button></div>
@@ -1036,13 +1048,13 @@ function showComplete(c,msg,extra){
   paintSkel(ov.querySelector(".cmpsk"));
   ov.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;e.stopPropagation();SFX.click();ov.remove();if(b.id==="cmpMus")show("mus")})}
 function serDig(){if(!D)return null;const oi=new Map(D.objs.map((o,i)=>[o,i]));
-  return{v:2,era:D.era,t:D.target.id,g:D.grid.map(g=>[g.d,g.hp,g.need.join(""),g.crack?1:0,g.probe?1:0,g.obj?oi.get(g.obj):-1,g.bd,g.rad?1:0]),o:D.objs.map(o=>Object.assign({},o,{foundAt:0})),pr:D.probes,f:D.finds,e:D.earned,ad:[D.adDouble?1:0,D.adProbe?1:0],over:D.over?1:0}}
+  return{v:2,era:D.era,t:D.target.id,g:D.grid.map(g=>[g.d,g.hp,g.need.join(""),g.crack?1:0,g.probe?1:0,g.obj?oi.get(g.obj):-1,g.bd,g.rad?1:0]),o:D.objs.map(o=>Object.assign({},o,{foundAt:0})),f:D.finds,e:D.earned,ad:[D.adDouble?1:0,D.adProbe?1:0],over:D.over?1:0}}
 function restoreDig(){const s=S.dig;if(!s||s.v!==2||s.over||s.era!==S.era||!s.g||s.g.length!==ROWS*COLS||!site().sp.includes(s.t))return false;   // ältere Grabungen ohne Tiefenschichten werden neu begonnen
   const target=CREATURES.find(c=>c.id===s.t);if(!target)return false;
   const objs=s.o.map(o=>Object.assign({},o)),r=mulberry(7);
   const grid=s.g.map((a,i)=>{const cr=[];for(let k=0;k<4;k++)cr.push([r(),r(),r()*6.28,.2+r()*.25]);
     return{r:Math.floor(i/COLS),c:i%COLS,d:a[0],hp:a[1],need:String(a[2]).split("").map(Number),crack:!!a[3],probe:!!a[4],obj:a[5]>=0?objs[a[5]]:null,bd:a[6]||0,rad:!!a[7],cr}});
-  D={era:s.era,grid,objs,target,probes:s.pr,finds:s.f||[],over:false,earned:s.e||0,adDouble:!!s.ad[0],adProbe:!!s.ad[1]};
+  D={era:s.era,grid,objs,target,finds:s.f||[],over:false,earned:s.e||0,adDouble:!!s.ad[0],adProbe:!!s.ad[1]};
   tool="brush";particles=[];renderDig();return true}
 function showEmpty(){if(!document.querySelector(".overlay")){stat("empty");S.emptyN=(S.emptyN||0)+1}
   if(document.querySelector(".overlay"))return;
@@ -1066,7 +1078,7 @@ function updateHUD(){if(!D)return;const mx=staMax(),now=Date.now();
   $("eBar").style.width=Math.min(100,S.st/mx*100)+"%";
   $("eTxt").textContent=S.st>=mx?`${S.st} / ${mx} · ${t("full")}`:`${S.st} / ${mx} · ${t("plusIn",{t:fmt(nextIn(now))})}`}
 function renderNavBadge(){const b=$("labBadge"),n=S.lab.length;b.hidden=!n;b.textContent=n;
-  const caps={energy:10,regen:5,bench:2,prec:5,probe:5,camp:3},can=Object.keys(caps).filter(k=>S[k+"Lv"]<caps[k]&&costs[k]()&&S.coins>=costs[k]()).length,sb=$("shopBadge");if(sb){sb.hidden=!can;sb.textContent=can}}
+  const caps={energy:10,regen:5,bench:2,prec:5,probe:9,camp:3},can=Object.keys(caps).filter(k=>S[k+"Lv"]<caps[k]&&costs[k]()&&S.coins>=costs[k]()).length,sb=$("shopBadge");if(sb){sb.hidden=!can;sb.textContent=can}}
 function renderLab(){
   const bp=buyPrice(),now=Date.now(),slots=labSlots(),act=S.lab.filter(x=>x.st!=null).sort((a,b)=>a.st-b.st),wait=S.lab.filter(x=>x.st==null),ads=adsLeft();
   let h=`<div class="banner" style="background-image:url(${aurl("lab.webp")})"><h2>${t("labTitle")}<small>${t("benches",{a:act.length,b:slots})}</small></h2></div>
@@ -1257,7 +1269,7 @@ function newDig(){stat("digsStarted");
       const before=objs.length;place([[0,0]],{kind:"rare",id:R[0],found:false});const o=objs[before];if(o){o.dep=[2];const g=at(o.cells[0][0],o.cells[0][1]);g.bd=2;g.need[2]=2;S.rareMiss=0}}
     else S.rareMiss=(S.rareMiss||0)+1}
   const nr=2+rnd(2);for(let i=0;i<nr;i++){const R=RELICS[rnd(RELICS.length)];place([[0,0]],{kind:"relic",name:R[0],val:Math.round(R[1]*eraMult(era)),ic:R[2],found:false})}
-  D={era,grid,objs,target,probes:probesMax(),finds:[],over:false,earned:0,adDouble:false,adProbe:false};
+  D={era,grid,objs,target,finds:[],over:false,earned:0,adDouble:false,adProbe:false};
   tool="brush";particles=[];
   renderDig();save();
 }
@@ -1302,13 +1314,13 @@ function gTip(k,pose,n=0){S.tips=S.tips||{};if(S.tips[k])return;
   document.body.appendChild(el);const close=()=>el.remove();el.onclick=close;setTimeout(close,12000)}
 function hit(i){
   if(!D||D.over)return;
-  if((S.emptyN||0)>=3&&!(S.tips&&S.tips.probe)&&tool!=="probe"&&D.probes>0)gTip("probe","point");
+  if((S.emptyN||0)>=3&&!(S.tips&&S.tips.probe)&&tool!=="probe"&&prTick()>0)gTip("probe","point");
   const g=D.grid[i];
   if(tool==="probe"){
-    if(D.probes<=0)return;D.probes--;SFX.probe();tutEvent("probe");dqAdd("probes");
+    if(prTick()<=0)return;S.pr--;SFX.probe();tutEvent("probe");dqAdd("probes");
     particles.push({x:(g.c+.5)*cs,y:(g.r+.5)*cs,life:1,t:"ring",vx:0,vy:0,g:0,s:0,col:"#ff5a8a"});
     for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++){const y=g.r+dr,x=g.c+dc;if(y>=0&&y<ROWS&&x>=0&&x<COLS){const q=D.grid[y*COLS+x];if(q.obj&&!cellDone(q))q.probe=true}}
-    if(D.probes===0)tool="brush";renderDig();return;
+    if(S.pr===0)tool="brush";save();renderDig();return;
   }
   if(tool==="radar"||tool==="jack"){
     const k=tool;if(spCount(k)<1)return;S.tools[k]--;stat("use:"+k);
@@ -1331,7 +1343,7 @@ function hit(i){
   if(tool==="pick"){SFX.pick(g.r);buzz(15);shake=5;burst(g,9,col,1.3)}else{SFX.brush();burst(g,4,col,.7)}
   // Schicht für Schicht abtragen; ein Knochen hält die Grabung in seiner Tiefe an
   while(dmg>0&&!cellDone(g)){g.hp--;dmg--;
-    if(g.hp<=0){g.d++;dqAdd("cells");if(!g.obj){D.blind=(D.blind||0)+1;if(D.blind===12&&D.probes>0&&!D.grid.some(q=>q.probe)){setTimeout(()=>toast(t("blindTip")),400)}}burst(g,8,LAY()[Math.min(2,g.d-1)][1],1);
+    if(g.hp<=0){g.d++;dqAdd("cells");if(!g.obj){D.blind=(D.blind||0)+1;if(D.blind===12&&S.pr>0&&!D.grid.some(q=>q.probe)){setTimeout(()=>toast(t("blindTip")),400)}}burst(g,8,LAY()[Math.min(2,g.d-1)][1],1);
       if(g.obj&&g.d>g.bd)exposed=true;else if(g.d<3)g.hp=g.need[g.d];else{g.hp=0;if(!g.obj)SFX.clear()}}}
   if(exposed&&tool==="pick"&&g.obj.kind==="bone"&&dmg>0&&Math.random()<crackChance()){g.crack=true;SFX.crack();buzz([30,30,30]);toast(t("crack"));setTimeout(()=>gTip("crack","think"),900)}
   if(exposed){g.hp=0;g.probe=false;g.rad=false}
@@ -1539,7 +1551,7 @@ function loop(t){if(!$("v-dig").hidden)drawPit(t);requestAnimationFrame(loop)}
 let erasKey="";
 function renderEras(){const key=S.site+"|"+LANG+"|"+completed();if(key===erasKey)return;erasKey=key;
   $("eras").innerHTML=`<button class="sitebar" id="siteBtn"><img src="${aurl("plane.webp")}" alt=""><span class="sb-t"><b>${siteName(S.site)}</b><small>${siteCountry(S.site)} · ${ERAS[S.era].name}</small></span><span class="sb-m">${t("mapOpen")}</span></button>`}
-function renderDig(){
+function renderDig(){prTick();if(S.prNews&&!document.querySelector(".overlay"))setTimeout(prNewsShow,700);
   if(!D){newDig();return}
   const E=ERAS[S.era],ads=adsLeft();
   $("eraT").textContent=E.name;$("eraS").textContent=siteName(S.site)+" · "+siteCountry(S.site);
@@ -1547,8 +1559,8 @@ function renderDig(){
   const bones=D.objs.filter(o=>o.kind==="bone"),got=bones.filter(o=>o.found).length;
   updateHUD();
   $("boneChip").innerHTML=`${IC.bone}${got} / ${bones.length}`;
-  const probeBtn=D.probes>0||D.over?`<button class="tool" data-tool="probe" aria-pressed="${tool==="probe"}" ${D.probes>0&&!D.over?"":"disabled"}>${ICP.probe}<b>${t("probe")}</b><small>${t("probeSub")}</small><span class="badge">${D.probes}</span></button>`
-    :`<button class="tool ad-t" id="probead" ${ads>0&&!D.adProbe?"":"disabled"}>${ICP.probe}<b>${t("probeAd")}</b><small>${D.adProbe?t("used"):t("perVideo")}</small></button>`;
+  const npr=prTick(),probeBtn=npr>0||D.over?`<button class="tool" data-tool="probe" aria-pressed="${tool==="probe"}" ${npr>0&&!D.over?"":"disabled"}>${ICP.probe}<b>${t("probe")}</b><small>${t("probeSub")}</small><span class="badge">${npr}</span></button>`
+    :`<button class="tool ad-t" id="probead">${ICP.probe}<b>${t("probeGet")}</b><small>${t("probeEmpty")}</small></button>`;
   $("tools").innerHTML=`<button class="tool" data-tool="brush" aria-pressed="${tool==="brush"}">${ICP.brush}<b>${t("brush")}</b><small>${t("brushSub")}</small></button>
     <button class="tool" data-tool="pick" aria-pressed="${tool==="pick"}">${ICP.pick}<b>${t("pick")}</b><small>${t("pickSub",{p:Math.round(crackChance()*100)})}</small></button>${probeBtn}
     ${["radar","jack"].map(k=>{const n=spCount(k);return`<button class="tool sp${n?"":" empty"}" ${n?`data-tool="${k}"`:`data-sp="${k}"`} aria-pressed="${tool===k}" ${D.over?"disabled":""}>${ICP[k]}<span class="tx"><b>${t(k)}</b><small>${n?t(k+"Sub"):t("spTry")}</small></span>${n?`<span class="badge">${n}</span>`:""}</button>`}).join("")}`;
@@ -1732,7 +1744,7 @@ function renderShop(){
     ["regen",`<svg viewBox="0 0 48 48"><path d="M10 22h28l-3 16a4 4 0 0 1-4 3H17a4 4 0 0 1-4-3z" fill="#6b7480"/><path d="M8 22h32" stroke="#9aa3ad" stroke-width="4" stroke-linecap="round"/><path d="M18 16c0-3 3-3 3-6M25 16c0-3 3-3 3-6" stroke="#cdb59c" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M16 44c2-4 6-4 8-1 2-3 6-3 8 1" fill="#ffb53d"/></svg>`,t("upRegen"),t("upRegenD",{a:perMin(regenMs()),b:perMin(regenMs()-20000)}),costs.regen(),S.regenLv,5],
     ["bench",ICP.brush,t("upBench"),t("upBenchD",{a:labSlots(),b:labSlots()+1}),costs.bench(),S.benchLv,2],
     ["prec",ICP.pick,t("upPrec"),t("upPrecD",{a:Math.round(pickFree()*100),b:Math.round((S.precLv+1)*6)}),costs.prec(),S.precLv,5],
-    ["probe",ICP.probe,t("upProbe"),t("upProbeD",{a:probesMax(),b:probesMax()+1}),costs.probe(),S.probeLv,5]
+    ["probe",ICP.probe,t("upProbe"),t("upProbeD",{a:probesMax(),b:probesMax()+1}),costs.probe(),S.probeLv,9]
   ];
   const cl=S.campLv||0,cp=costs.camp();
   const camp=`<div class="camp"><img src="${aurl("camp"+Math.max(1,Math.min(3,cl+(cl<3?1:0)))+".webp")}" alt=""><div><b>${t("campT")} · ${t("campS"+Math.max(1,Math.min(3,cl+(cl<3?1:0))))}</b>
@@ -2316,7 +2328,7 @@ function rescueWatch(after){
 function dqEnsure(){const d=today();if(S.dq&&S.dq.day===d)return S.dq;
   const r=mulberry(hashStr(d+(S.seed||(S.seed=Math.floor(Math.random()*1e9))))),keys=Object.keys(DQ_POOL),pick=[];
   while(pick.length<2){const k=keys[Math.floor(r()*keys.length)];if(!pick.includes(k))pick.push(k)}
-  S.dq={day:d,chest:0,list:[{k:"visits",n:3,tier:1,p:0,c:0},...pick.map(k=>{const a=DQ_POOL[k],i=Math.floor(r()*a.length);return{k,n:a[i],tier:i,p:0,c:0}})]};
+  S.dq={day:d,chest:0,list:[{k:"visits",n:3,tier:1,p:0,c:0},...pick.map(k=>{const a=DQ_POOL[k],i=Math.floor(r()*a.length);return{k,n:k==="probes"?Math.min(a[i],probesMax()):a[i],tier:i,p:0,c:0}})]};
   return S.dq}
 const dqBase=()=>Math.round(Math.max(50,rate()*.75));
 const dqReward=m=>Math.round(dqBase()*(1+.5*m.tier));
@@ -2480,8 +2492,8 @@ const gpose=(g,full)=>g&&g!=="wave"?`guide_${g}${full?"":"_bust"}.webp`:(full?"g
 const HAND_SVG=`<svg viewBox="0 0 48 48" width="46" height="46"><path d="M17 26V9.5a3.5 3.5 0 0 1 7 0V22l1-.2v-3.3a3.3 3.3 0 0 1 6.6 0v3.6l.8-.1a3.2 3.2 0 0 1 6.3.6v2.8a3 3 0 0 1 5.6 1.5v7.6c0 6.3-5 11.5-11.3 11.5h-4.4c-3.7 0-7.1-1.9-9.1-5L9.9 33.6a3.3 3.3 0 0 1 5-4.2z" fill="#fff4e2" stroke="#3a2616" stroke-width="2.4" stroke-linejoin="round"/></svg>`;
 const TUT=[
   {k:"t1",sel:null},
-  {k:"t2",sel:'[data-tool="probe"]',wait:"probeSel",skipIf:()=>!D||D.probes<1,g:"point"},
-  {k:"t3",sel:"#pit",wait:"probe",skipIf:()=>!D||D.probes<1&&tool!=="probe",g:"think"},
+  {k:"t2",sel:'[data-tool="probe"]',wait:"probeSel",skipIf:()=>!D||prTick()<1,g:"point"},
+  {k:"t3",sel:"#pit",wait:"probe",skipIf:()=>!D||prTick()<1&&tool!=="probe",g:"think"},
   {k:"t4",sel:"#pit",wait:"bone",g:"point"},
   {k:"t5",sel:"#t-lab",wait:"view:lab",x:"navLab",g:"point"},
   {k:"t6",sel:".bench",g:"lab"},
@@ -2583,14 +2595,14 @@ document.addEventListener("click",e=>{
   else if(b.id==="tutReplay"){show("dig");startTut(true)}
   else if(b.id==="notifT"){notifEnable(!S.notif)}
   else if(b.dataset.lang){S.lang=b.dataset.lang;applyLang(S.lang);save();renderMute();renderTop();erasKey="";if(D)renderDig();show("shop")}
-  else if(b.id==="probead")showRewardedAd(t("probeAd"),()=>{D.probes++;D.adProbe=true;tool="probe";renderDig()});
+  else if(b.id==="probead")prOffer();
   else if(b.id==="t-dig")show("dig");else if(b.id==="t-mus")show("mus");else if(b.id==="t-shop")show("shop");
   else if(b.dataset.tool){tool=b.dataset.tool;renderDig();if(tool==="probe")tutEvent("probeSel")}
   else if(b.dataset.sp)spOffer(b.dataset.sp);
   else if(b.id==="siteBtn")openMap();
   else if(b.id==="again"){S.digs++;save();newDig()}
   else if(b.id==="quit"){stat("digsQuit");D.over=true;renderDig();showResult()}
-  else if(b.dataset.up){const k=b.dataset.up,c=costs[k]();if(c&&S.coins>=c){S.coins-=c;SS().spent+=c;tickStamina(Date.now());S[k+"Lv"]=(S[k+"Lv"]||0)+1;statEv(({energy:"Feldflasche",regen:"Feldküche",bench:"Werkbank",prec:"Profi-Hacke",probe:"Bodensonde",camp:"Expeditionslager"}[k]||k)+" Stufe "+S[k+"Lv"]+" gekauft ("+c+" Münzen)");tickLab(Date.now());save();SFX.coin();renderShop();toast(t("upgraded"))}}
+  else if(b.dataset.up){const k=b.dataset.up,c=costs[k]();if(c&&S.coins>=c){S.coins-=c;SS().spent+=c;tickStamina(Date.now());S[k+"Lv"]=(S[k+"Lv"]||0)+1;if(k==="probe"){prTick();S.pr++}statEv(({energy:"Feldflasche",regen:"Feldküche",bench:"Werkbank",prec:"Profi-Hacke",probe:"Bodensonde",camp:"Expeditionslager"}[k]||k)+" Stufe "+S[k+"Lv"]+" gekauft ("+c+" Münzen)");tickLab(Date.now());save();SFX.coin();renderShop();toast(t("upgraded"))}}
   else if(b.id==="reset"){const ov=overlay(`<h2>${t("resetQ")}</h2><p class="sub">${t("resetSub")}</p><div class="row"><button class="btn" id="rno">${t("keep")}</button><button class="btn primary" id="ryes">${t("del")}</button></div>`);
     ov.addEventListener("click",ev=>{const x=ev.target.closest("button");if(!x)return;ev.stopPropagation();ov.remove();if(x.id==="ryes"){{const lg=S.lang;S=blank();S.lang=lg}S.st=energyMax();S.stT=Date.now();S.fullDay=today();offline=0;D=null;save();renderMute();show("dig");toast(t("newGame"))}})}
   renderTop();

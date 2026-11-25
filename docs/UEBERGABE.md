@@ -155,3 +155,10 @@ Kari, Jano und Finn. Ihre Berichte vom 14. bis 16.11. sind ausgewertet und die g
 - Alle 30 neuen Arten haben jetzt eigene 3D-Museumsbilder (skel3d.py für Wirbeltiere, invert.py für Trilobiten, Seeskorpione, Tausendfüßer, Libelle, Cameroceras).
 - sk_<id>.webp enthält jetzt oben das Bild und unten die Teile-Maske (Graustufen ×40); die _m.png-Dateien gibt es nicht mehr (Dateilimit der Browser-Version).
 - Neue Fundstück-Sätze: arthro (ar_), shell (sh_), insect (in_). Meganeura hat jetzt die Gruppe „insect“ (Kopf, Brust, Hinterleib, Flügel, Beine).
+
+## Sonden pro Tag (Nov. 2026)
+- Bodensonde gilt jetzt pro TAG statt pro Grabung: `probesMax()=1+S.probeLv`, Stufen 0–9 → 1 bis 10 Sonden/Tag.
+- Vorrat `S.pr`, Tageswechsel in `prTick()` (S.prDay): Vorrat wird aufgefüllt, Ungenutztes verfällt, Zähler S.prAd/S.prBuy zurück.
+- Ausbaukosten `PROBE_COST=[150,300,500,800,1200,1800,2600,3600,5000]` (Summe 15.950).
+- Leer → Knopf „Sonden holen“ → `prOffer()`: Video = +2 (max. `PRAD_MAX=10` am Tag, zählt ins Werbelimit) oder Münzen = +2 für `max(100, rate())` (= 1 Std. Eintritt), jeder weitere Kauf am Tag doppelt.
+- Bestandsspieler sehen einmalig `prNewsShow()`. Tagesaufgabe „Sonde benutzen“ verlangt höchstens probesMax().
