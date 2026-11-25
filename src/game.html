@@ -115,7 +115,7 @@ header{display:flex;align-items:center;justify-content:space-between;gap:10px}
 @keyframes chPop{0%{transform:scale(.6) rotate(-8deg)}60%{transform:scale(1.12) rotate(4deg)}100%{transform:none}}
 .chov .chrw{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:10px 0}
 .chov .chrw>div{background:var(--edge);border-radius:14px;padding:8px 10px;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:96px;font-size:13px}
-.xdt{display:block;width:100px;height:100px;background-repeat:no-repeat}
+.xdt{display:flex;align-items:flex-end;justify-content:center;width:100px;height:100px}.xdt i{display:block;background-repeat:no-repeat}
 .xdt.ph{display:grid;place-items:center;border-radius:12px;background:rgba(0,0,0,.18);font:400 40px var(--f-display);color:var(--muted)}
 .chov .xdt{width:84px;height:84px}
 .hdep .xdt{width:100px;height:100px}
@@ -1941,14 +1941,15 @@ const DECOMETA={"vitk":[600,425,125,424],"carpet":[600,479,231,478],"desk":[579,
 const HDECO={fern:{f:[1,1],k:1.6,p:300},cycad:{f:[1,1],k:1.6,p:300},bench:{f:[1,2],k:1,p:250},info:{f:[2,1],k:1,p:200},rope:{f:[1,2],k:1,p:150},lamp:{f:[1,1],k:.55,p:250},
   case:{f:[1,1],k:1,p:700},globe:{f:[1,1],k:.95,p:600},nest:{f:[1,1],k:1,p:900},ammo:{f:[1,1],k:1.15,p:800},desk:{f:[1,3],k:1,p:1500},carpet:{f:[2,3],k:1,p:400,flat:1}};   // Grundfläche, Bildbreite relativ zur Grundfläche, Preis (vorläufig)
 // Exklusive Exponate aus der Sammeltruhe (Reihenfolge = Belohnungsreihenfolge), Bilder in xd_sheet.webp (Lage in XDPOS)
-const XD=[["xmeg",[1,1],.9],["xgeode",[1,1],.9],["xmeteor",[1,1],.9],["xtrophy",[1,1],.75],["xstatue",[1,1],.8],["xtric",[1,1],.95],["xcave",[1,1],1.1],["xcore",[1,1],.6],
-  ["xvolc",[1,1],1],["xmicro",[1,1],.65],["xclock",[1,1],.7],["xhour",[1,1],.75],["xfire",[1,1],1.05],["xterra",[1,1],1],["xtusk",[1,2],1],["xtrex",[1,2],1],["xcab",[1,2],1],
+const XD=[["xmeg",[1,1],1.03],["xgeode",[1,1],0.99],["xmeteor",[1,1],0.92],["xtrophy",[1,1],0.87],["xstatue",[1,1],0.82],["xtric",[1,1],0.89],["xcave",[1,1],0.92],["xcore",[1,1],0.82],
+  ["xvolc",[1,1],1.0],["xmicro",[1,1],0.88],["xclock",[1,1],0.82],["xhour",[1,1],0.82],["xfire",[1,1],1.05],["xterra",[1,1],1],["xtusk",[1,2],1],["xtrex",[1,2],1],["xcab",[1,2],1],
   ["xfount",[2,2],1],["xmosaic",[2,2],1,1],["xcar",[2,3],1]];
 for(const[id,f,k,fl]of XD)HDECO[id]={f,k,p:0,x:1,flat:fl};
-const XDPOS={};   // id → [x,y,w,h] im Sammelbild; leer = Platzhalter
-const XDSHEET=[0,0];   // Größe des Sammelbilds
-function xdPic(id,cls){const R=XDPOS[id];if(!R)return`<span class="xdt ph ${cls||""}">?</span>`;const[W,H]=XDSHEET,sc=Math.max(R[2],R[3]);
-  return`<span class="xdt ${cls||""}" role="img" aria-label="${t("dk_"+id)}" style="background-image:url('${aurl("xd_sheet.webp")}');background-size:${(W/sc*100).toFixed(2)}% ${(H/sc*100).toFixed(2)}%;background-position:${(R[0]-(sc-R[2])/2)/(W-sc)*100}% ${(R[1]-(sc-R[3]))/(H-sc)*100}%"></span>`}
+const XDPOS={"xmeg":[0,0,337,420],"xgeode":[339,0,328,420],"xmeteor":[669,0,370,420],"xtrophy":[1041,0,236,420],"xstatue":[1279,0,227,420],"xtric":[1508,0,420,407],"xcave":[0,422,420,384],"xcore":[422,422,158,420],"xvolc":[582,422,404,420],"xmicro":[988,422,201,420],"xclock":[1191,422,172,420],"xhour":[1365,422,203,420]};   // id → [x,y,w,h] im Sammelbild; leer = Platzhalter
+const XDMETA={"xmeg":[337,420,87,419],"xgeode":[328,420,150,419],"xmeteor":[370,420,94,419],"xtrophy":[236,420,60,419],"xstatue":[227,420,51,419],"xtric":[420,407,92,406],"xcave":[420,384,80,383],"xcore":[158,420,76,419],"xvolc":[404,420,124,419],"xmicro":[201,420,98,419],"xclock":[172,420,33,419],"xhour":[203,420,23,419]};
+const XDSHEET=[2048, 842];   // Größe des Sammelbilds
+function xdPic(id,cls){const R=XDPOS[id];if(!R)return`<span class="xdt ph ${cls||""}">?</span>`;const[W,H]=XDSHEET,sc=Math.max(R[2],R[3]),pc=(a,b)=>b?(a/b*100).toFixed(2):0;
+  return`<span class="xdt ${cls||""}" role="img" aria-label="${t("dk_"+id)}"><i style="width:${pc(R[2],sc)}%;height:${pc(R[3],sc)}%;background-image:url('${aurl("xd_sheet.webp")}');background-size:${pc(W,R[2])}% ${pc(H,R[3])}%;background-position:${pc(R[0],W-R[2])}% ${pc(R[1],H-R[3])}%"></i></span>`}
 const HT=64,HTH=HT*.645,HWALL=150,HHALF=44,HPARA=12,HS=16,HN=5*HS,HLV=[10,12,14,16],HGROW=[3,8,20];   // Feldmaße, Wandhöhen, Platzgröße, Ausbaustufen
 // Preise abgestimmt mit tools/sim/museum.py: Bau = cost (wenige Stunden Eintritt, wenn das Zeitalter frei wird), Vergrößern = cost × HGROW[Stufe]
 // Anbau (Rundgang in Erdzeit-Reihenfolge): Eingang → Zeittunnel → Kambrium … Karbon → Perm … Paläogen → Neogen → Eiszeit
@@ -2029,7 +2030,7 @@ function hallImg(file){if(HIMG[file])return HIMG[file];
 // Lage auf dem Bildschirm (Weltpunkte): Ankerpunkt = vordere Ecke der Grundfläche
 function hBox(o,p){const f=p[2],[a,b]=hFootO(o,f),fr=HP(p[0]+a,p[1]+b);
   if(o.kind==="c"){const m=HALLMETA[o.id],dl=m[2]-m[4],dr=m[6]-m[2];return{fr,s:Math.min(a*HT/2/(f?dr:dl),b*HT/2/(f?dl:dr)),m,f}}
-  const M=DECOMETA[o.kind==="d"?o.id:o.kind==="k"?"vitk":"vitrine"]||DECOMETA[HDECO[o.id]&&HDECO[o.id].x&&XDPOS[o.id]?o.id:"case"],k=o.kind==="d"?HDECO[o.id].k:o.kind==="k"?1.05:1;return{fr,s:(a+b)*HT/2*k/M[0],m:M,f}}
+  const M=DECOMETA[o.kind==="d"?o.id:o.kind==="k"?"vitk":"vitrine"]||(HDECO[o.id]&&HDECO[o.id].x&&XDMETA[o.id])||DECOMETA.case,k=o.kind==="d"?HDECO[o.id].k:o.kind==="k"?1.05:1;return{fr,s:(a+b)*HT/2*k/M[0],m:M,f}}
 const hRoomOf=(i,j)=>{const G=hGeo(),i2=Math.floor(i),j2=Math.floor(j);return i2<0||j2<0||i2>=HN||j2>=HN?null:hAt(Math.floor(i2/HS),Math.floor(j2/HS))};
 
 function openHall(){if(HV)return;stat("hallOpen");hallS();HGEO=null;
