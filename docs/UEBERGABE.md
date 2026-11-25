@@ -150,3 +150,8 @@ Kari, Jano und Finn. Ihre Berichte vom 14. bis 16.11. sind ausgewertet und die g
 - SMALL (Zeitalter → [id, Länge m]) für Kambrium–Karbon; diese Arten stehen nicht einzeln, sondern in der Vitrine ihres Saals (S.hall.kv[era], kind "k", Fußabdruck 1×2).
 - Bilder: vit_open.webp (Vitrine ohne Glas), vit_glass.webp (Glas-Overlay aus Differenz), vk_sheet.webp (alle freigestellten Kleintier-Fossilien in einem Bild, Lage in VKPOS; die Browser-Version darf höchstens 512 Dateien haben). DECOMETA.vitk.
 - Migration S.hall.m3: einzeln aufgestellte Kleintiere wandern in die Vitrine.
+
+## Museumsbilder für alle neuen Arten (25.11.)
+- Alle 30 neuen Arten haben jetzt eigene 3D-Museumsbilder (skel3d.py für Wirbeltiere, invert.py für Trilobiten, Seeskorpione, Tausendfüßer, Libelle, Cameroceras).
+- sk_<id>.webp enthält jetzt oben das Bild und unten die Teile-Maske (Graustufen ×40); die _m.png-Dateien gibt es nicht mehr (Dateilimit der Browser-Version).
+- Neue Fundstück-Sätze: arthro (ar_), shell (sh_), insect (in_). Meganeura hat jetzt die Gruppe „insect“ (Kopf, Brust, Hinterleib, Flügel, Beine).

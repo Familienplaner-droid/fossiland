@@ -103,7 +103,68 @@ def lo_tail():
     setup_top(2, 2); m = bone_mat()
     line([(-.95, .55), (-.2, .5), (.35, .2), (.6, -.3), (.62, -.85)], .19, m, (1, .35))
 
-JOBS = {k: v for k, v in globals().items() if k[:3] in ("tr_", "so_", "lo_")}
+# ---- Seeskorpione, Skorpion, Tausendfüßer ----
+def ar_head():
+    setup_top(2, 2); m = bone_mat()
+    poly(arc(0, -.2, .8, .95, 0, 180, 30), .14, m)
+    for s in (-1, 1): ell(s * .38, .25, .14, .1, .1, m, .2)
+    line(arc(0, -.2, .74, .88, 8, 172, 24), .025, m, z=.15)
+def ar_seg():
+    setup_top(4, 1); m = bone_mat()
+    for y, w in ((.22, 1.7), (-.2, 1.6)): ell(0, y, w, .2, .14, m)
+    for y in (.22, -.2): line([(-1.3, y + .05), (1.3, y + .05)], .02, m, z=.24)
+def ar_abd():
+    setup_top(1, 3); m = bone_mat()
+    for k in range(4): ell(0, 1.0 - k * .62, .36 - k * .04, .28, .16, m)
+def ar_leg():
+    setup_top(2, 3); m = bone_mat()
+    jointed([(-.45, 1.3), (-.35, .65), (-.4, 0), (-.3, -.6), (-.1, -1.1), (.25, -1.3)], .09, m)
+    for k in range(5): spike((-.35 + k * .02, .9 - k * .45), (-.12 + k * .03, .85 - k * .45), .03, m, .12)
+def ar_tail():
+    setup_top(2, 2); m = bone_mat()
+    ell(-.55, .55, .25, .22, .14, m); spike((-.45, .45), (.85, -.85), .14, m)
+
+# ---- Cameroceras ----
+def sh_tip():
+    setup_top(2, 2); m = bone_mat()
+    spike((-.6, .6), (.9, -.9), .42, m); line([(-.45, .45), (.1, -.1)], .03, m, z=.32)
+def sh_cham():
+    setup_top(4, 1); m = bone_mat(); d = mat_basic("sep", hexc("#8a7354"), rough=.5)
+    line([(-1.9, 0), (1.9, 0)], .33, m, (.85, 1))
+    for k in range(7): ell(-1.6 + k * .53, 0, .05, .34, .34, d)
+def sh_body():
+    setup_top(2, 3); m = bone_mat(); d = mat_basic("hole", hexc("#5b4a36"), rough=.5)
+    line([(0, 1.3), (0, -1.0)], .55, m, (.85, 1)); ell(0, -1.05, .5, .18, .2, d, .45)
+def sh_arm():
+    setup_top(2, 3); m = bone_mat()
+    line([(-.5, 1.3), (-.2, .6), (-.35, -.1), (.1, -.7), (.5, -1.1), (.7, -.8)], .12, m, (1, .3))
+    for k in range(6): ell(-.3 + k * .14, .9 - k * .35, .05, .05, .05, m, .3)
+def sh_beak():
+    setup_top(2, 2); m = mat_basic("beak", hexc("#5a4632"), rough=.35)
+    poly([(-.7, .5), (.6, .1), (.75, -.45), (.2, -.2), (-.7, -.1)], .25, m, bev=.08)
+
+# ---- Riesenlibelle ----
+def in_head():
+    setup_top(2, 2); m = bone_mat()
+    ell(0, -.1, .45, .4, .3, m)
+    for s in (-1, 1): ell(s * .45, .25, .38, .4, .3, m, .2)
+def in_thor():
+    setup_top(4, 1); m = bone_mat()
+    ell(-.3, 0, 1.2, .42, .32, m); ell(1.1, 0, .4, .3, .25, m)
+def in_abd():
+    setup_top(1, 3); m = bone_mat()
+    for k in range(6): ell(0, 1.15 - k * .44, .2, .21, .16, m)
+def in_wing():
+    setup_top(2, 3); m = memb(); b = bone_mat()
+    poly([(-.35, 1.35), (.25, 1.2), (.45, -.6), (.2, -1.35), (-.15, -1.3), (-.4, -.4)], .04, m, bev=.015)
+    line([(-.3, 1.3), (-.25, -1.3)], .035, b, z=.07)
+    for k in range(9): line([(-.27, 1.0 - k * .28), (.3, .9 - k * .28)], .012, b, z=.07)
+def in_leg():
+    setup_top(2, 3); m = bone_mat()
+    jointed([(-.4, 1.3), (-.2, .4), (-.35, -.4), (.0, -1.0), (.4, -1.25)], .07, m)
+    for k in range(6): spike((-.28 + k * .03, .1 - k * .2), (-.08 + k * .03, .05 - k * .2), .02, m, .1)
+
+JOBS = {k: v for k, v in globals().items() if k[:3] in ("tr_", "so_", "lo_", "ar_", "sh_", "in_")}
 if __name__ == "__main__":
     for n in (JOBS if sys.argv[-1] == "all" else sys.argv[-1].split(",")):
         t = time.time(); JOBS[n](); render(OUTS + n + ".png"); print("DONE", n, round(time.time() - t, 1), flush=True)

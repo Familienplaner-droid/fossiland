@@ -188,11 +188,138 @@ def mount(B, tilt=-26, piv=(0, 0, 2.0), rod_to=None):
         cyl((X, .35, 0.04), 0.55, 0.08, B.metal, bevel=0.02)
     B.part(6, stand)
 
+# ---------- Seeskorpione / Skorpion (Rückenansicht) ----------
+def eury(B, kind="euryp"):
+    # Teile: 1 Kopf (Prosoma), 2 Panzer (vordere Segmente), 3 Hinterleib (hintere Segmente), 4 Beine, 5 Schwanz
+    hx = 150; hl, hw = (16, 17) if kind != "pulmo" else (13, 13)
+    def head():
+        B.poly(arc(hx, 50, hl, hw, -95, 95, 30), .16, .02)
+        for s in (-1, 1): B.ell(hx + 4, 50 + s * hw * .45, 3.2, 2.4, .12, -.02)
+        if kind == "ptery":
+            for s in (-1, 1):
+                pts = [(hx + 12, 50 + s * 6), (hx + 24, 50 + s * 11), (hx + 34, 50 + s * 10)]
+                B.line(pts, 3.0, -.02, joints=True)
+                B.ell(hx + 38, 50 + s * 10, 7, 3.6, .14, -.02)
+                for k in range(4): B.spike((hx + 34 + k * 2.4, 50 + s * (8.2)), (hx + 35 + k * 2.4, 50 + s * 5.6), .6, -.03)
+        if kind == "pulmo":
+            for s in (-1, 1):
+                B.line([(hx + 10, 50 + s * 8), (hx + 18, 50 + s * 20), (hx + 28, 50 + s * 22)], 3.2, -.02, joints=True)
+                B.ell(hx + 34, 50 + s * 21, 8, 4.6, .16, -.02)
+                B.spike((hx + 38, 50 + s * 19), (hx + 46, 50 + s * 17), 1.6, -.02)
+                B.spike((hx + 38, 50 + s * 23), (hx + 45, 50 + s * 22), 1.4, -.02)
+    B.part(1, head)
+    n1, n2 = (6, 6) if kind != "pulmo" else (7, 5)
+    x0 = hx - hl * .2; seg = 7.2 if kind != "pulmo" else 6.4
+    xs1 = [x0 - (i + .5) * seg for i in range(n1)]
+    w1 = [hw * (1.02 + .1 * math.sin(i / (n1 - 1) * math.pi)) for i in range(n1)]
+    def front():
+        for x, w in zip(xs1, w1): B.ell(x, 50, seg * .6, w, .14)
+    B.part(2, front)
+    xb = xs1[-1] - seg * .5
+    if kind == "pulmo":
+        xs2 = [xb - (i + .5) * 8.5 for i in range(n2)]; w2 = [5.5 - i * .2 for i in range(n2)]
+    else:
+        xs2 = [xb - (i + .5) * seg * .95 for i in range(n2)]; w2 = [hw * (.85 - .1 * i) for i in range(n2)]
+    def back():
+        for x, w in zip(xs2, w2): B.ell(x, 50, (8.5 if kind == "pulmo" else seg) * .58, w, .15)
+    B.part(3, back)
+    def legs():
+        n = 4
+        for k in range(n):
+            x = hx - 2 - k * 6
+            for s in (-1, 1):
+                L = 18 + k * 4
+                pts = [(x, 50 + s * (hw - 3)), (x - 3 - k * 2, 50 + s * (hw + L * .5)), (x - 8 - k * 4, 50 + s * (hw + L))]
+                B.line(pts, 2.0, .06, joints=True, taper=(1, .5))
+        if kind != "pulmo":
+            for s in (-1, 1):   # Schwimmpaddel
+                B.line([(hx - 24, 50 + s * (hw - 2)), (hx - 32, 50 + s * (hw + 12))], 2.6, .05, joints=True)
+                B.ell(hx - 40, 50 + s * (hw + 17), 9, 5, .07, .05, rot=-.5 * s)
+    B.part(4, legs)
+    xt = xs2[-1] - (8.5 if kind == "pulmo" else seg) * .55
+    def tail():
+        if kind == "ptery":
+            B.ell(xt - 9, 50, 11, 8, .1); B.line([(xt - 2, 50), (xt - 18, 50)], 1.2, -.02)
+        elif kind == "pulmo":
+            B.ell(xt - 5, 50, 6, 4, .16); B.line([(xt - 9, 50), (xt - 15, 50 + 3), (xt - 16, 50 + 7)], 2.0, -.04, taper=(1, .1))
+        else:
+            B.spike((xt + 1, 50), (xt - 26, 50), 2.6)
+    B.part(5, tail)
+
+# ---------- Tausendfüßer ----------
+def milli(B, n=22, w=9, legs=2):
+    # 1 Kopf, 2 Panzer (vordere Hälfte), 3 Hinterleib (hintere Hälfte), 4 Beine, 5 Schwanz (letztes Segment)
+    hx = 176; seg = 140 / n
+    xs = [hx - 6 - (i + .5) * seg for i in range(n)]
+    def head():
+        B.ell(hx, 50, 6, w * .8, .2)
+        for s in (-1, 1): B.line([(hx + 4, 50 + s * 3), (hx + 12, 50 + s * 8), (hx + 16, 50 + s * 7)], 1.2, -.02, taper=(1, .5))
+    B.part(1, head)
+    half = n // 2
+    B.part(2, lambda: [B.ell(x, 50, seg * .58, w, .2) for x in xs[:half]])
+    B.part(3, lambda: [B.ell(x, 50, seg * .58, w * (1 - .25 * max(0, i - n + 5) / 5), .2) for i, x in enumerate(xs) if half <= i < n - 1])
+    def lg():
+        for i, x in enumerate(xs[:-1]):
+            for s in (-1, 1):
+                for q in range(legs):
+                    xx = x + (q - .5) * seg * .45
+                    B.line([(xx, 50 + s * (w - 1)), (xx - 1, 50 + s * (w + 5)), (xx - 3, 50 + s * (w + 8))], 1.0, .1, taper=(1, .5))
+    B.part(4, lg)
+    B.part(5, lambda: B.ell(xs[-1], 50, seg * .6, w * .7, .18))
+
+# ---------- Riesenlibelle ----------
+def dragon(B):
+    # 1 Kopf, 2 Brust, 3 Hinterleib, 4 Flügel, 5 Beine
+    B.part(1, lambda: [B.ell(160, 50, 6, 8, .2)] + [B.ell(161, 50 + s * 5, 4.5, 4.5, .2, -.03) for s in (-1, 1)])
+    B.part(2, lambda: B.ell(145, 50, 10, 6.5, .22))
+    B.part(3, lambda: [B.ell(132 - i * 9, 50, 5, 3.2 - i * .1, .16) for i in range(10)])
+    def wings():
+        for s in (-1, 1):
+            for k, (xb, xt, L, W2) in enumerate([(149, 168, 42, 16), (138, 118, 40, 18)]):
+                tip = (xt, 50 + s * L)
+                pts = [(xb + 3, 50 + s * 5), (xt + 4, 50 + s * L * .6), (xt + 3, 50 + s * (L - 2)), (xt - 3, 50 + s * L), (xt - W2, 50 + s * L * .7), (xb - 5, 50 + s * 6)]
+                B.poly(pts, .03, .03 + k * .01, B.memb, bev=.004)
+                B.line([(xb + 2, 50 + s * 5), (xt + 3, 50 + s * (L - 1))], .9, .02 + k * .01)
+                for q in range(1, 4):
+                    B.line([(xb - q * 2, 50 + s * 5), (xt - q * W2 / 4, 50 + s * (L - 3 - q * 4))], .4, .02 + k * .01)
+    B.part(4, wings)
+    B.part(5, lambda: [B.line([(150 - k * 5, 50 + s * 4), (153 - k * 7, 50 + s * 12), (150 - k * 9, 50 + s * 17)], 1.2, .12, joints=True, taper=(1, .5)) for k in range(3) for s in (-1, 1)])
+
+# ---------- Cameroceras (gestrecktes Kammergehäuse, seitlich aufgeschnitten) ----------
+def cone(B):
+    # 1 Spitze, 2 Kammern, 3 Wohnkammer, 4 Fangarme, 5 Schnabel
+    x0, x1 = 12, 150; r0, r1 = 1.5, 15
+    R = lambda x: r0 + (r1 - r0) * (x - x0) / (x1 - x0)
+    B.part(1, lambda: B.spike((40, 50), (x0, 50), R(40) * .55 * 2))
+    def ch():
+        for x in range(40, 118, 6):
+            B.ell(x + 3, 50, 3.6, R(x + 3), .2 + R(x) * .01)
+            B.ell(x + .5, 50, .8, R(x) * 1.02, .22, -.01, B.dark)
+    B.part(2, ch)
+    B.part(3, lambda: [B.ell(x, 50, 4.6, R(x), .22 + R(x) * .01) for x in range(120, 152, 4)])
+    def arms():
+        for k in range(8):
+            s = -1 + 2 * k / 7
+            B.line([(152, 50 + s * 9), (166, 50 + s * 13), (178, 50 + s * 15 + 2 * math.sin(k)), (186, 50 + s * 12)], 1.8, -.02, taper=(1, .3))
+    B.part(4, arms)
+    B.part(5, lambda: [B.ell(156, 50, 4, 3, .1, -.06, B.dark), B.spike((158, 50), (163, 50), 1.6, -.07, B.dark)])
+
 SPEC = {
     "parad": lambda B: (trilo(B, hx0=130, hl=30, hw=26, nseg=19, tx0=40, taper=.5, gen=58, pleu=11, pyl=6, pyw=7), mount(B)),
     "anoma": lambda B: (anoma(B), mount(B)),
     "opabi": lambda B: (opabi(B), mount(B)),
     "hallu": lambda B: hallu(B),
+    "isote": lambda B: (trilo(B, hx0=128, hl=34, hw=30, nseg=8, tx0=74, taper=.85, gen=0, pleu=0, pyl=34, pyw=27, eyes=.8, glab=1.1), mount(B)),
+    "asaph": lambda B: (trilo(B, hx0=125, hl=30, hw=27, nseg=8, tx0=80, taper=.9, gen=0, pleu=0, pyl=28, pyw=24, eyes=1.0), B.part(5, lambda: [B.line([(134, 50 + s * 15, -.05), (134.5, 50 + s * 15, -.9)], 2.2) or B.ell(134.5, 50 + s * 15, 3, 3, .15, -.95) for s in (-1, 1)]), mount(B)),
+    "dalma": lambda B: (trilo(B, hx0=130, hl=30, hw=25, nseg=11, tx0=70, taper=.6, gen=24, pleu=0, pyl=16, pyw=14, tail=14, eyes=1.5), mount(B)),
+    "euryp": lambda B: (eury(B, "euryp"), mount(B)),
+    "megag": lambda B: (eury(B, "euryp"), mount(B)),
+    "ptery": lambda B: (eury(B, "ptery"), mount(B)),
+    "pulmo": lambda B: (eury(B, "pulmo"), mount(B)),
+    "pneum": lambda B: (milli(B, n=14, w=8, legs=2), mount(B)),
+    "arthr": lambda B: (milli(B, n=24, w=14, legs=1), mount(B)),
+    "megan": lambda B: (dragon(B), mount(B)),
+    "camer": lambda B: (cone(B), mount(B, tilt=-10)),
 }
 
 if __name__ == "__main__":

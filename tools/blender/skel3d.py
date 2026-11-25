@@ -32,6 +32,9 @@ CRE = [  # id, plan, skull, skull scale
     ("mamm", "mammal", None, 1.2), ("smil", "mammal", None, 1), ("nash", "mammal", None, 1), ("baer", "mammal", None, 1.1), ("megl", "mammal", None, 1), ("glyp", "quad", None, .8),
     ("acant", "quad", None, .9),
     ("pikai", "fish", None, .55),
+    ("sacab", "fish", None, .7), ("clima", "fish", None, .65), ("dunkl", "fish", None, 1.35), ("bothr", "fish", None, .75), ("clado", "fish", None, .9), ("megal", "fish", None, 1.4),
+    ("tikta", "quad", None, .9), ("hylon", "quad", None, .7), ("crass", "quad", None, 1.05),
+    ("deino", "mammal", None, 1.3), ("thyla", "mammal", None, .95), ("chali", "mammal", None, 1.05), ("titan", "biped", "gast", 1.1),
 ]
 
 U = 1 / 20.0
@@ -336,6 +339,11 @@ def deco(B, cid, P, xf, S):
     if cid == "mamm": sp("M12 4Q28 14 16 22Q10 24 14 18", 1, 2.8, B.ivory, sk=True, taper=(1, 0.45))
     if cid == "smil": sp("M9 5L9.5 15", 1, 1.6, B.ivory, sk=True, taper=(1, 0.15))
     if cid == "inos": sp("M9 5L9.5 13", 1, 1.4, B.ivory, sk=True, taper=(1, 0.15))
+    if cid == "deino":
+        for y in (-0.1, 0.1): B.part(1, B.path_svg, "M6 8Q9 18 2 24", 2.6, y, B.ivory, xf, (1, 0.35))
+    if cid == "thyla": sp("M9 5Q11 12 9.5 18", 1, 1.6, B.ivory, sk=True, taper=(1, 0.15))
+    if cid == "dunkl":
+        for d in ["M2 6L14 10", "M0 -6Q10 -12 18 -6"]: sp(d, 1, 2.2, sk=True, taper=(1, .6))
     if cid == "andr": sp("M11 5L11 9", 1, 1.2, B.ivory, sk=True, taper=(1, 0.2))
     if cid == "nash":
         sp("M14 -2Q16 -14 22 -20", 1, 3.2, B.ivory, sk=True, taper=(1, 0.1))
