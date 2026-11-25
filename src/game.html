@@ -102,6 +102,23 @@ header{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .tool small{font-size:11px;color:var(--muted);line-height:1.2;text-align:center}
 .tool[aria-pressed="true"]{background:var(--panel-hi);box-shadow:0 5px 0 var(--edge),inset 0 0 0 3px var(--tape)}
 .tool:disabled{opacity:.45;cursor:not-allowed}
+.tool.tt1 .ti{filter:sepia(.7) saturate(1.8) hue-rotate(-12deg) drop-shadow(0 3px 2px rgba(0,0,0,.35))}
+.tool.tt2 .ti{filter:grayscale(1) brightness(1.3) contrast(1.1) drop-shadow(0 3px 2px rgba(0,0,0,.35))}
+.tool.tt3 .ti{filter:sepia(1) saturate(3.2) brightness(1.15) drop-shadow(0 0 5px rgba(255,200,60,.7))}
+.tool .tst,.up .tst{position:absolute;left:6px;top:6px;width:16px;height:16px}
+.chbtn.full{animation:chPulse 1.2s ease-in-out infinite}
+@keyframes chPulse{50%{transform:scale(1.15) rotate(-6deg)}}
+.chbtn svg{width:26px;height:26px}
+.chov .chimg{width:150px;height:120px;margin:0 auto;display:grid;place-items:center}
+.chov .chimg svg{width:120px;height:120px}
+.chov .chimg.pop{animation:chPop .6s ease-out}
+@keyframes chPop{0%{transform:scale(.6) rotate(-8deg)}60%{transform:scale(1.12) rotate(4deg)}100%{transform:none}}
+.chov .chrw{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:10px 0}
+.chov .chrw>div{background:var(--edge);border-radius:14px;padding:8px 10px;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:96px;font-size:13px}
+.xdt{display:block;width:100px;height:100px;background-repeat:no-repeat}
+.xdt.ph{display:grid;place-items:center;border-radius:12px;background:rgba(0,0,0,.18);font:400 40px var(--f-display);color:var(--muted)}
+.chov .xdt{width:84px;height:84px}
+.hdep .xdt{width:100px;height:100px}
 .tool .badge{position:absolute;top:-6px;right:-4px;background:var(--tape);color:var(--tape-ink);font-family:var(--f-display);font-size:13px;min-width:24px;height:24px;border-radius:12px;display:grid;place-items:center;padding:0 6px;box-shadow:0 2px 0 var(--tape-dk)}
 .tool.ad-t{background:var(--amber);color:#3d2200;box-shadow:0 5px 0 var(--amber-dk)}
 .tool.ad-t small{color:#6b4300}
@@ -422,6 +439,8 @@ nav .in{max-width:760px}
   #hint{display:none}
   .title{gap:8px}.title .btn.primary{margin-top:4px;padding:10px 26px;font-size:22px}
 }
+@media (max-width:400px){header .logo{font-size:18px}header .hdr-r{gap:4px}header .iconbtn{width:32px;height:32px}header .pill{padding:3px 7px 3px 3px;gap:4px}header .chbtn svg{width:22px;height:22px}}
+@media (max-width:440px){header #mute{display:none}}
 </style>
 
 <div class="wrap">
@@ -431,6 +450,7 @@ nav .in{max-width:760px}
       <div class="pill" title="Münzen"><span class="coin"></span><span id="coins">0</span><small id="rate"></small></div>
       <button class="pill tix" id="tixPill" aria-label="Flugtickets"><img id="tixImg" alt=""><span id="tix">0</span></button>
       <button class="iconbtn" id="dqBtn" aria-label="Tagesaufgaben"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2.5"/><path d="M9 4V2.8h6V4M8.5 10l1.5 1.5 3-3M8.5 16h7"/></svg><span class="nb" id="dqBadge" hidden></span></button>
+      <button class="iconbtn chbtn" id="chBtn" aria-label="Sammeltruhe" hidden></button>
       <button class="iconbtn" id="mute" aria-label="Ton aus"></button>
     </div>
   </header>
@@ -864,8 +884,15 @@ if(S.st<0||S.st==null){S.st=energyMax();S.stT=Date.now()}
 if(!Array.isArray(S.lab))S.lab=[];
 if(!S.lang)S.lang=detectLang();applyLang(S.lang);
 for(const [l,o] of Object.entries({"de": {"tip_crack": "Oh, ein Riss! Tipp: Nimm in der Nähe von Knochen lieber den Pinsel. Die Hacke ist schneller, kann Knochen aber beschädigen.", "tip_end": "Alle Knochen dieser Grabung sind gefunden! Tippe auf „Grabung beenden“, dann sparst du Ausdauer für die nächste.", "tip_probe": "Tipp: Die Sonde zeigt dir, wo Knochen liegen. So gräbst du nicht ins Leere und sparst Ausdauer.", "tipTap": "Antippen zum Schließen"}, "en": {"tip_crack": "Oh, a crack! Tip: near bones, use the brush instead. The pickaxe is faster but can damage bones.", "tip_end": "All bones of this dig are found! Tap “End dig” to save energy for the next one.", "tip_probe": "Tip: the probe shows you where bones are. That way you don't dig in the wrong places and save energy.", "tipTap": "Tap to close"}, "fr": {"tip_crack": "Oh, une fissure ! Astuce : près des os, prends plutôt le pinceau. La pioche est plus rapide mais peut abîmer les os.", "tip_end": "Tous les os de cette fouille sont trouvés ! Touche « Terminer la fouille » pour garder de l'énergie pour la suivante.", "tip_probe": "Astuce : la sonde te montre où sont les os. Tu ne creuses pas au hasard et tu économises de l'énergie.", "tipTap": "Touche pour fermer"}, "es": {"tip_crack": "¡Vaya, una grieta! Consejo: cerca de los huesos, usa mejor el pincel. El pico es más rápido, pero puede dañar los huesos.", "tip_end": "¡Ya has encontrado todos los huesos de esta excavación! Toca «Terminar excavación» para ahorrar energía para la siguiente.", "tip_probe": "Consejo: la sonda te muestra dónde están los huesos. Así no excavas a ciegas y ahorras energía.", "tipTap": "Toca para cerrar"}}))Object.assign(TX[l],o);
-const crackChance=()=>Math.max(.1,.6-S.precLv*.12);
-const pickFree=()=>S.precLv*.06;   // Profi-Hacke: Chance auf einen Hackenschlag ohne Ausdauer (6 % pro Stufe)
+for(const [l,o] of Object.entries({"de": {"chT": "Sammeltruhe", "chD": "Jedes Video, egal wofür, bringt einen Schlüssel. Mit {n} Schlüsseln öffnest du die Truhe. Darin: Werkzeugteile und abwechselnd ein exklusives Exponat für deinen Saal oder ein Spezialwerkzeug.", "chKeys": "Schlüssel {a} / {b}", "chOpen": "Truhe öffnen", "chNextX": "Nächste Truhe: exklusives Exponat", "chNextT": "Nächste Truhe: Spezialwerkzeug", "chColl": "Exponate {a} / {b}", "chParts": "Werkzeugteile: {n}", "chPartsN": "+{n} Werkzeugteile", "chGot": "Die Truhe ist offen!", "chExpoHint": "Das Exponat wartet im Saal unter „Deko“.", "chToHall": "Im Saal aufstellen", "chKeyT": "Schlüssel für die Sammeltruhe: {a} / {b}", "chReady": "Die Sammeltruhe ist bereit!", "ttT": "Meisterwerkzeuge", "ttSub": "Werkzeugteile: {n}", "ttBrush": "Meisterpinsel", "ttPick": "Meisterhacke", "ttBrushD": "Doppelter Pinselstrich {a} % → {b} %", "ttPickD": "Risse {a} % → {b} % · Gratis-Schläge {c} % → {d} %", "ttNeed": "Teile {a} / {b}", "ttGot": "{x} ist fertig!", "tier1": "Bronze", "tier2": "Silber", "tier3": "Gold", "dk_xmeg": "Megalodon-Kiefer", "dk_xgeode": "Amethyst-Geode", "dk_xmeteor": "Eisenmeteorit", "dk_xtrophy": "Goldener Trilobit", "dk_xstatue": "Forscherin-Statue", "dk_xtric": "Triceratops aus Bronze", "dk_xcave": "Höhlenmalerei", "dk_xcore": "Bohrkern", "dk_xvolc": "Vulkan-Diorama", "dk_xmicro": "Messing-Mikroskop", "dk_xclock": "Ammoniten-Standuhr", "dk_xhour": "Erdzeit-Sanduhr", "dk_xfire": "Steinzeit-Lagerfeuer", "dk_xterra": "Urzeit-Terrarium", "dk_xtusk": "Stoßzahn-Bogen", "dk_xtrex": "T.-rex-Schädel", "dk_xcab": "Kuriositätenschrank", "dk_xfount": "Ammoniten-Brunnen", "dk_xmosaic": "Trilobiten-Mosaik", "dk_xcar": "Expeditionswagen"}, "en": {"chT": "Collection chest", "chD": "Every video, whatever it's for, gives you a key. With {n} keys you open the chest. Inside: tool parts and, in turn, an exclusive exhibit for your hall or a special tool.", "chKeys": "Keys {a} / {b}", "chOpen": "Open chest", "chNextX": "Next chest: exclusive exhibit", "chNextT": "Next chest: special tool", "chColl": "Exhibits {a} / {b}", "chParts": "Tool parts: {n}", "chPartsN": "+{n} tool parts", "chGot": "The chest is open!", "chExpoHint": "The exhibit is waiting in the hall under “Decor”.", "chToHall": "Place in hall", "chKeyT": "Keys for the collection chest: {a} / {b}", "chReady": "The collection chest is ready!", "ttT": "Master tools", "ttSub": "Tool parts: {n}", "ttBrush": "Master brush", "ttPick": "Master pickaxe", "ttBrushD": "Double brush stroke {a}% → {b}%", "ttPickD": "Cracks {a}% → {b}% · free swings {c}% → {d}%", "ttNeed": "Parts {a} / {b}", "ttGot": "{x} is ready!", "tier1": "Bronze", "tier2": "Silver", "tier3": "Gold", "dk_xmeg": "Megalodon jaw", "dk_xgeode": "Amethyst geode", "dk_xmeteor": "Iron meteorite", "dk_xtrophy": "Golden trilobite", "dk_xstatue": "Explorer statue", "dk_xtric": "Bronze Triceratops", "dk_xcave": "Cave painting", "dk_xcore": "Drill core", "dk_xvolc": "Volcano diorama", "dk_xmicro": "Brass microscope", "dk_xclock": "Ammonite clock", "dk_xhour": "Deep-time hourglass", "dk_xfire": "Stone Age campfire", "dk_xterra": "Prehistoric terrarium", "dk_xtusk": "Tusk arch", "dk_xtrex": "T. rex skull", "dk_xcab": "Cabinet of curiosities", "dk_xfount": "Ammonite fountain", "dk_xmosaic": "Trilobite mosaic", "dk_xcar": "Expedition car"}, "fr": {"chT": "Coffre de collection", "chD": "Chaque vidéo, quelle qu'elle soit, rapporte une clé. Avec {n} clés, tu ouvres le coffre. Dedans : des pièces d'outil et, à tour de rôle, une pièce exclusive pour ta salle ou un outil spécial.", "chKeys": "Clés {a} / {b}", "chOpen": "Ouvrir le coffre", "chNextX": "Prochain coffre : pièce exclusive", "chNextT": "Prochain coffre : outil spécial", "chColl": "Pièces {a} / {b}", "chParts": "Pièces d'outil : {n}", "chPartsN": "+{n} pièces d'outil", "chGot": "Le coffre est ouvert !", "chExpoHint": "La pièce t'attend dans la salle, sous « Déco ».", "chToHall": "Installer dans la salle", "chKeyT": "Clés du coffre : {a} / {b}", "chReady": "Le coffre de collection est prêt !", "ttT": "Outils de maître", "ttSub": "Pièces d'outil : {n}", "ttBrush": "Pinceau de maître", "ttPick": "Pioche de maître", "ttBrushD": "Double coup de pinceau {a} % → {b} %", "ttPickD": "Fissures {a} % → {b} % · coups gratuits {c} % → {d} %", "ttNeed": "Pièces {a} / {b}", "ttGot": "{x} est prêt !", "tier1": "Bronze", "tier2": "Argent", "tier3": "Or", "dk_xmeg": "Mâchoire de mégalodon", "dk_xgeode": "Géode d'améthyste", "dk_xmeteor": "Météorite de fer", "dk_xtrophy": "Trilobite d'or", "dk_xstatue": "Statue d'exploratrice", "dk_xtric": "Tricératops en bronze", "dk_xcave": "Peinture rupestre", "dk_xcore": "Carotte de forage", "dk_xvolc": "Diorama de volcan", "dk_xmicro": "Microscope en laiton", "dk_xclock": "Horloge à ammonite", "dk_xhour": "Sablier des âges", "dk_xfire": "Feu de l'âge de pierre", "dk_xterra": "Terrarium préhistorique", "dk_xtusk": "Arche de défenses", "dk_xtrex": "Crâne de T. rex", "dk_xcab": "Cabinet de curiosités", "dk_xfount": "Fontaine à ammonite", "dk_xmosaic": "Mosaïque de trilobite", "dk_xcar": "Voiture d'expédition"}, "es": {"chT": "Cofre de colección", "chD": "Cada vídeo, sea para lo que sea, te da una llave. Con {n} llaves abres el cofre. Dentro: piezas de herramienta y, por turnos, una pieza exclusiva para tu sala o una herramienta especial.", "chKeys": "Llaves {a} / {b}", "chOpen": "Abrir cofre", "chNextX": "Próximo cofre: pieza exclusiva", "chNextT": "Próximo cofre: herramienta especial", "chColl": "Piezas {a} / {b}", "chParts": "Piezas de herramienta: {n}", "chPartsN": "+{n} piezas de herramienta", "chGot": "¡El cofre está abierto!", "chExpoHint": "La pieza te espera en la sala, en «Deco».", "chToHall": "Colocar en la sala", "chKeyT": "Llaves del cofre: {a} / {b}", "chReady": "¡El cofre de colección está listo!", "ttT": "Herramientas maestras", "ttSub": "Piezas de herramienta: {n}", "ttBrush": "Pincel maestro", "ttPick": "Pico maestro", "ttBrushD": "Pincelada doble {a} % → {b} %", "ttPickD": "Grietas {a} % → {b} % · golpes gratis {c} % → {d} %", "ttNeed": "Piezas {a} / {b}", "ttGot": "¡{x} está listo!", "tier1": "Bronce", "tier2": "Plata", "tier3": "Oro", "dk_xmeg": "Mandíbula de megalodón", "dk_xgeode": "Geoda de amatista", "dk_xmeteor": "Meteorito de hierro", "dk_xtrophy": "Trilobites de oro", "dk_xstatue": "Estatua de exploradora", "dk_xtric": "Triceratops de bronce", "dk_xcave": "Pintura rupestre", "dk_xcore": "Testigo de perforación", "dk_xvolc": "Diorama de volcán", "dk_xmicro": "Microscopio de latón", "dk_xclock": "Reloj de amonites", "dk_xhour": "Reloj de arena del tiempo", "dk_xfire": "Hoguera de la Edad de Piedra", "dk_xterra": "Terrario prehistórico", "dk_xtusk": "Arco de colmillos", "dk_xtrex": "Cráneo de T. rex", "dk_xcab": "Gabinete de curiosidades", "dk_xfount": "Fuente de amonites", "dk_xmosaic": "Mosaico de trilobites", "dk_xcar": "Coche de expedición"}}))Object.assign(TX[l],o);
+// Meisterwerkzeuge (nach voll ausgebauter Profi-Hacke): Bronze/Silber/Gold, Kosten = Werkzeugteile aus der Sammeltruhe + Münzen (Stunden Eintritt)
+const TT_PARTS=[3,6,10],TT_H=[2,4,8],TT_BR=[0,.15,.3,.5],TT_CR=[.1,.07,.04,.02],TT_FR=[0,.06,.12,.2];
+const ttLv=k=>((S.tt||(S.tt={brush:0,pick:0}))[k]||0);
+const ttOpen=()=>S.precLv>=5;
+const ttCost=k=>Math.round(Math.max(100,rate())*TT_H[ttLv(k)]);
+const brushDbl=()=>TT_BR[ttLv("brush")];
+const crackChance=()=>ttLv("pick")?TT_CR[ttLv("pick")]:Math.max(.1,.6-S.precLv*.12);
+const pickFree=()=>S.precLv*.06+TT_FR[ttLv("pick")];   // Profi-Hacke: Chance auf einen Hackenschlag ohne Ausdauer (6 % pro Stufe)
 const probesMax=()=>1+S.probeLv;   // Sonden pro TAG (1 bis 10), nicht mehr pro Grabung
 const PROBE_COST=[150,300,500,800,1200,1800,2600,3600,5000],PRAD_MAX=10;   // Ausbau der Bodensonde; höchstens 10 Sonden-Videos am Tag
 function prTick(){if(S.prDay!==today()){const first=S.prDay===undefined;S.prDay=today();S.pr=probesMax();S.prAd=0;S.prBuy=0;if(first&&S.digs>0)S.prNews=1}return S.pr}
@@ -991,6 +1018,49 @@ const spCount=k=>((S.tools||(S.tools={radar:0,jack:0}))[k]||0);
 function spGive(k,n){spCount(k);S.tools[k]+=n;save()}
 if(!S.toolGift){S.toolGift=1;spCount("radar");S.tools.radar+=1;S.tools.jack+=1}
 const spPrice=k=>Math.round(Math.max(k==="radar"?90:120,rate()*(k==="radar"?2:2.5)));
+/* ================= Sammeltruhe =================
+   Jedes Video = 1 Schlüssel, CH_KEYS Schlüssel öffnen eine Truhe. Inhalt: 2 Werkzeugteile + abwechselnd ein exklusives Exponat (1., 3., 5. … Truhe) oder ein Spezialwerkzeug.
+   Der Zähler verfällt nie (freiwillig, kein Tagesdruck). */
+const CH_KEYS=4,CH_PARTS=2;
+const chS=()=>S.chest||(S.chest={k:0,n:0,p:0,got:[]});
+const ttDone=()=>ttLv("brush")>=3&&ttLv("pick")>=3;
+const chNextX=()=>chS().n%2===0&&chS().got.length<XD.length;
+const CHEST_OPEN='<svg viewBox="0 0 48 48"><rect x="6" y="22" width="36" height="20" rx="4" fill="#8a5530"/><path d="M8 22 12 6h24l4 16z" fill="#a8693c"/><path d="M12 9h24" stroke="#c9a25a" stroke-width="3"/><ellipse cx="24" cy="23" rx="15" ry="4" fill="#ffd27a"/><circle cx="17" cy="21" r="3" fill="#ffe9a8"/><circle cx="29" cy="20" r="2.5" fill="#ffe9a8"/><rect x="6" y="24" width="36" height="5" fill="#c9a25a"/><path d="M10 42V26M38 42V26" stroke="#5e3a1e" stroke-width="2"/></svg>';
+function chKey(){const c=chS();c.k++;renderChest();const msg=c.k>=CH_KEYS?t("chReady"):t("chKeyT",{a:c.k,b:CH_KEYS});setTimeout(()=>{if(!document.querySelector(".chov"))toast(msg)},1300)}
+function renderChest(){const b=$("chBtn");if(!b)return;b.hidden=!(S.tutDone||S.digs>2);const c=chS(),full=c.k>=CH_KEYS;b.classList.toggle("full",full);b.setAttribute("aria-label",t("chT"));
+  b.innerHTML=CHEST_SVG+`<span class="nb">${full?"!":c.k+"/"+CH_KEYS}</span>`}
+function showChest(){stat("chestView");const c=chS(),full=c.k>=CH_KEYS,nx=chNextX();
+  const ov=overlay(`<div class="chov"><div class="chimg">${CHEST_SVG}</div><h2>${t("chT")}</h2><p class="sub">${t("chD",{n:CH_KEYS})}</p>
+    <div class="bar"><i style="width:${Math.min(100,c.k/CH_KEYS*100)}%"></i><span>${t("chKeys",{a:Math.min(c.k,CH_KEYS),b:CH_KEYS})}</span></div>
+    <p class="meta" style="margin-top:8px">${nx?t("chNextX"):t("chNextT")}<br>${t("chColl",{a:c.got.length,b:XD.length})} · ${t("chParts",{n:c.p})}</p>
+    <div class="row">${full?`<button class="btn primary" id="chGo">${t("chOpen")}</button>`:""}<button class="btn" id="chNo">${t("close")}</button></div></div>`);
+  ov.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;e.stopPropagation();SFX.click();
+    if(b.id==="chNo"){ov.remove();return}
+    if(b.id==="chGo"){ov.remove();openChest()}})}
+function openChest(){const c=chS();if(c.k<CH_KEYS)return;c.k-=CH_KEYS;const x=chNextX();c.n++;hallS();const rw=[];
+  if(!ttDone()){c.p+=CH_PARTS;rw.push(`<div>${GEAR_SVG}<b>${t("chPartsN",{n:CH_PARTS})}</b></div>`)}
+  if(x){const id=XD[c.got.length][0];c.got.push(id);S.hall.inv[id]=(S.hall.inv[id]||0)+1;rw.push(`<div>${xdPic(id)}<b>${t("dk_"+id)}</b></div>`);statEv("Truhe: Exponat "+id)}
+  if(!x||ttDone()){const k=c.n%4<2?"radar":"jack";S.tools=S.tools||{radar:0,jack:0};S.tools[k]=(S.tools[k]||0)+1;rw.push(`<div>${ICP[k]}<b>+1 ${t(k)}</b></div>`)}
+  stat("chest");save();renderChest();SFX.complete();
+  const ov=overlay(`<div class="chov"><div class="chimg pop">${CHEST_OPEN}</div><h2>${t("chGot")}</h2><div class="chrw">${rw.join("")}</div>
+    ${x?`<p class="meta">${t("chExpoHint")}</p>`:""}<div class="row">${x?`<button class="btn primary" id="chHall">${t("chToHall")}</button>`:""}<button class="btn" id="chOk">${t("close")}</button></div></div>`);
+  ov.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;e.stopPropagation();SFX.click();ov.remove();if(b.id==="chHall"){openHall();if(HV){HV.edit=true;HV.tab="d";hallUI();hallDraw()}}})}
+const GEAR_SVG='<svg viewBox="0 0 24 24" width="40" height="40"><path d="M12 2l1.6 2.6 3-.7.7 3 2.6 1.6-1.4 2.7 1.4 2.7-2.6 1.6-.7 3-3-.7L12 22l-1.6-2.6-3 .7-.7-3-2.6-1.6 1.4-2.7-1.4-2.7 2.6-1.6.7-3 3 .7z" fill="#b9c2cc" stroke="#6b7480" stroke-width="1"/><circle cx="12" cy="12" r="3.4" fill="#4a3426"/></svg>';
+const TT_COL=["","#c8803e","#d9dee6","#ffcc3d"];
+const ttStar=k=>{const L=ttLv(k);return L?`<svg class="tst" viewBox="0 0 24 24"><path d="M12 2l3 6.5 7 .8-5.2 4.8 1.4 7L12 17.6 5.8 21.1l1.4-7L2 9.3l7-.8z" fill="${TT_COL[L]}" stroke="#3e2b1f" stroke-width="1.5"/></svg>`:""};
+function ttCard(){if(!ttOpen())return"";const p=chS().p;
+  const row=(k,ic,nm,dsc)=>{const L=ttLv(k),ok=L<3,need=TT_PARTS[L],c=ok?ttCost(k):0,can=ok&&p>=need&&S.coins>=c;
+    return`<div class="up"><div class="ic tool tt${L}" style="background:none;box-shadow:none;padding:0">${ttStar(k)}${ic}</div><div><b>${nm}${L?" · "+t("tier"+L):""}</b><p>${ok?dsc:t("maxed")}</p><div class="lv">${[0,1,2].map(i=>`<i class="${i<L?"on":""}"></i>`).join("")}</div>
+      ${ok?`<div class="bar"><i style="width:${Math.min(100,p/need*100).toFixed(1)}%"></i><span>${t("ttNeed",{a:Math.min(p,need),b:need})}</span></div>`:""}</div>
+      <button class="btn ${can?"primary":""}" data-tt="${k}" ${can?"":"disabled"}>${ok?`${t("tier"+(L+1))}<br><span class="coin sm"></span>${nf(c)}`:"Max"}</button></div>`};
+  const bL=ttLv("brush"),pL=ttLv("pick");
+  return`<h2 class="sec-h">${t("ttT")}<small>${t("ttSub",{n:p})}</small></h2>`+
+    row("brush",ICP.brush,t("ttBrush"),t("ttBrushD",{a:Math.round(TT_BR[bL]*100),b:Math.round(TT_BR[Math.min(3,bL+1)]*100)}))+
+    row("pick",ICP.pick,t("ttPick"),t("ttPickD",{a:Math.round(crackChance()*100),b:Math.round(TT_CR[Math.min(3,pL+1)]*100),c:Math.round(pickFree()*100),d:Math.round((S.precLv*.06+TT_FR[Math.min(3,pL+1)])*100)}))+
+    `<button class="btn" id="ttChest" style="margin:2px 0 8px">${t("chT")} · ${t("chKeys",{a:Math.min(chS().k,CH_KEYS),b:CH_KEYS})}</button>`}
+function ttBuy(k){const L=ttLv(k);if(L>=3)return;const need=TT_PARTS[L],c=ttCost(k),C=chS();if(C.p<need||S.coins<c)return;
+  C.p-=need;S.coins-=c;SS().spent+=c;S.tt[k]=L+1;statEv((k==="brush"?"Meisterpinsel":"Meisterhacke")+" "+["Bronze","Silber","Gold"][L]+" gekauft ("+c+" Münzen, "+need+" Teile)");stat("tt:"+k);
+  save();SFX.complete();renderTop();renderShop();toast(t("ttGot",{x:(k==="brush"?t("ttBrush"):t("ttPick"))+" · "+t("tier"+(L+1))}))}
 function prNewsShow(){if(!S.prNews)return;S.prNews=0;save();const ov=overlay(`<img class="guide-top" src="${aurl(gpose("point"))}" alt=""><h2>${t("prNewsT")}</h2><p class="sub">${t("prNews")}</p><button class="btn primary" id="prnOk">${t("tutNext")}</button>`);ov.addEventListener("click",e=>{if(e.target.closest("button")){SFX.click();ov.remove()}})}
 function prOffer(){prTick();const ads=adsLeft(),va=PRAD_MAX-(S.prAd||0),pr=prPrice();   // Sonden nachladen: Video (+2) oder Münzen (+2)
   const ov=overlay(`<img class="guide-top" src="${aurl(gpose("think"))}" alt=""><h2>${t("probeGet")}</h2><p class="sub">${t("probeD",{n:probesMax()})}</p>
@@ -1132,7 +1202,7 @@ function admInit(){if(!ADM)return Promise.resolve(false);if(ADQ.init)return ADQ.
 function admLoad(){if(!ADM||ADQ.ready)return Promise.resolve(ADQ.ready);if(ADQ.loading)return ADQ.loading;
   ADQ.loading=ADM.prepareRewardVideoAd({adId:AD_UNIT,isTesting:ADS_TESTING}).then(()=>{ADQ.ready=true;return true},e=>{ADQ.failErr=ADQ.lastErr&&ADQ.lastErr.code!=null?ADQ.lastErr:e;ADQ.lastErr=null;return false}).finally(()=>{ADQ.loading=null});
   return ADQ.loading}
-function adReward(label,onReward){S.adCount++;stat("ads");stat("ad:"+adKind(label));statDay().a=(statDay().a||0)+1;save();SFX.coin();onReward();renderTop()}
+function adReward(label,onReward){S.adCount++;chKey();stat("ads");stat("ad:"+adKind(label));statDay().a=(statDay().a||0)+1;save();SFX.coin();onReward();renderTop()}
 async function showNativeAd(label,onReward){
   const ov=overlay(`<h2>${label}</h2><p class="sub">${t("adLoading")}</p><button class="btn" id="adcancel">${t("cancel")}</button>`);ov.style.zIndex=25;
   let gone=false;ov.addEventListener("click",e=>{if(e.target.closest("#adcancel")){e.stopPropagation();gone=true;ov.remove();stat("adCancel")}});
@@ -1338,7 +1408,7 @@ function hit(i){
   if(S.st<1){SFX.empty();showEmpty();return}
   const free=tool==="pick"&&Math.random()<pickFree();
   if(!free){if(S.st>=staMax())S.stT=Date.now();S.st--}
-  let dmg=tool==="pick"?2:1,exposed=false;const col=LAY()[Math.min(2,g.d)][0];
+  const dbl=tool==="brush"&&Math.random()<brushDbl();let dmg=tool==="pick"?2:dbl?2:1,exposed=false;if(dbl){burst(g,6,"#ffd34d",.9);stat("brushDbl")}const col=LAY()[Math.min(2,g.d)][0];
   if(free){burst(g,7,"#ffd34d",1.1);stat("pickFree")}
   if(tool==="pick"){SFX.pick(g.r);buzz(15);shake=5;burst(g,9,col,1.3)}else{SFX.brush();burst(g,4,col,.7)}
   // Schicht für Schicht abtragen; ein Knochen hält die Grabung in seiner Tiefe an
@@ -1561,8 +1631,8 @@ function renderDig(){prTick();if(S.prNews&&!document.querySelector(".overlay"))s
   $("boneChip").innerHTML=`${IC.bone}${got} / ${bones.length}`;
   const npr=prTick(),probeBtn=npr>0||D.over?`<button class="tool" data-tool="probe" aria-pressed="${tool==="probe"}" ${npr>0&&!D.over?"":"disabled"}>${ICP.probe}<b>${t("probe")}</b><small>${t("probeSub")}</small><span class="badge">${npr}</span></button>`
     :`<button class="tool ad-t" id="probead">${ICP.probe}<b>${t("probeGet")}</b><small>${t("probeEmpty")}</small></button>`;
-  $("tools").innerHTML=`<button class="tool" data-tool="brush" aria-pressed="${tool==="brush"}">${ICP.brush}<b>${t("brush")}</b><small>${t("brushSub")}</small></button>
-    <button class="tool" data-tool="pick" aria-pressed="${tool==="pick"}">${ICP.pick}<b>${t("pick")}</b><small>${t("pickSub",{p:Math.round(crackChance()*100)})}</small></button>${probeBtn}
+  $("tools").innerHTML=`<button class="tool${ttLv("brush")?" tt"+ttLv("brush"):""}" data-tool="brush" aria-pressed="${tool==="brush"}">${ttStar("brush")}${ICP.brush}<b>${t("brush")}</b><small>${t("brushSub")}</small></button>
+    <button class="tool${ttLv("pick")?" tt"+ttLv("pick"):""}" data-tool="pick" aria-pressed="${tool==="pick"}">${ttStar("pick")}${ICP.pick}<b>${t("pick")}</b><small>${t("pickSub",{p:Math.round(crackChance()*100)})}</small></button>${probeBtn}
     ${["radar","jack"].map(k=>{const n=spCount(k);return`<button class="tool sp${n?"":" empty"}" ${n?`data-tool="${k}"`:`data-sp="${k}"`} aria-pressed="${tool===k}" ${D.over?"disabled":""}>${ICP[k]}<span class="tx"><b>${t(k)}</b><small>${n?t(k+"Sub"):t("spTry")}</small></span>${n?`<span class="badge">${n}</span>`:""}</button>`}).join("")}`;
   const left=bones.length-got,canRefill=ads>0&&left>0&&S.st<5;
   $("hint").textContent=D.over?"":tool==="probe"?t("hintProbe"):tool==="radar"?t("hintRadar"):tool==="jack"?t("hintJack"):t("hintDig",{s:SOILNAMES[D.era].join(", ")});
@@ -1751,9 +1821,9 @@ function renderShop(){
     <p>${cl<3?t("campD"+(cl+1))+" "+t("campSave"):t("campMax")}</p><div class="lv">${[0,1,2].map(i=>`<i class="${i<cl?"on":""}"></i>`).join("")}</div>
     ${cl<3?`<div class="bar"><i style="width:${Math.min(100,S.coins/cp*100).toFixed(1)}%"></i><span>${Math.floor(Math.min(S.coins,cp))} / ${cp}</span></div><button class="btn ${S.coins>=cp?"primary":""}" data-up="camp" ${S.coins>=cp?"":"disabled"}><span class="coin sm"></span>${cp}</button>`:""}</div></div>`;
   $("v-shop").innerHTML=`<h2 class="sec-h">${t("navShop")}<small>${t("shopSub")}</small></h2>`+camp+ups.map(([k,ic,n,d,c,lv,mx])=>{const ok=lv<mx;return `<div class="up"><div class="ic">${ic}</div><div><b>${n}</b><p>${ok?d:t("maxed")}</p><div class="lv">${Array.from({length:mx},(_,i)=>`<i class="${i<lv?"on":""}"></i>`).join("")}</div>${ok?`<div class="bar"><i style="width:${Math.min(100,S.coins/c*100).toFixed(1)}%"></i><span>${Math.floor(Math.min(S.coins,c))} / ${c}</span></div>`:""}</div>
-  <button class="btn ${ok&&S.coins>=c?"primary":""}" data-up="${k}" ${ok&&S.coins>=c?"":"disabled"}>${ok?`<span class="coin sm"></span>${c}`:"Max"}</button></div>`}).join("")+
+  <button class="btn ${ok&&S.coins>=c?"primary":""}" data-up="${k}" ${ok&&S.coins>=c?"":"disabled"}>${ok?`<span class="coin sm"></span>${c}`:"Max"}</button></div>`}).join("")+ttCard()+
   `<h2 class="sec-h">${t("language")}</h2><div class="langs">${Object.entries(LANGS).map(([k,v])=>`<button class="btn ${k===LANG?"primary":""}" data-lang="${k}" lang="${k}">${v}</button>`).join("")}</div>
-  <div class="row" style="margin-top:8px"><button class="btn" id="tutReplay">${t("tutReplay")}</button>${LNP?`<button class="btn" id="notifT">${t(S.notif?"nOn":"nOff")}</button>`:""}<button class="btn" id="report">${t("report")}</button><button class="btn" id="reset">${t("reset")}</button></div>`;
+  <div class="row" style="margin-top:8px"><button class="btn" id="muteS">${S.sound?t("soundOff"):t("soundOn")}</button><button class="btn" id="tutReplay">${t("tutReplay")}</button>${LNP?`<button class="btn" id="notifT">${t(S.notif?"nOn":"nOff")}</button>`:""}<button class="btn" id="report">${t("report")}</button><button class="btn" id="reset">${t("reset")}</button></div>`;
 }
 
 function expoCard(){if(!rate())return"";const on=expoOn(),n=expoLeft(),until=new Date(S.expoU||0).toTimeString().slice(0,5);
@@ -1870,6 +1940,15 @@ const HALL_SZ={parad:1,anoma:1,opabi:1,hallu:1,pikai:1,dime:3,edap:3,scut:3,inos
 const DECOMETA={"vitk":[600,425,125,424],"carpet":[600,479,231,478],"desk":[579,600,125,599],"ammo":[504,600,203,599],"nest":[600,546,298,545],"globe":[405,600,202,599],"case":[500,600,249,599],"lamp":[204,600,101,599],"rope":[589,600,83,599],"info":[489,600,370,599],"bench":[600,560,159,559],"cycad":[549,600,269,599],"fern":[573,600,282,599],"vitrine":[364,600,181,599]};   // [w,h, unterster Punkt x,y]
 const HDECO={fern:{f:[1,1],k:1.6,p:300},cycad:{f:[1,1],k:1.6,p:300},bench:{f:[1,2],k:1,p:250},info:{f:[2,1],k:1,p:200},rope:{f:[1,2],k:1,p:150},lamp:{f:[1,1],k:.55,p:250},
   case:{f:[1,1],k:1,p:700},globe:{f:[1,1],k:.95,p:600},nest:{f:[1,1],k:1,p:900},ammo:{f:[1,1],k:1.15,p:800},desk:{f:[1,3],k:1,p:1500},carpet:{f:[2,3],k:1,p:400,flat:1}};   // Grundfläche, Bildbreite relativ zur Grundfläche, Preis (vorläufig)
+// Exklusive Exponate aus der Sammeltruhe (Reihenfolge = Belohnungsreihenfolge), Bilder in xd_sheet.webp (Lage in XDPOS)
+const XD=[["xmeg",[1,1],.9],["xgeode",[1,1],.9],["xmeteor",[1,1],.9],["xtrophy",[1,1],.75],["xstatue",[1,1],.8],["xtric",[1,1],.95],["xcave",[1,1],1.1],["xcore",[1,1],.6],
+  ["xvolc",[1,1],1],["xmicro",[1,1],.65],["xclock",[1,1],.7],["xhour",[1,1],.75],["xfire",[1,1],1.05],["xterra",[1,1],1],["xtusk",[1,2],1],["xtrex",[1,2],1],["xcab",[1,2],1],
+  ["xfount",[2,2],1],["xmosaic",[2,2],1,1],["xcar",[2,3],1]];
+for(const[id,f,k,fl]of XD)HDECO[id]={f,k,p:0,x:1,flat:fl};
+const XDPOS={};   // id → [x,y,w,h] im Sammelbild; leer = Platzhalter
+const XDSHEET=[0,0];   // Größe des Sammelbilds
+function xdPic(id,cls){const R=XDPOS[id];if(!R)return`<span class="xdt ph ${cls||""}">?</span>`;const[W,H]=XDSHEET,sc=Math.max(R[2],R[3]);
+  return`<span class="xdt ${cls||""}" role="img" aria-label="${t("dk_"+id)}" style="background-image:url('${aurl("xd_sheet.webp")}');background-size:${(W/sc*100).toFixed(2)}% ${(H/sc*100).toFixed(2)}%;background-position:${(R[0]-(sc-R[2])/2)/(W-sc)*100}% ${(R[1]-(sc-R[3]))/(H-sc)*100}%"></span>`}
 const HT=64,HTH=HT*.645,HWALL=150,HHALF=44,HPARA=12,HS=16,HN=5*HS,HLV=[10,12,14,16],HGROW=[3,8,20];   // Feldmaße, Wandhöhen, Platzgröße, Ausbaustufen
 // Preise abgestimmt mit tools/sim/museum.py: Bau = cost (wenige Stunden Eintritt, wenn das Zeitalter frei wird), Vergrößern = cost × HGROW[Stufe]
 // Anbau (Rundgang in Erdzeit-Reihenfolge): Eingang → Zeittunnel → Kambrium … Karbon → Perm … Paläogen → Neogen → Eiszeit
@@ -1938,15 +2017,19 @@ function hSpot(o,pref){const rooms=[],add=r=>{if(r&&hLv(r)>=0&&!rooms.includes(r
   const roomy=(i,j,f)=>{const[a,b]=hFootO(o,f);for(const q of hList()){if(q.key===o.key||hFlat(q))continue;const[c2,d]=hFootO(q,q.p[2]);if(i-1<q.p[0]+c2&&q.p[0]<i+a+1&&j-1<q.p[1]+d&&q.p[1]<j+b+1)return false}return true};
   for(const r of rooms){const s=HLV[hLv(r)],o2=(HS-s)/2,i0=r.si*HS+o2,j0=r.sj*HS+o2;
     for(const pass of[1,0])for(let d=0;d<=2*s;d++)for(let x=0;x<=d;x++){const i=i0+x,j=j0+d-x;for(const f of[0,1])if(hFree(o,i,j,f)&&(!pass||hFlat(o)||roomy(i,j,f)))return[i,j,f]}}return null}
-const hFile=o=>o.kind==="c"?"ex_"+o.id+".webp":o.kind==="d"?"dk_"+o.id+".webp":o.kind==="k"?"vit_open.webp":"dk_vitrine.webp";
-function hallImg(file){if(HIMG[file])return HIMG[file];const im=new Image();HIMG[file]=im;
+const hFile=o=>o.kind==="c"?"ex_"+o.id+".webp":o.kind==="d"?(HDECO[o.id].x?"xd:"+o.id:"dk_"+o.id+".webp"):o.kind==="k"?"vit_open.webp":"dk_vitrine.webp";
+function hallImg(file){if(HIMG[file])return HIMG[file];
+  if(file.startsWith("xd:")){const R=XDPOS[file.slice(3)];if(!R)return hallImg("dk_case.webp");const sh=hallImg("xd_sheet.webp");if(!sh.complete||!sh.naturalWidth)return{complete:false};
+    const c=document.createElement("canvas");c.width=R[2];c.height=R[3];const x=c.getContext("2d");x.drawImage(sh,R[0],R[1],R[2],R[3],0,0,R[2],R[3]);c.complete=true;c.naturalWidth=R[2];c.naturalHeight=R[3];
+    try{const w=Math.ceil(R[2]/4),h=Math.ceil(R[3]/4),m=document.createElement("canvas");m.width=w;m.height=h;const y=m.getContext("2d");y.drawImage(c,0,0,w,h);const d=y.getImageData(0,0,w,h).data,a=new Uint8Array(w*h);for(let k=0;k<w*h;k++)a[k]=d[k*4+3];c.mask={w,h,a}}catch(e){}
+    return HIMG[file]=c}const im=new Image();HIMG[file]=im;
   im.onload=()=>{try{const w=Math.ceil(im.width/4),h=Math.ceil(im.height/4),c=document.createElement("canvas");c.width=w;c.height=h;const x=c.getContext("2d");x.drawImage(im,0,0,w,h);
     const d=x.getImageData(0,0,w,h).data,a=new Uint8Array(w*h);for(let k=0;k<w*h;k++)a[k]=d[k*4+3];im.mask={w,h,a}}catch(e){}hallDraw()};
   im.src=aurl(file);return im}
 // Lage auf dem Bildschirm (Weltpunkte): Ankerpunkt = vordere Ecke der Grundfläche
 function hBox(o,p){const f=p[2],[a,b]=hFootO(o,f),fr=HP(p[0]+a,p[1]+b);
   if(o.kind==="c"){const m=HALLMETA[o.id],dl=m[2]-m[4],dr=m[6]-m[2];return{fr,s:Math.min(a*HT/2/(f?dr:dl),b*HT/2/(f?dl:dr)),m,f}}
-  const M=DECOMETA[o.kind==="d"?o.id:o.kind==="k"?"vitk":"vitrine"],k=o.kind==="d"?HDECO[o.id].k:o.kind==="k"?1.05:1;return{fr,s:(a+b)*HT/2*k/M[0],m:M,f}}
+  const M=DECOMETA[o.kind==="d"?o.id:o.kind==="k"?"vitk":"vitrine"]||DECOMETA[HDECO[o.id]&&HDECO[o.id].x&&XDPOS[o.id]?o.id:"case"],k=o.kind==="d"?HDECO[o.id].k:o.kind==="k"?1.05:1;return{fr,s:(a+b)*HT/2*k/M[0],m:M,f}}
 const hRoomOf=(i,j)=>{const G=hGeo(),i2=Math.floor(i),j2=Math.floor(j);return i2<0||j2<0||i2>=HN||j2>=HN?null:hAt(Math.floor(i2/HS),Math.floor(j2/HS))};
 
 function openHall(){if(HV)return;stat("hallOpen");hallS();HGEO=null;
@@ -1990,7 +2073,7 @@ function openHall(){if(HV)return;stat("hallOpen");hallS();HGEO=null;
     else if(b.dataset.put){const id=b.dataset.put,sp=hSpot({key:"c:"+id,kind:"c",id},hPref());if(!sp){toast(t(HROOMS.some(r=>hLv(r)>=0&&r.id!=="ein")?"hallFull":"hallNeedRoom"));return}S.hall.it[id]=sp;HV.sel="c:"+id;save();hallUI();hallDraw();hallShow(sp)}
     else if(b.dataset.kv){const e=b.dataset.kv,sp=hSpot({key:"k:"+e,kind:"k",id:e},hPref());if(!sp){toast(t("hallNoSpot"));return}S.hall.kv[e]=sp;HV.sel="k:"+e;save();hallUI();hallDraw();hallShow(sp)}
     else if(b.dataset.rv){const id=b.dataset.rv,sp=hSpot({key:"r:"+id,kind:"r",id},hPref());if(!sp){toast(t("hallNoSpot"));return}S.hall.rv[id]=sp;HV.sel="r:"+id;save();hallUI();hallDraw();hallShow(sp)}
-    else if(b.dataset.deco){const ty=b.dataset.deco,H=S.hall,own=(H.inv[ty]||0)>0,pr=HDECO[ty].p;if(!own&&S.coins<pr){toast(t("hallNoCoins"));return}
+    else if(b.dataset.deco){const ty=b.dataset.deco,H=S.hall,own=(H.inv[ty]||0)>0,pr=HDECO[ty].p;if(!own&&(HDECO[ty].x||S.coins<pr)){toast(t("hallNoCoins"));return}
       const sp=hSpot({key:"d:neu",kind:"d",id:ty},hPref());if(!sp){toast(t("hallNoSpot"));return}
       if(own)H.inv[ty]--;else{S.coins-=pr;SS().spent+=pr;stat("decoBuy");SFX.coin();renderTop()}
       const k="k"+(H.dn=(H.dn||0)+1);H.dk[k]={t:ty,p:sp};HV.sel="d:"+k;save();hallUI();hallDraw();hallShow(sp)}
@@ -2115,7 +2198,7 @@ function hallUI(){if(!HV)return;const el=HV.el,sh=el.querySelector("#hallsheet")
   const tabs=`<div class="htabs">${[["c",t("hallTabC"),st.length+kvs.length],["d",t("hallTabD"),0],["r",t("hallTabR"),rv.length]].map(([k,l,n])=>`<button data-tab="${k}" class="${tab===k?"on":""}">${l}${n?` <small>${n}</small>`:""}</button>`).join("")}</div>`;
   let body="";
   if(tab==="c")body=st.length+kvs.length?`<div class="hdepot">${kvs.map(e=>`<button class="hdep" data-kv="${e}"><img src="${aurl("vit_open.webp")}" alt=""><span>${t("hallVit",{e:ERAS[e].name})}</span><small>${kvIn(+e).length} / ${SMALL[e].length}</small></button>`).join("")}${st.map(c=>`<button class="hdep" data-put="${c.id}"><img src="${aurl("ex_"+c.id+".webp")}" alt=""><span>${c.n}</span></button>`).join("")}</div><p class="meta">${t("hallPut")}</p>`:`<p>${t("hallDepotEmpty")}</p>`;
-  else if(tab==="d")body=`<div class="hdepot">${Object.keys(HDECO).map(k=>{const n=H.inv[k]||0;return`<button class="hdep" data-deco="${k}"><img src="${aurl("dk_"+k+".webp")}" alt=""><span>${t("dk_"+k)}</span><small>${n?t("hallPutN",{n}):`<span class="coin sm"></span> ${nf(HDECO[k].p)}`}</small></button>`}).join("")}</div><p class="meta">${t("hallDecoHint")}</p>`;
+  else if(tab==="d")body=`<div class="hdepot">${Object.keys(HDECO).filter(k=>!HDECO[k].x||(H.inv[k]||0)>0).sort((a,b)=>!!HDECO[b].x-!!HDECO[a].x).map(k=>{const n=H.inv[k]||0;return`<button class="hdep" data-deco="${k}">${HDECO[k].x?xdPic(k):`<img src="${aurl("dk_"+k+".webp")}" alt="">`}<span>${t("dk_"+k)}</span><small>${n?t("hallPutN",{n}):`<span class="coin sm"></span> ${nf(HDECO[k].p)}`}</small></button>`}).join("")}</div><p class="meta">${t("hallDecoHint")} ${t("chColl",{a:chS().got.length,b:XD.length})}</p>`;
   else body=rv.length?`<div class="hdepot">${rv.map(id=>`<button class="hdep" data-rv="${id}"><img src="${aurl(id+".webp")}" alt=""><span>${t("rn_"+id)}</span></button>`).join("")}</div><p class="meta">${t("hallRareHint")}</p>`:`<p>${Object.keys(S.rares||{}).length?t("hallRareAll"):t("hallRareNone")}</p>`;
   sh.innerHTML=top+tabs+body+(top?"":`<p class="meta">${t("hallRoomHint")}</p>`)}
 function hBuyBtn(cost,label){const ok=S.coins>=cost;return`<button class="btn primary" id="hlBuy"${ok?"":" disabled"}>${label} · <span class="coin sm"></span> ${nf(cost)}</button>${ok?"":`<div class="bar"><i style="width:${Math.min(100,S.coins/cost*100).toFixed(1)}%"></i><span>${nf(Math.floor(S.coins))} / ${nf(cost)}</span></div>`}`}
@@ -2450,7 +2533,7 @@ function reportText(){
     ...((x.adErr||[]).length?["Werbefehler (Spieltag, Uhrzeit, Schritt, Code, Meldung):",...x.adErr.map(e=>`  Tag ${e[0]} ${e[1]} · ${e[2]} · Code ${e[3]===""?"?":e[3]} · ${e[4]||"ohne Meldung"}${e[5]?"":" · offline"}`)]:[]),
     `Tagesaufgaben: ${c.dqClaimed||0} abgeholt, ${c.chests||0} Truhen, längste Serie ${x.maxStreak||0} Tage`,
     `Münzen: ${Math.floor(S.coins)} übrig, ${x.spent||0} ausgegeben, Eintritt ${rate()} pro Std.`,
-    `Ausbaustufen: Feldflasche ${S.energyLv}, Feldküche ${S.regenLv}, Werkbank ${S.benchLv}, Hacke ${S.precLv}, Sonde ${S.probeLv}`,
+    `Ausbaustufen: Feldflasche ${S.energyLv}, Feldküche ${S.regenLv}, Werkbank ${S.benchLv}, Hacke ${S.precLv}, Sonde ${S.probeLv}, Meisterpinsel ${ttLv("brush")}, Meisterhacke ${ttLv("pick")} · Truhen ${chS().n}, Schlüssel ${chS().k}, Teile ${chS().p}, Exponate ${chS().got.length}/${XD.length}`,
     "",
     `Ereignisse (Spieltag${x.ev.length>15?", die letzten 15 von "+x.ev.length:""}):`,   // gekürzt, damit der Bericht in eine Messenger-Nachricht passt
     ...(x.ev.length?x.ev.slice(-15).map(e=>`  Tag ${e[0]}: ${e[1]}`):["  keine"]),
@@ -2561,7 +2644,7 @@ function startGame(){
 }
 
 /* ================= Allgemein ================= */
-function renderTop(){$("coins").textContent=Math.floor(S.coins);if($("tix"))$("tix").textContent=S.tix||0;{const ti=$("tixImg");if(ti&&!ti.src)ti.src=aurl("ticket.webp")}renderNavBadge();const r=rate();$("rate").textContent=r?t("rateTop",{r}):""}
+function renderTop(){$("coins").textContent=Math.floor(S.coins);if($("tix"))$("tix").textContent=S.tix||0;{const ti=$("tixImg");if(ti&&!ti.src)ti.src=aurl("ticket.webp")}renderNavBadge();renderChest();const r=rate();$("rate").textContent=r?t("rateTop",{r}):""}
 let view="dig";
 function show(v){setTimeout(()=>tutEvent("view:"+v),60);view=v;["dig","mus","lab","shop"].forEach(k=>{$("v-"+k).hidden=k!==v;$("t-"+k).setAttribute("aria-selected",k===v)});window.scrollTo(0,0);if(v==="mus")renderMus();if(v==="lab"){renderLab();setTimeout(()=>{try{maybeAskNotif()}catch(e){}},600)}if(v==="shop")renderShop();if(v==="dig"){sizePit();drawScene();renderDig()}}
 let tt;function toast(m){const t=$("toast");t.textContent=m;t.dataset.show=1;clearTimeout(tt);tt=setTimeout(()=>t.dataset.show=0,2000)}
@@ -2581,7 +2664,7 @@ pit.addEventListener("keydown",e=>{const mv={ArrowUp:[-1,0],ArrowDown:[1,0],Arro
 document.addEventListener("click",e=>{
   const b=e.target.closest("button");if(!b||b.closest(".overlay"))return;
   if(b.dataset.tool!=="probe")SFX.click();
-  if(b.id==="mute"){S.sound=!S.sound;save();renderMute();if(S.sound)SFX.click()}
+  if(b.id==="mute"||b.id==="muteS"){S.sound=!S.sound;save();renderMute();if(S.sound)SFX.click();if(b.id==="muteS")renderShop()}
   else if(b.id==="refill")showRewardedAd(t("plusEnergy"),()=>{S.st+=AD_STA;save();renderDig()});
   else if(b.dataset.rare)showRare(b.dataset.rare,true,0,true);
   else if(b.id==="openHall")openHall();
@@ -2602,6 +2685,8 @@ document.addEventListener("click",e=>{
   else if(b.id==="siteBtn")openMap();
   else if(b.id==="again"){S.digs++;save();newDig()}
   else if(b.id==="quit"){stat("digsQuit");D.over=true;renderDig();showResult()}
+  else if(b.dataset.tt)ttBuy(b.dataset.tt);
+  else if(b.id==="chBtn"||b.id==="ttChest")showChest();
   else if(b.dataset.up){const k=b.dataset.up,c=costs[k]();if(c&&S.coins>=c){S.coins-=c;SS().spent+=c;tickStamina(Date.now());S[k+"Lv"]=(S[k+"Lv"]||0)+1;if(k==="probe"){prTick();S.pr++}statEv(({energy:"Feldflasche",regen:"Feldküche",bench:"Werkbank",prec:"Profi-Hacke",probe:"Bodensonde",camp:"Expeditionslager"}[k]||k)+" Stufe "+S[k+"Lv"]+" gekauft ("+c+" Münzen)");tickLab(Date.now());save();SFX.coin();renderShop();toast(t("upgraded"))}}
   else if(b.id==="reset"){const ov=overlay(`<h2>${t("resetQ")}</h2><p class="sub">${t("resetSub")}</p><div class="row"><button class="btn" id="rno">${t("keep")}</button><button class="btn primary" id="ryes">${t("del")}</button></div>`);
     ov.addEventListener("click",ev=>{const x=ev.target.closest("button");if(!x)return;ev.stopPropagation();ov.remove();if(x.id==="ryes"){{const lg=S.lang;S=blank();S.lang=lg}S.st=energyMax();S.stT=Date.now();S.fullDay=today();offline=0;D=null;save();renderMute();show("dig");toast(t("newGame"))}})}
