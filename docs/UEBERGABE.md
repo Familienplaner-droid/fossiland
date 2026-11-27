@@ -164,7 +164,7 @@ Kari, Jano und Finn. Ihre Berichte vom 14. bis 16.11. sind ausgewertet und die g
 - Bestandsspieler sehen einmalig `prNewsShow()`. Tagesaufgabe „Sonde benutzen“ verlangt höchstens probesMax().
 
 ## Sammeltruhe und Meisterwerkzeuge (Nov. 2026)
-- `adReward` → `chKey()`: jedes Video = 1 Schlüssel (`S.chest.k`), `CH_KEYS=4` öffnen eine Truhe (`openChest`). Zähler verfällt nie.
+- `adReward` → `chKey()`: jedes Video = 1 Schlüssel (`S.chest.k`), `CH_KEYS=4` öffnen eine Truhe (`openChest`). Höchstens `CH_DAY=2` Truhen am Tag (`S.chest.d/t`), Vorrat höchstens 8 Schlüssel; Schlüssel verfallen nicht.
 - Inhalt: +2 Werkzeugteile (`S.chest.p`, entfällt wenn alle Meisterwerkzeuge Gold sind) und abwechselnd ein exklusives Exponat (1., 3., 5. … Truhe; Reihenfolge `XD`) oder ein Spezialwerkzeug (Radar/Presslufthammer).
 - Exponate: 20 Einträge in `XD` (id, Grundfläche, Bildfaktor, flach), werden in `HDECO` mit `x:1,p:0` eingetragen (nicht kaufbar, im Deko-Lager nur wenn besessen, besessene zuerst). Bilder kommen in EIN Sammelbild `xd_sheet.webp` (Dateilimit 512!): Lage in `XDPOS[id]=[x,y,w,h]`, Größe in `XDSHEET`, Ankerpunkte in `DECOMETA[id]`. Solange `XDPOS` leer ist: Platzhalter („?“, im Saal dk_case).
 - Kopfzeile: Truhen-Knopf `#chBtn` (Badge k/4, pulsiert wenn voll). Unter 440 px Breite ist der Ton-Knopf ausgeblendet; „Ton an/aus“ steht zusätzlich in der Werkstatt.
